@@ -1,0 +1,2 @@
+alias quake="cd /quake;./ezquake-linux-x86_64"
+echo "to run quake, you may just type 'quake'."

@@ -8,8 +8,10 @@ ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
 rclocal="$currentdir/resources/rc.local"
 xinitrc="$currentdir/resources/xinitrc"
 quakedesktop="$currentdir/resources/quake.desktop"
+bashrc="$currentdir/resources/bashrc"
+compositeconf="$currentdir/resources/01-composite.conf"
 quakedir="quake-base"
-imagename="quake_bootable-$(date +"%Y-%M-%d").img"
+imagename="quake_bootable-$(date +"%Y-%m-%d").img"
 
 
 required="debootstrap sudo chroot debootstick truncate"
@@ -52,23 +54,14 @@ sed -i "s/main$/main contrib non-free/g" /etc/apt/sources.list
 apt-get -qqy update
 (mount -t devpts devpts /dev/pts||true)
 (mount proc /proc -t proc||true)
-apt-get -qqy install file git sudo build-essential nodm nvidia-driver nvidia-settings xorg terminfo \
+apt-get -qqy install file git sudo build-essential nvidia-driver nvidia-settings xorg terminfo \
 grub2 linux-image-amd64 linux-headers-amd64 \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
-connman connman-gtk connman-ui \
-fluxbox
-
-`#configure grub`
-sed -i "s/^GRUB_TIMEOUT=/GRUB_TIMEOUT=1/g" /etc/default/grub
-
-`#configure nodm`
-sed -i "s/^NODM_ENABLED=/NODM_ENABLED=true/g" /etc/default/nodm
-sed -i "s/^NODM_USER=/NODM_USER=root/g" /etc/default/nodm
-if hash systemctl >/dev/null 2>&1;then
-(systemctl disable nodm)
-elif hash rc-update >/dev/null 2>&1;then
-(rc-update del nodm default)
-fi
+connman connman-gtk cmst iproute2 \
+procps vim-tiny \
+feh xterm fluxbox menu \
+xdg-utils \
+alsa-utils
 
 
 `#configure rc.local`
@@ -97,33 +90,41 @@ if hash rc-update >/dev/null 2>&1;then
 (rc-update add rc.local default)
 fi
 
-`#build ezquake`
 
+`#build ezquake`
 rm -rf /build
 mkdir /build
 git clone '$ezquakegitrepo' /build/ezquake
 cd /build/ezquake
 ./build-linux.sh
-eval $(grep --color=never PKGS_DEB build-linux-sh)
+eval $(grep --color=never ^PKGS_DEB build-linux.sh)
 cd /tmp
 cp -f /build/ezquake/ezquake-linux-x86_64 /quake/.
 rm -rf /build
 
-#manually install non dev versions of ezquake packages
-for package in $(echo "$PKGS_DEB"|sed "s/-dev//g");do apt-get -qqy install $package >/dev/null 2>&1;done
-#remove dev versions
-apt-get -qqy purge $PKGS_DEB
-
+#remove some dev packages
+apt-get -qqy purge build-essential git
 apt-get -qqy autopurge
 apt-get -qqy clean 
 '
-
+if [ $? -ne 0 ];then
+	echo "something failed, bailing out."
+	exit 1
+fi
 echo "configured chroot"
 
 sudo cp -f "$xinitrc" "$workdir/root/.xinitrc"
 sudo chmod -f +x "$workdir/root/.xinitrc"
+sudo mkdir -p "$workdir/root/.local/share/applications"
+sudo cp -f "$quakedesktop" "$workdir/root/.local/share/applications/ezQuake.desktop"
 sudo mkdir -p "$workdir/root/Desktop"
 sudo cp -f "$quakedesktop" "$workdir/root/Desktop/ezQuake.desktop"
+sudo xdg-mime default ezQuake.desktop x-scheme-handler/qw
+
+sudo mkdir -p "$workdir/etc/X11/xorg.conf.d"
+sudo cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
+
+sudo cp -f "$bashrc" "$workdir/root/.bashrc"
 
 echo "added xinitrc"
 
@@ -131,6 +132,5 @@ sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
 sudo umount -lf "$workdir/proc" >/dev/null 2>&1
 
 sudo debootstick --config-root-password-none --config-hostname quakeboot "$workdir" "$imagename"
-#sudo truncate -s $size "$imagename"
 
 echo "complete."
