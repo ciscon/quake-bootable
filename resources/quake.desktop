@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=ezQuake
+GenericName=quake
+Comment=ezQuake
+Keywords=qtv,qw://;
+Categories=quakeworld;qtv;Game;
+Exec=/quake/ezquake-linux-x86_64
+Path=/quake
+MimeType=x-scheme-handler/qw
+Terminal=false
+StartupNotify=false

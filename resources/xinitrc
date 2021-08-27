@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if hash nvidia-settings 2>/dev/null;then
+	echo "loading nvidia preferences"
+    export __GL_THREADED_OPTIMIZATIONS=0
+    export __GL_YIELD="NOTHING"
+    export __GL_MaxFramesAllowed=1
+    nvidia-settings -a "[gpu:0]/GPUPowerMizerMode=1" >/dev/null 2>&1&
+    nvidia-settings -a OpenGLImageSettings=3 >/dev/null 2>&1&
+    nvidia-settings -a SyncToVBlank=0 >/dev/null 2>&1&
+    nvidia-settings -a AllowFlipping=1 >/dev/null 2>&1&
+    wait
+fi
+
+cd /quake
+./ezquake-linux-x86_64&
+
+exec fluxbox

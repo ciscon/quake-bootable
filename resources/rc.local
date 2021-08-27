@@ -1,0 +1,19 @@
+#!/bin/bash
+echo "checking graphics configuration..."
+nvidiapackage=$(dpkg -l|grep nvidia-kernel-dkms -c)
+lsmod|grep nvidia_drm >/dev/null 2>&1
+if [ $? -ne 0 ] && [ $nvidiapackage -ne 0 ];then
+	echo "nvidia gpu not found, removing nvidia glx..."
+    export DEBIAN_FRONTEND=noninteractive
+    #apt -yq purge '*nvidia*' >/dev/null 2>&1
+	apt -yq purge glx-alternative-nvidia >/dev/null 2>&1
+	apt -yq purge nvidia-settings >/dev/null 2>&1
+    apt -yq autopurge >/dev/null 2>&1
+    echo "reconfigured video.  rebooting"
+    sleep 1
+    sync;reboot
+fi
+
+echo "configuring network..."
+
+systemctl restart nodm
