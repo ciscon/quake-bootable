@@ -128,7 +128,7 @@ sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
 sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc"
 sudo mkdir -p "$workdir/home/quakeuser/.local/share/applications"
 sudo cp -f "$quakedesktop" "$workdir/home/quakeuser/.local/share/applications/ezQuake.desktop"
-sudo chroot --userspec quakeuser:quakegroup "$workdir" xdg-mime default ezQuake.desktop x-scheme-handler/qw
+sudo chroot --userspec quakeuser "$workdir" xdg-mime default ezQuake.desktop x-scheme-handler/qw
 
 sudo mkdir -p "$workdir/etc/X11/xorg.conf.d"
 sudo cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
