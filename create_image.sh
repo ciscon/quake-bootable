@@ -7,6 +7,7 @@ release="testing"
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
+nodm="$currentdir/resources/nodm"
 xinitrc="$currentdir/resources/xinitrc"
 quakedesktop="$currentdir/resources/quake.desktop"
 bashrc="$currentdir/resources/bashrc"
@@ -72,6 +73,7 @@ firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
 connman connman-gtk cmst iproute2 \
 procps vim-tiny \
 feh xterm fluxbox fbautostart menu \
+nodm \
 xdg-utils \
 lxrandr dex \
 alsa-utils \
@@ -83,13 +85,16 @@ wget -qO - https://azlux.fr/repo.gpg.key | apt-key add -
 apt-get -qqy update
 apt-get -qqy install log2ram
 
-`#configure rc.local`
+#configure rc.local
 chmod +x /etc/rc.local
 (systemctl enable rc-local||true)
 (rc-update add rc.local default||true)
 
+#nodm
+(systemctl enable nodm||true)
+(rc-update add nodm default||true)
 
-`#build ezquake`
+#build ezquake
 export CFLAGS="-march=nehalem -flto=$(nproc) -fwhole-program"
 export LDFLAGS="$CFLAGS"
 rm -rf /home/quakeuser/build
@@ -123,6 +128,7 @@ if [ $? -ne 0 ];then
 fi
 echo "configured chroot"
 
+sudo cp -f "$nodm" "$workdir/etc/default/nodm"
 sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
 sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
 sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc"
