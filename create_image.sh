@@ -38,12 +38,12 @@ if [ $clean -eq 1 ] && [ ! -z "$workdir" ];then
 fi
 mkdir -p "$workdir"
 
-sudo debootstrap --include="debian-keyring" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/ && \
+sudo debootstrap --include="debian-keyring" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
 
-mkdir -p "$workdir/etc/modprobe.d"
+sudo mkdir -p "$workdir/etc/modprobe.d"
 sudo cp -f "$nouveauconf" "$workdir/etc/modprobe.d/nouveau.conf"
 sudo cp -f "$rclocal" "$workdir/etc/rc.local"
-mkdir -p "$workdir/etc/systemd/system"
+sudo mkdir -p "$workdir/etc/systemd/system"
 sudo cp -f "$rclocalservice" "$workdir/etc/systemd/system/rc-local.service"
 if [ -d "$workdir/root/quake" ];then
 	sudo rm -rf "$workdir/root/quake"
