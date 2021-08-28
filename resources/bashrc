@@ -11,6 +11,7 @@ if [ ! -f $HOME/.leavemealone ];then
   echo "to run quake: quake"
   echo "to change quake assets preset: quakepreset"
   echo "to update quake from git: update-quake"
+  echo ""
   echo "other:"
   echo "to run a web browser: browser"
   echo "to configure display(s): lxrandr"
