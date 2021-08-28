@@ -1,0 +1,195 @@
+// nQuake settings - do not edit
+// (there is no point editing this file as it will be updated on next launch)
+
+// Bring back default.cfg
+exec default.cfg			// From nquake.pk3
+exec configs/preset.cfg		// From ezquake/configs/
+exec configs/platform.cfg	// ???
+exec frogbot.cfg			// From frogbot.pk3
+exec configs/config.cfg		// From ezquake/configs/
+
+// Startup message
+alias _startup_message_1      "echo Welcome to ^n^Q^u^a^k^e!"
+alias _startup_message_2      "echo To find a game, press [^E^S^C] and select ^M^u^l^t^i^p^l^a^y^e^r!"
+// <in_mouse warning message>
+alias _startup_message_3      "echo Helpful commands:"
+alias _startup_message_4      "echo ^/^l^i^s^t* $x20$x20$x20 - aliases that display a list of different assets available"
+alias _startup_message_5      "echo ^b^o^t^s$x20$x20$x20$x20$x20$x20 - instructions on how to play against bots"
+alias _startup_message_6      "echo ^c^r^o^s^s^h^a^i^r^s - view a list of crosshairs"
+alias _startup_message_7      "echo ^c^o^n^c^h^a^r^s$x20$x20 - view a list of console characters"
+alias _startup_message_8      "echo ^g^r^a^p^h^i^c^s$x20$x20 - view a list of graphic settings"
+alias _startup_message_9      "echo ^t^e^a^m^s^a^y^s$x20$x20 - view a list of teamsay binds"
+alias _startup_message_10      "echo ^w^e^a^p^o^n^s$x20$x20$x20 - view a list of quick weapon binds"
+alias _startup_message_11     "echo For additional help, type ^h^e^l^p, or ^d^e^s^c^r^i^b^e [command]"
+alias _startup_message_12     "echo To search for a command, type ^c^v^a^r^l^i^s^t *[keyword]*, for example ^c^v^a^r^l^i^s^t ^*^s^k^i^n^*"
+
+// in_mouse warning message
+alias _in_mouse_warning_1     "echo;echo If you are experiencing mouse issues try changing ^i^n^_^r^a^w to 1."
+alias _in_mouse_warning_2     "echo;echo If you are experiencing mouse issues try changing ^i^n^_^r^a^w to 0."
+
+// Frogbot instructions
+alias _bots_echo_1            "echo Type ^b^o^t^_^f^f^a for ffa, ^b^o^t^_^1^o^n^1 for a duel, etc"
+alias _bots_echo_2            "echo Available modes: ^f^f^a, ^1^o^n^1, ^2^o^n^2, ^4^o^n^4, ^a^r^e^n^a, ^c^a^r^e^n^a"
+alias _bots_echo_3            "echo After choosing a mode, type ^a^d^d^b^o^t to add a bot"
+alias _bots_echo_4            "echo Press [^F^5] or type ^r^e^a^d^y to start the match"
+alias _bots_echo_5            "echo Use ^s^k^i^l^l^u^p and ^s^k^i^l^l^d^o^w^n to adjust skill before adding bots"
+alias _bots_echo_6            "echo To start over, type ^r^e^m^o^v^e^a^l^l^b^o^t^s"
+
+// Crosshairs
+alias _crosshairs_echo_0      "echo List of crosshairs:"
+alias _crosshairs_echo_1      "echo $x20^1$x20 - ^I^n^t^e^r ^1 by the-interceptor"
+alias _crosshairs_echo_2      "echo $x20^2$x20 - ^D^e^u^r^k^'^s ^C^r^o^s^s^h^a^i^r by deurk"
+alias _crosshairs_echo_3      "echo $x20^3$x20 - ^s^u^p^e^r^c^r^o^s^s (2) by super"
+alias _crosshairs_echo_4      "echo $x20^4$x20 - ^l^o^c^u^s^t^s ^c^r^o^s^s^h^a^i^r by locust"
+alias _crosshairs_echo_5      "echo $x20^5$x20 - ^B^e^s^t ^c^r^o^s^s^h^a^i^r ^e^v^e^r by unknown"
+alias _crosshairs_echo_6      "echo $x20^6$x20 - ^C^r^o^s^s^h^a^i^r ^a^n^n^i by anni"
+alias _crosshairs_echo_7      "echo $x20^7$x20 - ^d^v^i^d^e^d^o^t by dvide"
+alias _crosshairs_echo_8      "echo $x20^8$x20 - ^I^n^t^e^r ^2 by the-interceptor"
+alias _crosshairs_echo_9      "echo $x20^9$x20 - ^s^u^p^e^r^c^r^o^s^s (1) by super"
+alias _crosshairs_echo_10     "echo ^1^0$x20 - ^C^r^o^s^s ^a^n^d ^D^o^t by Stev"
+alias _crosshairs_echo_11     "echo ^1^1$x20 - ^b^p^s^' ^c^r^o^s^s^h^a^i^r by bps"
+alias _crosshairs_echo_12     "echo ^1^2$x20 - ^l^f^x ^c^r^o^s^s^h^a^i^r by para"
+alias _crosshairs_echo_13     "echo ^1^3$x20 - ^b^p^8 by bps"
+alias _crosshairs_echo_14     "echo ^1^4$x20 - ^p^h^r^e^n by phren"
+alias _crosshairs_echo_15     "echo ^1^5$x20 - ^x^e^n^i^c^'^s ^c^r^o^s^s^h^a^i^r by xenic"
+alias _crosshairs_echo_16     "echo ^1^6$x20 - ^p^l^a^z^6 ^c^r^o^s^s^h^a^i^r by PlaZmaZ"
+alias _crosshairs_echo_17     "echo ^1^7$x20 - ^x^h^a^i^r^_^d^e^f by benQ"
+alias _crosshairs_echo_18     "echo ^1^8$x20 - ^s^u^p^e^r^c^r^o^s^s (3) by super"
+alias _crosshairs_echo_19     "echo ^1^9$x20 - ^p^l^a^z^3 ^c^r^o^s^s^h^a^i^r by PlaZmaZ"
+alias _crosshairs_echo_20     "echo ^2^0$x20 - ^c^r^o^s^s^p^n^g by super"
+alias _crosshairs_echo_21     "echo Type ^c^r^o^s^s^h^a^i^r^i^m^a^g^e ^1^-^2^0 to select a crosshair"
+alias _crosshairs_echo_22     "echo Try using different ^c^r^o^s^s^h^a^i^r^s^i^z^e settings to make the crosshair look good"
+
+// Console characters
+alias _conchars_echo_0        "echo List of console character sets:"
+alias _conchars_echo_1        "echo $x20^1$x20 - ^M^o^o^n^D^r^u^n^k ^I^d^3 ^C^h^a^r^s^e^t ^M^O^D^I^F^I^E^D by Moon[Drunk]"
+alias _conchars_echo_2        "echo $x20^2$x20 - ^d^a^r^k^1^0^0^r^m by darkstorm"
+alias _conchars_echo_3        "echo $x20^3$x20 - ^U^n^k^n^o^w^n^1 by biomass"
+alias _conchars_echo_4        "echo $x20^4$x20 - ^C^o^n^n^i^v^e^n^t ^e^d^i^t^i^o^n ^J^e^f^f^e^r^i^e^s by darkstorm"
+alias _conchars_echo_5        "echo $x20^5$x20 - ^d^a^r^k^s^t^o^r^m^-^q^w by darkstorm"
+alias _conchars_echo_6        "echo $x20^6$x20 - ^G^r^a^y ^B^u^g^s by _KaszpiR_"
+alias _conchars_echo_7        "echo $x20^7$x20 - ^D^e^f ^2 by Def"
+alias _conchars_echo_8        "echo $x20^8$x20 - ^O^r^i^g^i^n^a^l ^c^o^n^c^h^a^r ^s^i^m^p^l^i^f^i^e^d by super"
+alias _conchars_echo_9        "echo $x20^9$x20 - ^A^n^g^u^a^'^s ^c^h^a^r^s^e^t by Angua"
+alias _conchars_echo_10       "echo ^1^0$x20 - ^O^C^R ^B ^S^t^d by AAS"
+alias _conchars_echo_11       "echo ^1^1$x20 - ^C^o^p^p^e^r^p^l^a^t^e by Copperplate"
+alias _conchars_echo_12       "echo ^1^2$x20 - ^d^a^r^k^1^0^0^r^m ^- ^N^e^w ^V^e^r^s^i^o^n by darkstorm"
+alias _conchars_echo_13       "echo ^1^3$x20 - ^d^a^r^k^1^0^0^r^m ^- ^S^t^o^n^e^d by darkstorm"
+alias _conchars_echo_14       "echo ^1^4$x20 - ^B^u^g^s^3 by Bugsy"
+alias _conchars_echo_15       "echo ^1^5$x20 - ^D^e^f^1 by Def"
+alias _conchars_echo_16       "echo ^1^6$x20 - ^B^a^b^y^l^o^n^5 by Babylon5"
+alias _conchars_echo_17       "echo ^1^7$x20 - ^M^o^o^n^D^r^u^n^k ^4 by Moon[Drunk]"
+alias _conchars_echo_18       "echo ^1^8$x20 - ^M^o^o^n^D^r^u^n^k ^3 by Moon[Drunk]"
+alias _conchars_echo_19       "echo ^1^9$x20 - ^O^C^R ^A ^S^t^d by AAS"
+alias _conchars_echo_20       "echo ^2^0$x20 - ^R^u^s^t^y ^e^d^i^t^i^o^n ^J^e^f^f^e^r^i^e^s by darkstorm"
+alias _conchars_echo_21       "echo Type ^g^l^_^c^o^n^s^o^l^e^f^o^n^t ^1^-^2^0 to select a console character set"
+
+// Graphic modes
+alias _graphics_echo_0        "echo ^L^i^s^t ^o^f ^g^r^a^p^h^i^c ^m^o^d^e^s:"
+alias _graphics_echo_1        "echo ^d^e^f^a^u^l^t$x20$x20$x20$x20$x20$x20$x20 - the default nQuake look"
+alias _graphics_echo_2        "echo ^o^r^i^g^i^n^a^l^q^u^a^k^e$x20 - the original Quake look*"
+alias _graphics_echo_3        "echo ^e^y^e^c^a^n^d^y$x20$x20$x20$x20$x20$x20 - the prettiest graphics"
+alias _graphics_echo_4        "echo ^l^e^g^o^q^u^a^k^e$x20$x20$x20$x20$x20 - the pro configuration of the early 2000's*"
+alias _graphics_echo_5        "echo ^s^i^m^p^l^e^t^e^x^t^u^r^e^s - downscaled eSports look"
+alias _graphics_echo_6        "echo * These settings only function 100% with the full Quake version"
+alias _graphics_echo_7        "echo ^A^d^v^a^n^c^e^d ^s^e^t^t^i^n^g^s:"
+alias _graphics_echo_8        "echo ^p^a^r^t^i^c^l^e^s$x20$x20$x20$x20$x20 - turns on eyecandy particles"
+alias _graphics_echo_9        "echo ^n^o^p^a^r^t^i^c^l^e^s$x20$x20$x20 - turns off eyecandy particles"
+alias _graphics_echo_10       "echo ^f^p^s^p^a^r^t^i^c^l^e^s$x20$x20 - turns on a set of fps particles"
+alias _graphics_echo_11       "echo ^n^o^f^p^s^p^a^r^t^i^c^l^e^s - turns off a set of fps particles"
+
+// Teamsays
+alias _teamsays_echo_0        "echo ^T^e^a^m^s^a^y ^b^i^n^d^s:"
+alias _teamsays_echo_1        "echo ^R reports location of an item you are ^p^o^i^n^t^i^n^g at"
+alias _teamsays_echo_2        "echo ^F reports your location as ^s^a^f^e"
+alias _teamsays_echo_3        "echo ^5 alerts your team of ^e^n^e^m^y ^p^o^w^e^r^u^p"
+alias _teamsays_echo_4        "echo ^T reports your location as ^l^o^s^t"
+alias _teamsays_echo_5        "echo ^S^H^I^F^T reports your ^s^t^a^t^u^s"
+alias _teamsays_echo_6        "echo ^G requests ^h^e^l^p from your team"
+
+// Weapon bindings
+alias _weapon_message_1       "echo ^Q^u^i^c^k ^w^e^a^p^o^n ^b^i^n^d^s:"
+alias _weapon_message_2       "echo ^2 selects the ^S^h^o^t^g^u^n or ^A^x^e (if out of ammo)"
+alias _weapon_message_3       "echo ^3 selects the ^S^u^p^e^r ^S^h^o^t^g^u^n or ^S^h^o^t^g^u^n"
+alias _weapon_message_4       "echo ^4 selects the ^S^u^p^e^r ^N^a^i^l^g^u^n or ^N^a^i^l^g^u^n"
+alias _weapon_message_5       "echo ^Q selects the ^G^r^e^n^a^d^e ^L^a^u^n^c^h^e^r"
+alias _weapon_message_6       "echo ^E selects the ^R^o^c^k^e^t ^L^a^u^n^c^h^e^r"
+alias _weapon_message_7       "echo ^M^o^u^s^e^2 selects the ^L^i^g^h^t^n^i^n^g ^G^u^n"
+
+// Message aliases
+alias _draw_line              "echo --------------------------------------------------------------"
+alias _startup_message        "_startup_message_1;echo;_startup_message_2;_in_mouse_warning;echo;_startup_message_3;_startup_message_4;_startup_message_5;_startup_message_6;_startup_message_7;_startup_message_8;_startup_message_9;echo;_startup_message_10;_startup_message_11;_startup_message_12;vid_conwidth 0"
+alias _in_mouse_warning       "if $in_raw == 0 then _in_mouse_warning_1;if $in_raw == 1 then _in_mouse_warning_2"
+alias _bots                   "_draw_line;_bots_echo_1;echo;_bots_echo_2;echo;_bots_echo_3;echo;_bots_echo_4;echo;_bots_echo_5;echo;_bots_echo_6;_draw_line"
+alias bots                    "_bots"
+alias _crosshairs             "_draw_line;_crosshairs_echo_0;echo;_crosshairs_echo_1;_crosshairs_echo_2;_crosshairs_echo_3;_crosshairs_echo_4;_crosshairs_echo_5;_crosshairs_echo_6;_crosshairs_echo_7;_crosshairs_echo_8;_crosshairs_echo_9;_crosshairs_echo_10;_crosshairs_echo_11;_crosshairs_echo_12;_crosshairs_echo_13;_crosshairs_echo_14;_crosshairs_echo_15;_crosshairs_echo_16;_crosshairs_echo_17;_crosshairs_echo_18;_crosshairs_echo_19;_crosshairs_echo_20;echo;_crosshairs_echo_21;echo;_crosshairs_echo_22;_draw_line"
+alias crosshairs              "_crosshairs"
+alias _conchars               "_draw_line;_conchars_echo_0;echo;_conchars_echo_1;_conchars_echo_2;_conchars_echo_3;_conchars_echo_4;_conchars_echo_5;_conchars_echo_6;_conchars_echo_7;_conchars_echo_8;_conchars_echo_9;_conchars_echo_10;_conchars_echo_11;_conchars_echo_12;_conchars_echo_13;_conchars_echo_14;_conchars_echo_15;_conchars_echo_16;_conchars_echo_17;_conchars_echo_18;_conchars_echo_19;_conchars_echo_20;echo;_conchars_echo_21;_draw_line"
+alias conchars                "_conchars"
+alias _graphics               "_draw_line;_graphics_echo_0;echo;_graphics_echo_1;_graphics_echo_2;_graphics_echo_3;_graphics_echo_4;_graphics_echo_5;echo;_graphics_echo_6;echo;_graphics_echo_7;echo;_graphics_echo_8;_graphics_echo_9;_graphics_echo_10;_graphics_echo_11;_draw_line"
+alias graphics                "_graphics"
+alias _teamsays               "_draw_line;_teamsays_echo_0;echo;_teamsays_echo_1;_teamsays_echo_2;_teamsays_echo_3;_teamsays_echo_4;_teamsays_echo_5;_teamsays_echo_6;_draw_line"
+alias teamsays                "_teamsays"
+alias _weapons                "_draw_line;_weapon_message_1;echo;_weapon_message_2;_weapon_message_3;_weapon_message_4;_weapon_message_5;_weapon_message_6;_weapon_message_7;_draw_line"
+alias weapons                 "_weapons"
+
+// Graphic mode messages
+alias _gfx_default_echo       "_gfx_default_echo_1;echo;_gfx_default_echo_2"
+alias _gfx_default_echo_1     "echo ^D^e^f^a^u^l^t graphics settings loaded"
+alias _gfx_default_echo_2     "echo ^N^o^t^e: you may have to reload the map for settings to update"
+alias _gfx_eyecandy_echo      "_gfx_eyecandy_echo_1;echo;_gfx_eyecandy_echo_2"
+alias _gfx_eyecandy_echo_1    "echo ^E^y^e^c^a^n^d^y graphics settings loaded"
+alias _gfx_eyecandy_echo_2    "echo ^N^o^t^e: you may have to reload the map for settings to update"
+alias _gfx_legoquake_echo     "_gfx_legoquake_echo_1;echo;_gfx_legoquake_echo_2"
+alias _gfx_legoquake_echo_1   "echo ^L^e^g^o^Q^u^a^k^e graphics settings loaded"
+alias _gfx_legoquake_echo_2   "echo ^N^o^t^e: you may have to reload the map for settings to update"
+alias _gfx_origquake_echo     "_gfx_origquake_echo_1;echo;_gfx_origquake_echo_2;_gfx_origquake_echo_3"
+alias _gfx_origquake_echo_1   "echo ^O^r^i^g^i^n^a^l ^Q^u^a^k^e graphics settings loaded"
+alias _gfx_origquake_echo_2   "echo ^N^o^t^e ^#^1: you may have to reload the map for settings to update"
+alias _gfx_origquake_echo_3   "echo ^N^o^t^e ^#^2: for an authentic look, delete or move ^/^q^w^/^m^o^d^e^l^s^.^p^k^3"
+alias _gfx_simpletex_echo     "_gfx_simpletex_echo_1;_gfx_simpletex_echo_2"
+alias _gfx_simpletex_echo_1   "echo ^S^i^m^p^l^e ^T^e^x^t^u^r^e^s graphics settings loaded. Change walls and floor colors with ^r^_^w^a^l^l^c^o^l^o^r and ^r^_^f^l^o^o^r^c^o^l^o^r"
+alias _gfx_simpletex_echo_2   "echo ^N^o^t^e: you may have to reload the map for settings to update"
+
+// Graphics aliases
+alias graphics                "_graphics"
+alias fpsparticles            "cl_r2g 1;r_rockettrail 2;r_telesplash 0;r_explosiontype 3;noparticles"
+alias nofpsparticles          "cl_r2g 0;r_rockettrail 3;r_telesplash 1;r_explosiontype 1"
+alias noparticles             "gl_particle_fire 0;gl_part_explosions 0;gl_part_trails 0;gl_nailtrail 0;gl_part_spikes 0;gl_part_gunshots 0;gl_part_blood 0;gl_part_telesplash 0;gl_part_blobs 0;gl_part_lavasplash 0;gl_part_inferno 0;gl_part_blood 0"
+alias particles               "gl_particle_fire 1;gl_part_explosions 1;gl_part_trails 1;gl_nailtrail 1;gl_part_spikes 1;gl_part_gunshots 1;gl_part_telesplash 1;gl_part_blobs 1;gl_part_lavasplash 1;gl_part_inferno 1;gl_part_blood 1;nofpsparticles"
+alias default                 "gl_anisotropy 16;gl_externalTextures_bmodels 1;gl_externalTextures_world 1;gl_texturemode gl_linear_mipmap_nearest;gl_loadlitfiles 1;gl_miptexlevel 0;r_drawflat 0;r_fastsky 0;r_fastturb 0;r_skyname $qt$qt;gl_turbfog 1;gl_caustics 1;gl_powerupshells 1;cl_novweps 0;r_bloom 0;gl_turb_trails 0;gl_detail 0;r_dynamic 0;gl_rl_globe 0;gl_coronas 0;gl_surface_lava 0;gl_surface_slime 0;gl_lightning 0;gl_flashblend 0;gl_simpleitems 0;particles;nofpsparticles;_gfx_default_echo"
+alias eyecandy                "gl_anisotropy 16;gl_externalTextures_bmodels 1;gl_externalTextures_world 1;gl_texturemode gl_linear_mipmap_nearest;gl_loadlitfiles 1;gl_miptexlevel 0;r_drawflat 0;r_fastsky 0;r_fastturb 0;r_skyname space;gl_turbfog 1;gl_caustics 1;gl_powerupshells 1;cl_novweps 0;r_bloom 1;gl_turb_trails 1;gl_detail 1;r_dynamic 1;gl_rl_globe 2;gl_coronas 1;gl_surface_lava 1;gl_surface_slime 1;gl_lightning 1;gl_flashblend 0;gl_simpleitems 0;gl_part_blood 1;particles;nofpsparticles;_gfx_eyecandy_echo"
+alias legoquake               "gl_anisotropy 1;gl_externalTextures_bmodels 0;gl_externalTextures_world 0;gl_texturemode gl_nearest;gl_loadlitfiles 0;gl_miptexlevel 3;r_drawflat 0;r_fastsky 1;r_fastturb 0;r_skyname $qt$qt;gl_turbfog 0;gl_caustics 0;gl_powerupshells 1;cl_novweps 0;r_bloom 0;gl_turb_trails 0;gl_detail 0;r_dynamic 0;gl_rl_globe 0;gl_coronas 0;gl_surface_lava 0;gl_surface_slime 0;gl_lightning 0;gl_flashblend 0;gl_simpleitems 1;noparticles;fpsparticles;_gfx_legoquake_echo"
+alias originalquake           "gl_anisotropy 1;gl_externalTextures_bmodels 0;gl_externalTextures_world 0;gl_texturemode gl_linear_mipmap_nearest;gl_loadlitfiles 0;gl_miptexlevel 0;r_drawflat 0;r_fastturb 0;r_fastsky 0;r_skyname $qt$qt;gl_turbfog 0;gl_caustics 0;gl_powerupshells 0;cl_novweps 1;r_bloom 0;gl_turb_trails 0;gl_detail 0;r_dynamic 0;gl_rl_globe 0;gl_coronas 0;gl_surface_lava 0;gl_surface_slime 0;gl_lightning 0;gl_flashblend 0;gl_simpleitems 0;noparticles;nofpsparticles;_gfx_origquake_echo"
+alias simpletextures          "gl_anisotropy 1;gl_texturemode gl_linear_mipmap_nearest;gl_miptexlevel 0;gl_loadlitfiles 0;r_drawflat 1;r_fastturb 1;r_fastsky 1;r_skyname $qt$qt;gl_turbfog 0;gl_caustics 0;gl_powerupshells 1;cl_novweps 0;r_bloom 0;gl_turb_trails 0;gl_detail 0;r_dynamic 0;gl_rl_globe 0;gl_coronas 0;gl_surface_lava 0;gl_surface_slime 0;gl_lightning 0;gl_flashblend 0;gl_simpleitems 1;noparticles;fpsparticles;_gfx_simpletex_echo"
+
+// Other useful aliases
+alias vol+                    "inc volume +0.1;echo Volume: $volume"
+alias vol-                    "inc volume -0.1;echo Volume: $volume"
+alias listskins               "fs_dir skins * hideext hidesize hidedir"
+alias listcrosshairs          "fs_dir crosshairs * hideext hidesize hidedir"
+alias listconfigs             "fs_dir configs * hidesize hidedir"
+alias listskyboxes            "fs_dir env * hidesize hidedir"
+alias listmaps                "fs_dir maps * hidesize hidedir"
+
+// Demo binds
+alias demobinds               "bind KP_ENTER scores;bind KP_HOME demo_slowest;bind KP_UPARROW demo_paused;bind KP_PGUP demo_fastest;bind KP_MINUS vol-;bind KP_LEFTARROW demo_slower;bind KP_5 demo_normal;bind KP_RIGHTARROW demo_faster;bind KP_PLUS vol+;bind KP_END demo_slowmo;bind KP_DOWNARROW demo_paused;bind KP_PGDN demo_fastfwd"
+alias demo_faster             "demo_setspeed 400;echo Demo: Fast forward (faster)"
+alias demo_fastest            "demo_setspeed 800;echo Demo: Fast forward (fastest)"
+alias demo_fastfwd            "demo_setspeed 200;echo Demo: Fast forward"
+alias demo_normal             "demo_setspeed 100;echo Demo: Normal speed"
+alias demo_paused             "demo_setspeed 0;echo Demo: Paused"
+alias demo_slower             "demo_setspeed 30;echo Demo: Slow motion (slower)"
+alias demo_slowest            "demo_setspeed 15;echo Demo: Slow motion (slowest)"
+alias demo_slowmo             "demo_setspeed 60;echo Demo: Slow motion"
+
+// Spectator binds
+alias specbinds               "bind KP_ENTER scores;bind KP_HOME $qttrack #7$qt;bind KP_UPARROW $qttrack #8$qt;bind KP_MINUS stats;bind KP_LEFTARROW $qttrack #4$qt;bind KP_5 $qttrack #5$qt;bind KP_RIGHTARROW $qttrack #6$qt;bind KP_PLUS effi;bind KP_END $qttrack #1$qt;bind KP_DOWNARROW $qttrack #2$qt;bind KP_PGDN $qttrack #3$qt;bind / tracklist"
+
+// Generate startup message
+
+vid_conwidth 960
+_draw_line
+_startup_message
+_draw_line
+echo

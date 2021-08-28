@@ -4,6 +4,9 @@
 export CFLAGS="-march=native -flto=$(nproc) -fwhole-program"
 export LDFLAGS="$CFLAGS"
 
+#make sure ezquake is registered
+xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
+
 if lsmod|grep nvidia_modeset >/dev/null 2>&1;then
 	echo "loading nvidia preferences"
 	export __GL_YIELD="NOTHING"
@@ -30,8 +33,9 @@ else
 fi
 export SDL_AUDIODRIVER=alsa
 
+tint2&
 fbautostart&
-cmst -m&
 xterm&
+cmst -w 5 -m&
 
-exec startfluxbox
+exec openbox-session
