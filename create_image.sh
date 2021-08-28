@@ -85,6 +85,7 @@ mkdir /root/build
 git clone '$ezquakegitrepo' /root/build/ezquake-source-official
 cd /root/build/ezquake-source-official
 ./build-linux.sh
+strip ezquake-linux-x86_64
 cp -f /root/build/ezquake-source-official/ezquake-linux-x86_64 /root/quake/.
 git clean -qfdx
 
