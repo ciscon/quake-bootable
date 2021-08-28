@@ -11,6 +11,7 @@ xinitrc="$currentdir/resources/xinitrc"
 quakedesktop="$currentdir/resources/quake.desktop"
 bashrc="$currentdir/resources/bashrc"
 hwclock="$currentdir/resources/hwclock"
+nouveauconf="$currentdir/resources/nouveau.conf"
 compositeconf="$currentdir/resources/01-composite.conf"
 quakedir="quake-base"
 imagename="quake_bootable-$(date +"%Y-%m-%d").img"
@@ -37,6 +38,8 @@ mkdir -p "$workdir"
 
 sudo debootstrap --include="debian-keyring" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/ && \
 
+mkdir -p "$workdir/etc/modprobe.d"
+sudo cp -f "$nouveauconf" "$workdir/etc/modprobe.d/nouveau.conf"
 sudo cp -f "$rclocal" "$workdir/etc/rc.local"
 mkdir -p "$workdir/etc/systemd/system"
 sudo cp -f "$rclocalservice" "$workdir/etc/systemd/system/rc-local.service"
