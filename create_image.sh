@@ -3,7 +3,7 @@
 clean=1
 currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 workdir="$currentdir/workdir"
-release="unstable"
+release="testing"
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
@@ -51,7 +51,7 @@ sudo chroot "$workdir" bash -e -c '
 chown -f root:root /
 chmod -f 755 /
 
-`#configure package manager and install packages`
+#configure package manager and install packages
 export DEBIAN_FRONTEND=noninteractive
 mkdir -p /etc/apt/apt.conf.d
 echo "APT::Install-Recommends \"0\";APT::AutoRemove::RecommendsImportant \"false\";" >> /etc/apt/apt.conf.d/01lean
@@ -59,7 +59,7 @@ sed -i "s/main$/main contrib non-free/g" /etc/apt/sources.list
 apt-get -qqy update
 (mount -t devpts devpts /dev/pts||true)
 (mount proc /proc -t proc||true)
-apt-get -qqy install file git sudo build-essential nvidia-driver nvidia-settings xorg terminfo \
+apt-get -qqy install gnupg wget file git sudo build-essential nvidia-driver nvidia-settings xorg terminfo \
 linux-image-amd64 linux-headers-amd64 \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
 connman connman-gtk cmst iproute2 \
@@ -68,8 +68,13 @@ feh xterm fluxbox menu \
 xdg-utils \
 lxrandr dex \
 alsa-utils \
-chromium
+chromium 
 
+#log2ram
+echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
+wget -qO - https://azlux.fr/repo.gpg.key | apt-key add -
+apt-get -qqy update
+apt-get -qqy install log2ram
 
 `#configure rc.local`
 chmod +x /etc/rc.local
@@ -98,6 +103,9 @@ git clean -qfdx
 
 apt-get -qqy autopurge
 apt-get -qqy clean 
+
+`#configure /tmp as tmpfs`
+sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
 '
 if [ $? -ne 0 ];then
 	echo "something failed, bailing out."

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#if we build again inside bootable environment, use current hardware for optimizations
+export CFLAGS="-march=native -flto=$(nproc) -fwhole-program"
+export LDFLAGS="$CFLAGS"
+
 if lsmod|grep nvidia_modeset >/dev/null 2>&1;then
 	echo "loading nvidia preferences"
 	export __GL_YIELD="NOTHING"
