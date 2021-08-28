@@ -40,10 +40,11 @@ sudo debootstrap --include="debian-keyring" --exclude="devuan-keyring" --no-chec
 sudo cp -f "$rclocal" "$workdir/etc/rc.local"
 mkdir -p "$workdir/etc/systemd/system"
 sudo cp -f "$rclocalservice" "$workdir/etc/systemd/system/rc-local.service"
-if [ -d "$workdir/quake" ];then
-	sudo rm -rf "$workdir/quake"
+if [ -d "$workdir/root/quake" ];then
+	sudo rm -rf "$workdir/root/quake"
 fi
-sudo cp -fR "$quakedir" "$workdir/quake"
+sudo mkdir -p "$workdir/root"
+sudo cp -fR "$quakedir" "$workdir/root/quake"
 
 sudo chroot "$workdir" bash -e -c '
 
@@ -72,25 +73,28 @@ chromium
 
 `#configure rc.local`
 chmod +x /etc/rc.local
-(systemctl enable rc-local)
-(rc-update add rc.local default)
+(systemctl enable rc-local||true)
+(rc-update add rc.local default||true)
 
 
 `#build ezquake`
 export CFLAGS="-march=nehalem -flto=$(nproc) -fwhole-program"
 export LDFLAGS="$CFLAGS"
-rm -rf /build
-mkdir /build
-git clone '$ezquakegitrepo' /build/ezquake
-cd /build/ezquake
+rm -rf /root/build
+mkdir /root/build
+git clone '$ezquakegitrepo' /root/build/ezquake-source-official
+cd /root/build/ezquake-source-official
 ./build-linux.sh
-eval $(grep --color=never ^PKGS_DEB build-linux.sh)
-cd /tmp
-cp -f /build/ezquake/ezquake-linux-x86_64 /quake/.
-rm -rf /build
+cp -f /root/build/ezquake-source-official/ezquake-linux-x86_64 /root/quake/.
+git clean -qfdx
+
+#remove build
+#cd /tmp
+#rm -rf /root/build
 
 #remove some dev packages
-apt-get -qqy purge build-essential git
+#apt-get -qqy purge build-essential git
+
 apt-get -qqy autopurge
 apt-get -qqy clean 
 '
