@@ -16,7 +16,3 @@
 if hash timedatectl >/dev/null 2>&1;then
   timedatectl set-local-rtc 1
 fi
-
-echo "starting xorg..."
-
-su -l quakeuser -c "startx"&
