@@ -1,0 +1,3 @@
+url "QuakeServers URL" https://www.quakeservers.net/lists/servers/global.txt
+master "QuakeServers.net" 78.47.113.68:27000
+master "fodquake" 5.9.97.180:27000
