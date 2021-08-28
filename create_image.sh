@@ -61,6 +61,7 @@ connman connman-gtk cmst iproute2 \
 procps vim-tiny \
 feh xterm fluxbox menu \
 xdg-utils \
+lxrandr \
 alsa-utils
 
 
@@ -92,6 +93,8 @@ fi
 
 
 `#build ezquake`
+export CFLAGS="-march=nehalem -flto=$(nproc) -fwhole-program"
+export LDFLAGS="$CFLAGS"
 rm -rf /build
 mkdir /build
 git clone '$ezquakegitrepo' /build/ezquake
