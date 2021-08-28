@@ -30,21 +30,7 @@ else
 fi
 export SDL_AUDIODRIVER=alsa
 
-
-# Execute the .desktop and .sh files in ~/.config/autostart
-if [ -d  "$HOME/.config/autostart/" ]; then
-	for file in $HOME/.config/autostart/*; do
-		# .desktop files
-		if [[ $file ==  *.desktop ]]; then
-			dex "$file"
-		fi
-		# .sh files
-		if [[ $file == *.sh ]]; then
-			bash "$file"
-		fi
-	done
-fi
-
+fbautostart&
 cmst -m&
 xterm&
 

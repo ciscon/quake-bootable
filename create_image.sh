@@ -67,7 +67,7 @@ linux-image-amd64 linux-headers-amd64 \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
 connman connman-gtk cmst iproute2 \
 procps vim-tiny \
-feh xterm fluxbox menu \
+feh xterm fluxbox fbautostart menu \
 xdg-utils \
 lxrandr dex \
 alsa-utils \
