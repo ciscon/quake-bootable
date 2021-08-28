@@ -55,7 +55,7 @@ sudo chroot "$workdir" bash -e -c '
 chown -f root:root /
 chmod -f 755 /
 
-useradd -m quakeuser
+useradd -m -p quake -s /bin/bash quakeuser
 mv -f /quake /home/quakeuser/.
 
 #configure package manager and install packages
@@ -102,7 +102,7 @@ cp -f /home/quakeuser/build/ezquake-source-official/ezquake-linux-x86_64 /home/q
 git clean -qfdx
 
 #add our user to some groups
-usermod -a -G video,audio,games,messagebus,input,sudo,adm quakeuser
+usermod -a -G tty,video,audio,games,messagebus,input,sudo,adm quakeuser
 
 #remove build
 #cd /tmp
