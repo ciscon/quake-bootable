@@ -1,8 +1,8 @@
 alias quake="cd $HOME/quake;./ezquake-linux-x86_64"
 alias browser="chromium --no-sandbox"
 alias update-quake="cd $HOME/build/ezquake-source-official && git reset --hard && git clean -qfdx && git pull && make -j$(nproc) && cp ezquake-linux-x86_64 $HOME/quake/."
-alias nvidia-disable="export DEBIAN_FRONTEND=noninteractive;apt -qqy purge '*nvidia*';apt -qqy autopurge"
-alias nvidia-enable="export DEBIAN_FRONTEND=noninteractive;apt -qqy install libnvidia-glvkspirv libnvidia-glvkspirv:i386 nvidia-driver nvidia-smi nvidia-settings nvidia-vulkan-icd:i386 nvidia-driver-libs:i386 libgles-nvidia1 libgles-nvidia2 nvidia-vulkan-icd;apt -qqy -f install"
+alias nvidia-disable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy purge '*nvidia*';sudo apt -qqy autopurge"
+alias nvidia-enable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy install libnvidia-glvkspirv libnvidia-glvkspirv:i386 nvidia-driver nvidia-smi nvidia-settings nvidia-vulkan-icd:i386 nvidia-driver-libs:i386 libgles-nvidia1 libgles-nvidia2 nvidia-vulkan-icd;sudo apt -qqy -f install"
 alias leavemealone="touch $HOME/.leavemealone"
 
 if [ ! -f $HOME/.leavemealone ];then

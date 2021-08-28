@@ -13,6 +13,7 @@ bashrc="$currentdir/resources/bashrc"
 hwclock="$currentdir/resources/hwclock"
 nouveauconf="$currentdir/resources/nouveau.conf"
 compositeconf="$currentdir/resources/01-composite.conf"
+sudoers="$currentdir/resources/sudoers"
 quakedir="quake-base"
 imagename="quake_bootable-$(date +"%Y-%m-%d").img"
 
@@ -47,12 +48,15 @@ if [ -d "$workdir/root/quake" ];then
 	sudo rm -rf "$workdir/root/quake"
 fi
 sudo mkdir -p "$workdir/root"
-sudo cp -fR "$quakedir" "$workdir/root/quake"
+sudo cp -fR "$quakedir" "$workdir/quake"
 
 sudo chroot "$workdir" bash -e -c '
 
 chown -f root:root /
 chmod -f 755 /
+
+useradd -m quakeuser
+mv -f /quake /home/quakeuser/.
 
 #configure package manager and install packages
 export DEBIAN_FRONTEND=noninteractive
@@ -88,14 +92,17 @@ chmod +x /etc/rc.local
 `#build ezquake`
 export CFLAGS="-march=nehalem -flto=$(nproc) -fwhole-program"
 export LDFLAGS="$CFLAGS"
-rm -rf /root/build
-mkdir /root/build
-git clone '$ezquakegitrepo' /root/build/ezquake-source-official
-cd /root/build/ezquake-source-official
+rm -rf /home/quakeuser/build
+mkdir /home/quakeuser/build
+git clone '$ezquakegitrepo' /home/quakeuser/build/ezquake-source-official
+cd /home/quakeuser/build/ezquake-source-official
 ./build-linux.sh
 strip ezquake-linux-x86_64
-cp -f /root/build/ezquake-source-official/ezquake-linux-x86_64 /root/quake/.
+cp -f /home/quakeuser/build/ezquake-source-official/ezquake-linux-x86_64 /home/quakeuser/quake/.
 git clean -qfdx
+
+#add our user to some groups
+usermod -a -G video,audio,games,messagebus,input,sudo,adm quakeuser
 
 #remove build
 #cd /tmp
@@ -117,18 +124,21 @@ fi
 echo "configured chroot"
 
 sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
-sudo cp -f "$xinitrc" "$workdir/root/.xinitrc"
-sudo chmod -f +x "$workdir/root/.xinitrc"
-sudo mkdir -p "$workdir/root/.local/share/applications"
-sudo cp -f "$quakedesktop" "$workdir/root/.local/share/applications/ezQuake.desktop"
-sudo mkdir -p "$workdir/root/Desktop"
-sudo cp -f "$quakedesktop" "$workdir/root/Desktop/ezQuake.desktop"
-sudo xdg-mime default ezQuake.desktop x-scheme-handler/qw
+sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
+sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc"
+sudo mkdir -p "$workdir/home/quakeuser/.local/share/applications"
+sudo cp -f "$quakedesktop" "$workdir/home/quakeuser/.local/share/applications/ezQuake.desktop"
+sudo chroot --userspec quakeuser:quakegroup "$workdir" xdg-mime default ezQuake.desktop x-scheme-handler/qw
 
 sudo mkdir -p "$workdir/etc/X11/xorg.conf.d"
 sudo cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
 
-sudo cp -f "$bashrc" "$workdir/root/.bashrc"
+sudo cp -f "$sudoers" "$workdir/etc/sudoers"
+
+sudo cp -f "$bashrc" "$workdir/home/quakeuser/.bashrc"
+
+#fix ownership for quakeuser
+sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
 
 echo "added xinitrc"
 
