@@ -6,9 +6,11 @@ workdir="$currentdir/workdir"
 release="unstable"
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
 rclocal="$currentdir/resources/rc.local"
+rclocalservice="$currentdir/resources/rc-local.service"
 xinitrc="$currentdir/resources/xinitrc"
 quakedesktop="$currentdir/resources/quake.desktop"
 bashrc="$currentdir/resources/bashrc"
+bashrc="$currentdir/resources/hwclock"
 compositeconf="$currentdir/resources/01-composite.conf"
 quakedir="quake-base"
 imagename="quake_bootable-$(date +"%Y-%m-%d").img"
@@ -36,6 +38,8 @@ mkdir -p "$workdir"
 sudo debootstrap --include="debian-keyring" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/ && \
 
 sudo cp -f "$rclocal" "$workdir/etc/rc.local"
+mkdir -p "$workdir/etc/systemd/system"
+sudo cp -f "$rclocalservice" "$workdir/etc/systemd/system/rc-local.service"
 if [ -d "$workdir/quake" ];then
 	sudo rm -rf "$workdir/quake"
 fi
@@ -46,7 +50,7 @@ sudo chroot "$workdir" bash -e -c '
 chown -f root:root /
 chmod -f 755 /
 
-`#configure package manager`
+`#configure package manager and install packages`
 export DEBIAN_FRONTEND=noninteractive
 mkdir -p /etc/apt/apt.conf.d
 echo "APT::Install-Recommends \"0\";APT::AutoRemove::RecommendsImportant \"false\";" >> /etc/apt/apt.conf.d/01lean
@@ -61,36 +65,15 @@ connman connman-gtk cmst iproute2 \
 procps vim-tiny \
 feh xterm fluxbox menu \
 xdg-utils \
-lxrandr \
+lxrandr dex \
 alsa-utils \
 chromium
 
 
 `#configure rc.local`
-if [ -d /etc/systemd/system ];then
-
-echo "[Unit]
-Description=/etc/rc.local
-ConditionPathExists=/etc/rc.local
- 
-[Service]
-Type=forking
-ExecStart=/etc/rc.local start
-TimeoutSec=0
-StandardOutput=tty
-RemainAfterExit=yes
-SysVStartPriority=99
- 
-[Install]
-WantedBy=multi-user.target" > /etc/systemd/system/rc-local.service
-(systemctl enable rc-local)
-fi
-
 chmod +x /etc/rc.local
-
-if hash rc-update >/dev/null 2>&1;then
+(systemctl enable rc-local)
 (rc-update add rc.local default)
-fi
 
 
 `#build ezquake`
@@ -117,6 +100,7 @@ if [ $? -ne 0 ];then
 fi
 echo "configured chroot"
 
+sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
 sudo cp -f "$xinitrc" "$workdir/root/.xinitrc"
 sudo chmod -f +x "$workdir/root/.xinitrc"
 sudo mkdir -p "$workdir/root/.local/share/applications"
