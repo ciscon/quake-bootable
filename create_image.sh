@@ -3,7 +3,7 @@
 clean=1
 currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 workdir="$currentdir/workdir"
-release="testing"
+release="unstable"
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
 rclocal="$currentdir/resources/rc.local"
 xinitrc="$currentdir/resources/xinitrc"
@@ -55,14 +55,15 @@ apt-get -qqy update
 (mount -t devpts devpts /dev/pts||true)
 (mount proc /proc -t proc||true)
 apt-get -qqy install file git sudo build-essential nvidia-driver nvidia-settings xorg terminfo \
-grub2 linux-image-amd64 linux-headers-amd64 \
+linux-image-amd64 linux-headers-amd64 \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
 connman connman-gtk cmst iproute2 \
 procps vim-tiny \
 feh xterm fluxbox menu \
 xdg-utils \
 lxrandr \
-alsa-utils
+alsa-utils \
+chromium
 
 
 `#configure rc.local`

@@ -1,3 +1,5 @@
 alias quake="cd /quake;./ezquake-linux-x86_64"
+alias browser="chromium"
 echo "to run quake: quake"
+echo "to run a web browser: browser"
 echo "to configure displays: lxrandr"
