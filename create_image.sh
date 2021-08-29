@@ -22,6 +22,7 @@ hwclock="$currentdir/resources/hwclock"
 nouveauconf="$currentdir/resources/nouveau.conf"
 compositeconf="$currentdir/resources/01-composite.conf"
 sudoers="$currentdir/resources/sudoers"
+background="$currentdir/resources/background.png"
 
 PATH=$PATH:/sbin:/usr/sbin
 required="debootstrap sudo chroot debootstick truncate"
@@ -161,6 +162,7 @@ sudo cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
 sudo cp -f "$sudoers" "$workdir/etc/sudoers"
 
 sudo cp -f "$bashrc" "$workdir/home/quakeuser/.bashrc"
+sudo cp -f "$background" "$workdir/home/quakeuser/background.png"
 
 #fix ownership for quakeuser
 sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser

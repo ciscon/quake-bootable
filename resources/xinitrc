@@ -12,6 +12,11 @@ export LDFLAGS="$CFLAGS"
 #start tint first
 tint2&
 
+#set background
+if [ -f $HOME/background.png ];then
+	feh --bg-max $HOME/background.png
+fi
+
 #make sure ezquake is registered
 xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
 
