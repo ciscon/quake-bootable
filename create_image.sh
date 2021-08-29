@@ -23,7 +23,7 @@ nouveauconf="$currentdir/resources/nouveau.conf"
 compositeconf="$currentdir/resources/01-composite.conf"
 sudoers="$currentdir/resources/sudoers"
 
-
+PATH=$PATH:/sbin:/usr/sbin
 required="debootstrap sudo chroot debootstick truncate"
 for require in $required;do
 	if ! hash $require >/dev/null 2>&1;then
