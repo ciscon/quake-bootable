@@ -48,6 +48,6 @@ export SDL_AUDIODRIVER=alsa
 
 fbautostart&
 xterm&
-cmst -m -w 3&
+#cmst -m -w 3&
 
 exec openbox-session

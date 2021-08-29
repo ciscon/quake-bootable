@@ -12,6 +12,7 @@ release="testing"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
 
+connmanfix="$currentdir/resources/connman-fix.tar"
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
 nodm="$currentdir/resources/nodm"
@@ -85,7 +86,7 @@ apt-get -qqy update
 apt-get -qqy install gnupg ca-certificates wget file git sudo build-essential nvidia-driver nvidia-settings xorg terminfo \
 linux-image-amd64 linux-headers-amd64 \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
-connman cmst iproute2 \
+connman connman-gtk iproute2 \
 procps vim-tiny \
 feh xterm obconf openbox tint2 fbautostart menu \
 nodm \
@@ -163,6 +164,9 @@ sudo cp -f "$sudoers" "$workdir/etc/sudoers"
 
 sudo cp -f "$bashrc" "$workdir/home/quakeuser/.bashrc"
 sudo cp -f "$background" "$workdir/home/quakeuser/background.png"
+
+#fix connman systray support
+sudo tar xpf "$connmanfix" -C"$workdir/"
 
 #fix ownership for quakeuser
 sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
