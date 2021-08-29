@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#stop nodm if we're in the middle of a shutdown
+if [[ "$(systemctl is-system-running || true)" == "stopping" ]]; then
+	sudo /etc/init.d/nodm stop
+fi
+
 #if we build again inside bootable environment, use current hardware for optimizations
 export CFLAGS="-march=native -flto=$(nproc) -fwhole-program"
 export LDFLAGS="$CFLAGS"

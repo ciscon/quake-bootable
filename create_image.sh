@@ -17,6 +17,7 @@ compositeconf="$currentdir/resources/01-composite.conf"
 sudoers="$currentdir/resources/sudoers"
 quakedir="quake-base"
 imagename="quake_bootable-$(date +"%Y-%m-%d").img"
+mediahostname="quakeboot"
 
 
 required="debootstrap sudo chroot debootstick truncate"
@@ -99,7 +100,7 @@ export CFLAGS="-march=nehalem -flto=$(nproc) -fwhole-program"
 export LDFLAGS="$CFLAGS"
 rm -rf /home/quakeuser/build
 mkdir /home/quakeuser/build
-git clone '$ezquakegitrepo' /home/quakeuser/build/ezquake-source-official
+git clone --depth=1 '$ezquakegitrepo' /home/quakeuser/build/ezquake-source-official
 cd /home/quakeuser/build/ezquake-source-official
 ./build-linux.sh
 strip ezquake-linux-x86_64
@@ -119,8 +120,11 @@ usermod -a -G tty,video,audio,games,messagebus,input,sudo,adm quakeuser
 apt-get -qqy autopurge
 apt-get -qqy clean 
 
-`#configure /tmp as tmpfs`
+#configure /tmp as tmpfs
 sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
+
+#configure hostname
+echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
 '
 if [ $? -ne 0 ];then
 	echo "something failed, bailing out."
@@ -150,6 +154,6 @@ echo "added xinitrc"
 sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
 sudo umount -lf "$workdir/proc" >/dev/null 2>&1
 
-sudo debootstick --config-root-password-none --config-hostname quakeboot "$workdir" "$imagename"
+sudo debootstick --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename"
 
 echo "complete."
