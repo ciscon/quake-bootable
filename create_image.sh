@@ -3,8 +3,15 @@
 clean=1
 currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 workdir="$currentdir/workdir"
+quakedir="quake-base"
+imagename="quake_bootable-$(date +"%Y-%m-%d").img"
+mediahostname="quakeboot"
+
+distro="devuan" #devuan or debian
 release="testing"
+
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
+
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
 nodm="$currentdir/resources/nodm"
@@ -15,9 +22,6 @@ hwclock="$currentdir/resources/hwclock"
 nouveauconf="$currentdir/resources/nouveau.conf"
 compositeconf="$currentdir/resources/01-composite.conf"
 sudoers="$currentdir/resources/sudoers"
-quakedir="quake-base"
-imagename="quake_bootable-$(date +"%Y-%m-%d").img"
-mediahostname="quakeboot"
 
 
 required="debootstrap sudo chroot debootstick truncate"
@@ -39,7 +43,11 @@ if [ $clean -eq 1 ] && [ ! -z "$workdir" ];then
 fi
 mkdir -p "$workdir"
 
-sudo debootstrap --include="debian-keyring" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
+if [ "$distro" = "devuan" ];then
+	sudo debootstrap --include="devuan-keyring" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://deb.devuan.org/merged/
+else
+	sudo debootstrap --include="debian-keyring" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
+fi
 
 sudo mkdir -p "$workdir/etc/modprobe.d"
 sudo cp -f "$nouveauconf" "$workdir/etc/modprobe.d/nouveau.conf"
@@ -54,6 +62,10 @@ sudo cp -fR "$quakedir" "$workdir/quake"
 
 sudo chroot "$workdir" bash -e -c '
 
+#configure hostname
+hostname localhost
+echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
+
 chown -f root:root /
 chmod -f 755 /
 
@@ -63,12 +75,12 @@ mv -f /quake /home/quakeuser/.
 #configure package manager and install packages
 export DEBIAN_FRONTEND=noninteractive
 mkdir -p /etc/apt/apt.conf.d
-echo "APT::Install-Recommends \"0\";APT::AutoRemove::RecommendsImportant \"false\";" >> /etc/apt/apt.conf.d/01lean
+echo "APT::Install-Suggests \"0\";APT::Install-Recommends \"0\";APT::AutoRemove::RecommendsImportant \"false\";" >> /etc/apt/apt.conf.d/01lean
 sed -i "s/main$/main contrib non-free/g" /etc/apt/sources.list
 apt-get -qqy update
 (mount -t devpts devpts /dev/pts||true)
 (mount proc /proc -t proc||true)
-apt-get -qqy install gnupg wget file git sudo build-essential nvidia-driver nvidia-settings xorg terminfo \
+apt-get -qqy install gnupg ca-certificates wget file git sudo build-essential nvidia-driver nvidia-settings xorg terminfo \
 linux-image-amd64 linux-headers-amd64 \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
 connman connman-gtk cmst iproute2 \
@@ -123,8 +135,6 @@ apt-get -qqy clean
 #configure /tmp as tmpfs
 sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
 
-#configure hostname
-echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
 '
 if [ $? -ne 0 ];then
 	echo "something failed, bailing out."
