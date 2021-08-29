@@ -9,6 +9,9 @@ fi
 export CFLAGS="-march=native -flto=$(nproc) -fwhole-program"
 export LDFLAGS="$CFLAGS"
 
+#start tint first
+tint2&
+
 #make sure ezquake is registered
 xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
 
@@ -38,9 +41,8 @@ else
 fi
 export SDL_AUDIODRIVER=alsa
 
-tint2&
 fbautostart&
 xterm&
-cmst -w 5 -m&
+cmst -w 3&
 
 exec openbox-session
