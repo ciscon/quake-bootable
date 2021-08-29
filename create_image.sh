@@ -12,7 +12,7 @@ release="testing"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
 
-connmanfix="$currentdir/resources/connman-fix.tar"
+connmanfix="$currentdir/resources/connman-tray.deb"
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
 nodm="$currentdir/resources/nodm"
@@ -62,6 +62,7 @@ if [ -d "$workdir/root/quake" ];then
 fi
 sudo mkdir -p "$workdir/root"
 sudo cp -fR "$quakedir" "$workdir/quake"
+sudo cp -f "$connmanfix" "$workdir/connman.deb"
 
 sudo chroot "$workdir" bash -e -c '
 
@@ -142,6 +143,10 @@ apt-get -qqy clean
 #configure /tmp as tmpfs
 sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
 
+#fix connmand
+dpkg -i /connman.deb
+rm -f /connman.deb
+
 rm -rf /var/log/*
 '
 if [ $? -ne 0 ];then
@@ -164,9 +169,6 @@ sudo cp -f "$sudoers" "$workdir/etc/sudoers"
 
 sudo cp -f "$bashrc" "$workdir/home/quakeuser/.bashrc"
 sudo cp -f "$background" "$workdir/home/quakeuser/background.png"
-
-#fix connman systray support
-sudo tar xpf "$connmanfix" -C"$workdir/"
 
 #fix ownership for quakeuser
 sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
