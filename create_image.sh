@@ -81,7 +81,8 @@ sed -i "s/main$/main contrib non-free/g" /etc/apt/sources.list
 apt-get -qqy update
 (mount -t devpts devpts /dev/pts||true)
 (mount proc /proc -t proc||true)
-apt-get -qqy install gnupg ca-certificates wget file git sudo build-essential xorg terminfo \
+apt-get -qqy install gnupg ca-certificates wget file git sudo build-essential \
+xserver-xorg-core xserver-xorg-input-all xinit libgl1-mesa-dri terminfo \
 linux-image-amd64 \
 intel-microcode amd64-microcode \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
@@ -152,6 +153,9 @@ apt-get -qqy install nvidia-driver nvidia-settings linux-headers-amd64
 
 #remove package cache
 apt-get -qqy clean 
+
+#clean up lists
+rm -rf /var/lib/apt/lists/*
 
 #configure /tmp as tmpfs
 sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
