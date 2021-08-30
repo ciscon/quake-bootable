@@ -81,7 +81,7 @@ sed -i "s/main$/main contrib non-free/g" /etc/apt/sources.list
 apt-get -qqy update
 (mount -t devpts devpts /dev/pts||true)
 (mount proc /proc -t proc||true)
-apt-get -qqy install gnupg ca-certificates wget file git sudo build-essential nvidia-driver nvidia-settings xorg terminfo \
+apt-get -qqy install gnupg ca-certificates wget file git sudo build-essential xorg terminfo \
 linux-image-amd64 linux-headers-amd64 \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
 connman connman-gtk iproute2 \
@@ -110,6 +110,9 @@ chmod +x /etc/rc.local
 (systemctl enable nodm||true)
 (update-rc.d nodm enable||true)
 
+#add our user to some groups
+usermod -a -G tty,video,audio,games,messagebus,input,sudo,adm quakeuser
+
 #build ezquake
 export CFLAGS="-march=nehalem -flto=$(nproc) -fwhole-program"
 export LDFLAGS="$CFLAGS"
@@ -124,17 +127,22 @@ strip ezquake-linux-x86_64
 cp -f /home/quakeuser/build/ezquake-source-official/ezquake-linux-x86_64 /home/quakeuser/quake/.
 git clean -qfdx
 
-#add our user to some groups
-usermod -a -G tty,video,audio,games,messagebus,input,sudo,adm quakeuser
+#clean up dev packages
+apt-get -qqy purge "*-dev"
 
-#remove build
-#cd /tmp
-#rm -rf /root/build
+#install nvidia driver
+apt-get -qqy install nvidia-driver nvidia-settings
 
-#remove some dev packages
-#apt-get -qqy purge build-essential git
-
+#clean up packages
 apt-get -qqy autopurge
+
+#reinstall ezquake deps
+ezquakedeps=$(apt-get --simulate install $(echo "$PKGS_DEB"|sed "s/build-essential//g") 2>/dev/null|grep --color=never "^Inst"|awk "{print \$2}"|grep --color=never -v "\-dev$"|tr "\n" " ")
+if [ ! -z "$ezquakedeps" ];then
+  apt-get -qqy install $ezquakedeps
+fi
+
+#remove package cache
 apt-get -qqy clean 
 
 #configure /tmp as tmpfs
