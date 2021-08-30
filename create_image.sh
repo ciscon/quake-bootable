@@ -12,7 +12,6 @@ release="testing"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
 
-connmanfix="$currentdir/resources/connman-tray.deb"
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
 nodm="$currentdir/resources/nodm"
@@ -62,12 +61,10 @@ if [ -d "$workdir/root/quake" ];then
 fi
 sudo mkdir -p "$workdir/root"
 sudo cp -fR "$quakedir" "$workdir/quake"
-sudo cp -f "$connmanfix" "$workdir/connman.deb"
 
 sudo chroot "$workdir" bash -e -c '
 
 #configure hostname
-hostname localhost
 echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
 
 chown -f root:root /
@@ -94,7 +91,7 @@ nodm \
 xdg-utils \
 lxrandr dex \
 alsa-utils \
-chromium 
+chromium
 
 #log2ram on debian, devuan does not have systemd so the installation will fail
 if [ "$distro" = "debian" ];then
@@ -142,10 +139,6 @@ apt-get -qqy clean
 
 #configure /tmp as tmpfs
 sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
-
-#fix connmand
-dpkg -i /connman.deb
-rm -f /connman.deb
 
 rm -rf /var/log/*
 '
