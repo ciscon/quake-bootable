@@ -82,7 +82,7 @@ apt-get -qqy update
 (mount -t devpts devpts /dev/pts||true)
 (mount proc /proc -t proc||true)
 apt-get -qqy install gnupg ca-certificates wget file git sudo build-essential xorg terminfo \
-linux-image-amd64 linux-headers-amd64 \
+linux-image-amd64 \
 intel-microcode amd64-microcode \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
 connman connman-gtk iproute2 \
@@ -138,9 +138,6 @@ git clean -qfdx
 #clean up dev packages
 apt-get -qqy purge "*-dev"
 
-#install nvidia driver
-apt-get -qqy install nvidia-driver nvidia-settings
-
 #clean up packages
 apt-get -qqy autopurge
 
@@ -150,6 +147,9 @@ if [ ! -z "$ezquakedeps" ];then
   apt-get -qqy install $ezquakedeps
 fi
 
+#install nvidia driver
+apt-get -qqy install nvidia-driver nvidia-settings linux-headers-amd64
+
 #remove package cache
 apt-get -qqy clean 
 
@@ -158,7 +158,7 @@ sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
 
 #configure grub
 sed -i "s/GRUB_TIMEOUT.*/GRUB_TIMEOUT=1/g" /etc/default/grub
-sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"mitigations=off tsc=reliable\"/g" /etc/default/grub
+sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"mitigations=off tsc=reliable nosplash\"/g" /etc/default/grub
 
 rm -rf /var/log/*
 '
@@ -192,6 +192,6 @@ echo "added xinitrc"
 sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
 sudo umount -lf "$workdir/proc" >/dev/null 2>&1
 
-sudo debootstick --config-kernel-bootargs "+mitigations=off +tsc=reliable -quiet" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename"
+sudo debootstick --config-kernel-bootargs "+mitigations=off +tsc=reliable +quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename"
 
 echo "complete."
