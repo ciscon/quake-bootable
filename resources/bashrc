@@ -24,6 +24,3 @@ if [ ! -f $HOME/.leavemealone ];then
   echo "to disable these messages: leavemealone"
   echo ""
 fi
-
-#vim.tiny providing vim
-alias vim=vi

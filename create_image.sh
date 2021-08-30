@@ -113,6 +113,12 @@ chmod +x /etc/rc.local
 #add our user to some groups
 usermod -a -G tty,video,audio,games,messagebus,input,sudo,adm quakeuser
 
+#configure evte path for openbox running terminal applications
+update-alternatives --install /usr/bin/evte evte /usr/bin/xterm 0
+
+#configure vim symlink for vim.tiny
+update-alternatives --install /usr/bin/vim vim /usr/bin/vi 0
+
 #build ezquake
 export CFLAGS="-march=nehalem -flto=$(nproc) -fwhole-program"
 export LDFLAGS="$CFLAGS"
@@ -162,6 +168,7 @@ sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
 sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc"
 sudo mkdir -p "$workdir/home/quakeuser/.local/share/applications"
 sudo cp -f "$quakedesktop" "$workdir/home/quakeuser/.local/share/applications/ezQuake.desktop"
+sudo ln -sf "/home/quakeuser/.local/share/applications/ezQuake.desktop" "$workdir/usr/share/applications/ezQuake.desktop"
 
 sudo mkdir -p "$workdir/etc/X11/xorg.conf.d"
 sudo cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
