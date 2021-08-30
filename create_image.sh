@@ -91,7 +91,8 @@ nodm \
 xdg-utils \
 lxrandr dex \
 alsa-utils \
-chromium
+chromium \
+grub2
 
 #log2ram on debian, devuan does not have systemd so the installation will fail
 if [ "$distro" = "debian" ];then
@@ -153,6 +154,9 @@ apt-get -qqy clean
 
 #configure /tmp as tmpfs
 sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
+
+#configure grub
+sed -i "s/GRUB_TIMEOUT.*/GRUB_TIMEOUT=1/g" /etc/default/grub
 
 rm -rf /var/log/*
 '
