@@ -89,6 +89,7 @@ intel-microcode amd64-microcode \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
 connman connman-gtk iproute2 \
 procps vim-tiny \
+unzip \
 feh xterm obconf openbox tint2 fbautostart menu \
 nodm \
 xdg-utils \
@@ -149,6 +150,13 @@ if [ ! -z "$ezquakedeps" ];then
   apt-get -qqy install $ezquakedeps
 fi
 
+#install afterquake
+mkdir -p /home/quakeuser/quake-afterquake
+wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip
+unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
+rm /tmp/aq.zip
+chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
+
 #install nvidia driver
 apt-get -qqy install nvidia-driver nvidia-settings linux-headers-amd64
 
@@ -165,6 +173,7 @@ sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
 sed -i "s/GRUB_TIMEOUT.*/GRUB_TIMEOUT=1/g" /etc/default/grub
 sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"mitigations=off tsc=reliable nosplash\"/g" /etc/default/grub
 
+rm -rf /tmp/*
 rm -rf /var/log/*
 '
 if [ $? -ne 0 ];then

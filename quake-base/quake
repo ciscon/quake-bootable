@@ -31,6 +31,6 @@ export SDL_AUDIODRIVER=alsa
 olddir=$(pwd)
 cd "$currentdir"
 
-nice -n -20 ./ezquake-linux-x86_64 $*
+nice -n -5 ./ezquake-linux-x86_64 $*
 
 cd "$olddir"
