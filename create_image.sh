@@ -22,6 +22,7 @@ hwclock="$currentdir/resources/hwclock"
 nouveauconf="$currentdir/resources/nouveau.conf"
 compositeconf="$currentdir/resources/01-composite.conf"
 sudoers="$currentdir/resources/sudoers"
+limitsconf="$currentdir/resources/limits.conf"
 background="$currentdir/resources/background.png"
 
 PATH=$PATH:/sbin:/usr/sbin
@@ -184,6 +185,8 @@ sudo mkdir -p "$workdir/etc/X11/xorg.conf.d"
 sudo cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
 
 sudo cp -f "$sudoers" "$workdir/etc/sudoers"
+
+sudo cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
 
 sudo cp -f "$bashrc" "$workdir/home/quakeuser/.bashrc"
 sudo cp -f "$background" "$workdir/home/quakeuser/background.png"

@@ -1,4 +1,4 @@
-alias quake="cd $HOME/quake;./ezquake-linux-x86_64"
+alias quake="cd $HOME/quake;./quake"
 alias quakepreset="cd $HOME/quake;./choose-qw.sh"
 alias browser="chromium"
 alias update-quake="cd $HOME/build/ezquake-source-official && git reset --hard && git clean -qfdx && git pull && ./build-linux.sh && cp ezquake-linux-x86_64 $HOME/quake/. && echo 'copied, update complete.'"
