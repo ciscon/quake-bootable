@@ -1,20 +1,15 @@
 #!/bin/bash
 
-#for now do not remove packages and just allow glx fallbacks to work
-
-#echo "checking graphics configuration..."
-#nvidiapackage=$(update-alternatives --query glx|grep -i best|grep -i nvidia -c)
-#lsmod|grep nvidia_drm >/dev/null 2>&1
-#if [ $? -ne 0 ] && [ $nvidiapackage -ne 0 ];then
-#	echo "nvidia gpu not found, setting mesa glx..."
-#	update-alternatives --set glx /usr/lib/mesa-diverted
-#   echo "reconfigured glx."
-#   sync
-#fi
-
-echo "booting..."
+if ! grep noatime /mnt/temp/etc/fstab >/dev/null 2>&1;then
+  echo "fixing fstab..."
+  sed -i 's/\(.*\)ext4[[:space:]]\+errors=remount-ro[[:space:]]\+\(.*\)/\1ext4 noatime,nodiratime,errors=remount-ro \2/g' /etc/fstab
+  sync
+  mount -o remount --all -lf
+fi
 
 #set local time for windows users
 if hash timedatectl >/dev/null 2>&1;then
   timedatectl set-local-rtc 1
 fi
+
+echo "booting..."
