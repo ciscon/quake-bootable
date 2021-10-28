@@ -26,7 +26,7 @@ limitsconf="$currentdir/resources/limits.conf"
 background="$currentdir/resources/background.png"
 
 PATH=$PATH:/sbin:/usr/sbin
-required="debootstrap sudo chroot debootstick truncate"
+required="debootstrap sudo chroot debootstick truncate pigz"
 for require in $required;do
 	if ! hash $require >/dev/null 2>&1;then
 		echo "required program $require not found, bailing out."
@@ -208,6 +208,9 @@ echo "added xinitrc"
 sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
 sudo umount -lf "$workdir/proc" >/dev/null 2>&1
 
-sudo debootstick --config-kernel-bootargs "+mitigations=off +tsc=reliable +quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename"
+sudo debootstick --config-kernel-bootargs "+mitigations=off +tsc=reliable +quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" && \
+	echo "compressing..." && \
+	pigz --zip -9 "$imagename" -c > "${imagename}.zip" && \
+	ln -sf "${imagename}.zip" quake_bootable-latest.zip
 
 echo "complete."
