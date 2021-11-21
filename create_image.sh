@@ -8,7 +8,7 @@ imagename="quake_bootable-$(date +"%Y-%m-%d").img"
 mediahostname="quakeboot"
 
 distro="debian" #devuan or debian
-release="testing"
+release="unstable"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
 
