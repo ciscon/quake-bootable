@@ -208,7 +208,7 @@ echo "added xinitrc"
 sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
 sudo umount -lf "$workdir/proc" >/dev/null 2>&1
 
-sudo debootstick --config-kernel-bootargs "+mitigations=off +tsc=reliable +quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" && \
+sudo debootstick --config-kernel-bootargs "+mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" && \
 	echo "compressing..." && \
 	pigz --zip -9 "$imagename" -c > "${imagename}.zip" && \
 	ln -sf "${imagename}.zip" quake_bootable-latest.zip
