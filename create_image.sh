@@ -77,7 +77,9 @@ mv -f /quake /home/quakeuser/.
 #configure package manager and install packages
 export DEBIAN_FRONTEND=noninteractive
 mkdir -p /etc/apt/apt.conf.d
-echo "APT::Install-Suggests \"0\";APT::Install-Recommends \"0\";APT::AutoRemove::RecommendsImportant \"false\";" >> /etc/apt/apt.conf.d/01lean
+echo "APT::Install-Suggests \"0\";APT::Install-Recommends \"false\";APT::AutoRemove::RecommendsImportant \"false\";" > /etc/apt/apt.conf.d/01lean
+echo "path-exclude=/usr/share/doc/*" > /etc/dpkg/dpkg.cfg.d/01_nodoc
+rm -rf /usr/share/doc
 sed -i "s/main$/main contrib non-free/g" /etc/apt/sources.list
 apt-get -qqy update
 (mount -t devpts devpts /dev/pts||true)
