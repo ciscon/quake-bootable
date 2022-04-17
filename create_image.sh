@@ -91,7 +91,7 @@ intel-microcode amd64-microcode \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
 connman connman-gtk iproute2 \
 procps vim-tiny \
-unzip \
+unzip zstd \
 feh xterm obconf openbox tint2 fbautostart menu \
 nodm \
 xdg-utils \
