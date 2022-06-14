@@ -14,6 +14,7 @@ nice tint2&
 
 #connman
 (
+	pkill -f connman-gtk >/dev/null 2>&1
 	while :; do
 	nice connman-gtk --tray
 	sleep 1

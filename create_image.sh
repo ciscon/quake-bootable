@@ -90,7 +90,7 @@ linux-image-amd64 \
 intel-microcode amd64-microcode \
 firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
 connman connman-gtk iproute2 \
-procps vim-tiny \
+procps vim \
 unzip zstd \
 feh xterm obconf openbox tint2 fbautostart menu \
 nodm \
@@ -123,7 +123,7 @@ usermod -a -G tty,video,audio,games,messagebus,input,sudo,adm quakeuser
 #configure evte path for openbox running terminal applications
 update-alternatives --install /usr/bin/evte evte /usr/bin/xterm 0
 
-#configure vim symlink for vim.tiny
+#configure vim symlink for vim
 update-alternatives --install /usr/bin/vim vim /usr/bin/vi 0
 
 #build ezquake
@@ -178,9 +178,8 @@ sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"mitigations=
 rm -rf /tmp/*
 rm -rf /var/log/*
 
-#remove temporary resolv.conf and symlink it
+#remove temporary resolv.conf
 rm -f /etc/resolv.conf
-ln -sf /var/run/connman/resolv.conf /etc/resolv.conf
 '
 if [ $? -ne 0 ];then
 	echo "something failed, bailing out."

@@ -6,6 +6,7 @@ alias update-quake="cd $HOME/build/ezquake-source-official && git reset --hard &
 alias nvidia-disable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy purge '*nvidia*';sudo apt -qqy autopurge"
 alias nvidia-enable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy install libnvidia-glvkspirv libnvidia-glvkspirv:i386 nvidia-driver nvidia-smi nvidia-settings nvidia-vulkan-icd:i386 nvidia-driver-libs:i386 libgles-nvidia1 libgles-nvidia2 nvidia-vulkan-icd;sudo apt -qqy -f install"
 alias update-system="sudo apt -qqy update && sudo apt -qqy dist-upgrade"
+alias shutdown-system="sudo shutdown -h now"
 alias leavemealone="touch $HOME/.leavemealone"
 
 if [ ! -f $HOME/.leavemealone ];then
@@ -22,6 +23,7 @@ if [ ! -f $HOME/.leavemealone ];then
   echo "disable nvidia driver (use opensource driver nouveau): nvidia-disable"
   echo "enable nvidia driver: nvidia-enable"
   echo "update system: update-system"
+  echo "shutdown system: shutdown-system"
   echo ""
   echo "to disable these messages: leavemealone"
   echo ""

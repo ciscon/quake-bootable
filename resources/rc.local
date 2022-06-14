@@ -12,4 +12,7 @@ if hash timedatectl >/dev/null 2>&1;then
   timedatectl set-local-rtc 1
 fi
 
+#fix resolv.conf to point to connman's
+/etc/init.d/connman >/dev/null 2>&1
+
 echo "booting..."
