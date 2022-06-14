@@ -10,7 +10,15 @@ export CFLAGS="-march=native -flto=$(nproc) -fwhole-program"
 export LDFLAGS="$CFLAGS"
 
 #start tint first
-tint2&
+nice tint2&
+
+#connman
+(
+	while :; do
+	nice connman-gtk --tray
+	sleep 1
+	done
+)&
 
 #set background
 if [ -f $HOME/background.png ];then

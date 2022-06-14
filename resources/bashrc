@@ -18,7 +18,7 @@ if [ ! -f $HOME/.leavemealone ];then
   echo "other:"
   echo "run a web browser: browser"
   echo "configure display(s): lxrandr"
-  echo "configure networking: connman-gtk"
+  echo "configure networking: connman-gtk (systray icon)"
   echo "disable nvidia driver (use opensource driver nouveau): nvidia-disable"
   echo "enable nvidia driver: nvidia-enable"
   echo "update system: update-system"

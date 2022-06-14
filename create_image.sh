@@ -177,6 +177,10 @@ sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"mitigations=
 
 rm -rf /tmp/*
 rm -rf /var/log/*
+
+#remove temporary resolv.conf and symlink it
+rm -f /etc/resolv.conf
+ln -sf /var/run/connman/resolv.conf /etc/resolv.conf
 '
 if [ $? -ne 0 ];then
 	echo "something failed, bailing out."
