@@ -127,7 +127,7 @@ update-alternatives --install /usr/bin/evte evte /usr/bin/xterm 0
 update-alternatives --install /usr/bin/vim vim /usr/bin/vi 0
 
 #build ezquake
-export CFLAGS="-march=nehalem -flto=$(nproc) -fwhole-program"
+export CFLAGS="-march=nehalem -flto=$(nproc) -fwhole-program -O3"
 export LDFLAGS="$CFLAGS"
 rm -rf /home/quakeuser/build
 mkdir /home/quakeuser/build
@@ -213,7 +213,7 @@ echo "added xinitrc"
 sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
 sudo umount -lf "$workdir/proc" >/dev/null 2>&1
 
-sudo debootstick --config-kernel-bootargs "+mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" && \
+sudo debootstick --config-kernel-bootargs "+pcie_aspm=off +intel_idle.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" && \
 	echo "compressing..." && \
 	pigz --zip -9 "$imagename" -c > "${imagename}.zip" && \
 	ln -sf "${imagename}.zip" quake_bootable-latest.zip
