@@ -1,4 +1,6 @@
 *.img
 *.zip
 *.img.*
+lvm/backup
+lvm/archive
 workdir

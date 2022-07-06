@@ -1,6 +1,6 @@
 #!/bin/bash
 
-onlybuild=1
+onlybuild=0
 clean=1
 currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 workdir="$currentdir/workdir"
@@ -102,6 +102,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	lxrandr dex \
 	alsa-utils \
 	chromium \
+	lvm2 \
 	grub2
 	
 	#log2ram on debian, devuan does not have systemd so the installation will fail
@@ -111,6 +112,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		apt-get -qqy update
 		apt-get -qqy install log2ram
 	fi
+
+	#install nvidia driver
+	apt-get -qqy install nvidia-driver nvidia-settings linux-headers-amd64
 	
 	#configure rc.local
 	chmod +x /etc/rc.local
@@ -163,9 +167,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	rm /tmp/aq.zip
 	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
 	
-	#install nvidia driver
-	apt-get -qqy install nvidia-driver nvidia-settings linux-headers-amd64
-	
 	#remove package cache
 	apt-get -qqy clean 
 	
@@ -189,8 +190,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		echo "something failed, bailing out."
 		exit 1
 	fi
-	echo "configured chroot"
-	
+
+	echo "finished commands within chroot"
+
 	sudo cp -f "$nodm" "$workdir/etc/default/nodm"
 	sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
 	sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
@@ -212,19 +214,27 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#fix ownership for quakeuser
 	sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
 	
-	echo "added xinitrc"
+	sudo mkdir -p "$workdir/etc/lvm"
+	sudo cp -f "$lvmdir/lvm.conf" "$workdir/etc/lvm/lvm.conf"
+
+	echo "configured chroot"
 
 fi
 
 sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
 sudo umount -lf "$workdir/proc" >/dev/null 2>&1
 
-sudo cp -f "$lvmdir/lvm.conf $workdir/etc/lvm/lvm.conf"
 export LVM_SYSTEM_DIR=$lvmdir
 
-sudo -E debootstick --config-kernel-bootargs "+pcie_aspm=off +intel_idle.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" && \
+sudo -E debootstick --config-kernel-bootargs "+pcie_aspm=off +intel_idle.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err 
+
+if [ $? -eq 0 ];then
 	echo "compressing..." && \
 	pigz --zip -9 "$imagename" -c > "${imagename}.zip" && \
 	ln -sf "${imagename}.zip" quake_bootable-latest.zip
+else
+	echo "errors in process:"
+	cat /tmp/quake_bootable.err
+fi
 
 echo "complete."
