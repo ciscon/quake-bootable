@@ -113,9 +113,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		apt-get -qqy install log2ram
 	fi
 
-	#install nvidia driver
-	apt-get -qqy install nvidia-driver nvidia-settings linux-headers-amd64
-	
 	#configure rc.local
 	chmod +x /etc/rc.local
 	(systemctl enable rc-local||true)
@@ -166,6 +163,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
 	rm /tmp/aq.zip
 	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
+
+	#install nvidia driver
+	apt-get -qqy install nvidia-driver nvidia-settings linux-headers-amd64
 	
 	#remove package cache
 	apt-get -qqy clean 
