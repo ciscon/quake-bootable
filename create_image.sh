@@ -27,6 +27,7 @@ compositeconf="$currentdir/resources/01-composite.conf"
 sudoers="$currentdir/resources/sudoers"
 limitsconf="$currentdir/resources/limits.conf"
 background="$currentdir/resources/background.png"
+tintrc="$currentdir/resources/tint2rc"
 
 PATH=$PATH:/sbin:/usr/sbin
 required="debootstrap sudo chroot debootstick truncate pigz"
@@ -102,7 +103,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	lxrandr dex \
 	alsa-utils \
 	chromium \
-	grub2
+	grub2 \
+	pipewire pipewire-pulse wireplumber pasystray pavucontrol
 	
 	#log2ram on debian, devuan does not have systemd so the installation will fail
 	if [ "$distro" = "debian" ];then
@@ -199,6 +201,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo mkdir -p "$workdir/home/quakeuser/.local/share/applications"
 	sudo cp -f "$quakedesktop" "$workdir/home/quakeuser/.local/share/applications/ezQuake.desktop"
 	sudo ln -sf "/home/quakeuser/.local/share/applications/ezQuake.desktop" "$workdir/usr/share/applications/ezQuake.desktop"
+	sudo mkdir -p "$workdir/home/quakeuser/.config/tint2"
+	sudo cp -f "$tintrc" "$workdir/home/quakeuser/.config/tint2/tint2rc"
 	
 	sudo mkdir -p "$workdir/etc/X11/xorg.conf.d"
 	sudo cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"

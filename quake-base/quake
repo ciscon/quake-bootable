@@ -26,7 +26,7 @@ else
     export vblank_mode=0 #no vsync
     export LIBGL_DRI3_DISABLE=0
 fi
-export SDL_AUDIODRIVER=alsa
+#export SDL_AUDIODRIVER=alsa
 
 olddir=$(pwd)
 cd "$currentdir"
