@@ -102,7 +102,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	lxrandr dex \
 	alsa-utils \
 	chromium \
-	lvm2 \
 	grub2
 	
 	#log2ram on debian, devuan does not have systemd so the installation will fail
@@ -214,9 +213,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#fix ownership for quakeuser
 	sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
 	
-	sudo mkdir -p "$workdir/etc/lvm"
-	sudo cp -f "$lvmdir/lvm.conf" "$workdir/etc/lvm/lvm.conf"
-
 	echo "configured chroot"
 
 fi
