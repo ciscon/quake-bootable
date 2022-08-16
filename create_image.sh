@@ -175,7 +175,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	rm -rf /var/lib/apt/lists/*
 	
 	#configure /tmp as tmpfs
-	sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
+	if [ -f /etc/default/tmpfs ];then
+		sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
+	fi
 	
 	#configure grub
 	sed -i "s/GRUB_TIMEOUT.*/GRUB_TIMEOUT=1/g" /etc/default/grub
