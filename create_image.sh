@@ -30,13 +30,17 @@ background="$currentdir/resources/background.png"
 tintrc="$currentdir/resources/tint2rc"
 
 PATH=$PATH:/sbin:/usr/sbin
-required="debootstrap sudo chroot debootstick truncate pigz"
+required="debootstrap sudo chroot debootstick truncate pigz fdisk"
 for require in $required;do
 	if ! hash $require >/dev/null 2>&1;then
 		echo "required program $require not found, bailing out."
 		exit 1
 	fi
 done
+
+if [ ! -e /dev/loop0 ];then
+    sudo mknod /dev/loop0 b 7 0
+fi
 
 if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
