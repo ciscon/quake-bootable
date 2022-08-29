@@ -8,7 +8,7 @@ quakedir="quake-base"
 imagename="quake_bootable-$(date +"%Y-%m-%d").img"
 mediahostname="quakeboot"
 
-distro="debian" #devuan or debian
+distro="devuan" #devuan or debian
 release="unstable"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
@@ -30,13 +30,17 @@ background="$currentdir/resources/background.png"
 tintrc="$currentdir/resources/tint2rc"
 
 PATH=$PATH:/sbin:/usr/sbin
-required="debootstrap sudo chroot debootstick truncate pigz fdisk"
+required="debootstrap sudo chroot truncate pigz fdisk git"
 for require in $required;do
 	if ! hash $require >/dev/null 2>&1;then
 		echo "required program $require not found, bailing out."
 		exit 1
 	fi
 done
+
+#init debootstick submodule
+git submodule update --init --recursive >/dev/null 2>&1
+git submodule update --recursive --remote >/dev/null 2>&1
 
 if [ ! -e /dev/loop0 ];then
     sudo mknod /dev/loop0 b 7 0
@@ -232,7 +236,7 @@ sudo umount -lf "$workdir/proc" >/dev/null 2>&1
 
 export LVM_SYSTEM_DIR=$lvmdir
 
-sudo -E debootstick --config-kernel-bootargs "+pcie_aspm=off +intel_idle.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err 
+sudo -E ./debootstick/debootstick --config-kernel-bootargs "+pcie_aspm=off +intel_idle.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err 
 
 if [ $? -eq 0 ];then
 	echo "compressing..." && \

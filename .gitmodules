@@ -1,0 +1,3 @@
+[submodule "debootstick"]
+	path = debootstick
+	url = https://github.com/ciscon/debootstick.git
