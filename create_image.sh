@@ -93,7 +93,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	apt-get -qqy update
 	(mount -t devpts devpts /dev/pts||true)
 	(mount proc /proc -t proc||true)
-	apt-get -qqy install gnupg ca-certificates wget file git sudo build-essential \
+	apt-get -qqy install gnupg ca-certificates wget file git sudo build-essential libpcre3-dev \
 	xserver-xorg-core xserver-xorg-input-all xinit libgl1-mesa-dri terminfo \
 	linux-image-amd64 \
 	intel-microcode amd64-microcode \
