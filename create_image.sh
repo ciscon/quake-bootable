@@ -1,20 +1,26 @@
 #!/bin/bash
 
-onlybuild=0
-clean=1
-currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
-workdir="$currentdir/workdir"
-quakedir="quake-base"
-imagename="quake_bootable-$(date +"%Y-%m-%d").img"
-mediahostname="quakeboot"
+minimal_kmsdrm=0 #do not install x11 or nvidia driver
+onlybuild=0 #use existing workdir and only build image
 
 distro="debian" #devuan or debian
 release="unstable"
+mediahostname="quakeboot"
 
-ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
+ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git" #repository to use for ezquake build
+
+currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
+workdir="$currentdir/workdir"
+quakedir="quake-base"
+clean=1 #clean up previous environment
+
+imagebase="quake_bootable-"
+if [ "$minimal_kmsdrm" = "1" ];then
+	imageminimal="min_kmsdrm-"
+fi
+imagename="${imagebase}${imageminimal}$(date +"%Y-%m-%d").img"
 
 lvmdir="$currentdir/lvm"
-
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
 nodm="$currentdir/resources/nodm"
@@ -28,6 +34,17 @@ limitsconf="$currentdir/resources/limits.conf"
 background="$currentdir/resources/background.png"
 tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
+
+packages="gnupg ca-certificates wget file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo linux-image-amd64 intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi iproute2 procps vim-nox unzip zstd alsa-utils grub2 pipewire pipewire-pulse wireplumber"
+packages_x11="xserver-xorg-core xserver-xorg-input-all xinit connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol"
+
+if [ "$minimal_kmsdrm" != "1" ];then
+	packages+=$packages_x11
+else
+	export minimal_kmsdrm
+fi
+export packages
+export ezquakegitrepo
 
 PATH=$PATH:/sbin:/usr/sbin
 required="debootstrap sudo chroot truncate pigz fdisk git"
@@ -81,7 +98,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo mkdir -p "$workdir/root"
 	sudo cp -fR "$quakedir" "$workdir/quake"
 	
-	sudo chroot "$workdir" bash -e -c '
+	sudo --preserve-env=ezquakegitrepo,packages,distro,minimal_kmsdrm chroot "$workdir" bash -e -c '
 	
 	#configure hostname
 	echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
@@ -102,25 +119,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	apt-get -qqy update
 	(mount -t devpts devpts /dev/pts||true)
 	(mount proc /proc -t proc||true)
-	apt-get -qqy install gnupg ca-certificates wget file git sudo build-essential libpcre3-dev \
-	xserver-xorg-core xserver-xorg-input-all xinit libgl1-mesa-dri terminfo \
-	linux-image-amd64 \
-	intel-microcode amd64-microcode \
-	firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi \
-	connman connman-gtk iproute2 \
-	procps vim \
-	unzip zstd \
-	feh xterm obconf openbox tint2 fbautostart menu \
-	nodm \
-	xdg-utils \
-	lxrandr dex \
-	alsa-utils \
-	chromium \
-	grub2 \
-	pipewire pipewire-pulse wireplumber pasystray pavucontrol
+	apt-get -qqy install $packages
 	
 	#log2ram on debian, devuan does not have systemd so the installation will fail
 	if [ "$distro" = "debian" ];then
+		echo "configuring log2ram..."
 		echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
 		wget -qO - https://azlux.fr/repo.gpg.key | apt-key add -
 		apt-get -qqy update
@@ -128,29 +131,37 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 
 	#configure rc.local
+	echo "configuring rc.local"
 	chmod +x /etc/rc.local
 	(systemctl enable rc-local||true)
 	(update-rc.d rc.local enable||true)
 	
 	#nodm
-	(systemctl enable nodm||true)
-	(update-rc.d nodm enable||true)
+	if [ "$minimal_kmsdrm" != "1" ];then
+		echo "configuring nodm"
+		(systemctl enable nodm||true)
+		(update-rc.d nodm enable||true)
+	fi
 	
 	#add our user to some groups
-	usermod -a -G tty,video,audio,games,messagebus,input,sudo,adm quakeuser
+	if grep messagebus /etc/group >/dev/null 2>&1;then messagebus="messagebus,";fi
+	usermod -a -G ${messagebus}tty,video,audio,games,input,sudo,adm quakeuser
 	
-	#configure evte path for openbox running terminal applications
-	update-alternatives --install /usr/bin/evte evte /usr/bin/xterm 0
+	if [ "$minimal_kmsdrm" != "1" ];then
+		#configure evte path for openbox running terminal applications
+		update-alternatives --install /usr/bin/evte evte /usr/bin/xterm 0
+	fi
 	
 	#configure vim symlink for vim
 	update-alternatives --install /usr/bin/vim vim /usr/bin/vi 0
 	
 	#build ezquake
+	echo "building ezquake"
 	export CFLAGS="-march=nehalem -flto=$(nproc) -fwhole-program -O3"
 	export LDFLAGS="$CFLAGS"
 	rm -rf /home/quakeuser/build
 	mkdir /home/quakeuser/build
-	git clone --depth=1 '$ezquakegitrepo' /home/quakeuser/build/ezquake-source-official
+	git clone --depth=1 $ezquakegitrepo /home/quakeuser/build/ezquake-source-official
 	cd /home/quakeuser/build/ezquake-source-official
 	eval $(grep --color=never PKGS_DEB build-linux.sh|head -n1)
 	apt-get -qqy install $PKGS_DEB
@@ -159,13 +170,14 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	cp -f /home/quakeuser/build/ezquake-source-official/ezquake-linux-x86_64 /home/quakeuser/quake/.
 	git clean -qfdx
 	
+	echo "cleaning up packages"
 	#clean up dev packages
 	apt-get -qqy purge "*-dev"
-	
 	#clean up packages
 	apt-get -qqy autopurge
 	
 	#reinstall ezquake deps
+	echo "reinstalling ezquake deps"
 	ezquakedeps=$(apt-get --simulate install $(echo "$PKGS_DEB"|sed "s/build-essential//g") 2>/dev/null|grep --color=never "^Inst"|awk "{print \$2}"|grep --color=never -v "\-dev$"|tr "\n" " ")
 	if [ ! -z "$ezquakedeps" ];then
 	  apt-get -qqy install $ezquakedeps
@@ -178,8 +190,10 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	rm /tmp/aq.zip
 	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
 
-	#install nvidia driver
-	apt-get -qqy install nvidia-driver nvidia-settings linux-headers-amd64
+	if [ "$minimal_kmsdrm" != "1" ];then
+		#install nvidia driver
+		apt-get -qqy install nvidia-driver nvidia-settings linux-headers-amd64
+	fi
 	
 	#remove package cache
 	apt-get -qqy clean 
