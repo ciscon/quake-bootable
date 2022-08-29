@@ -31,6 +31,8 @@ if [ ! -f $HOME/.leavemealone ];then
   	echo "configure networking: connman-gtk (systray icon)"
   	echo "disable nvidia driver (use opensource driver nouveau): nvidia-disable"
   	echo "enable nvidia driver: nvidia-enable"
+  else
+    echo "configure networking: connmanctl"
   fi
   echo "update system: update-system"
   echo "shutdown system: shutdown-system"
