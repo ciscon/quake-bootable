@@ -28,9 +28,20 @@ else
 fi
 #export SDL_AUDIODRIVER=alsa
 
+#running with kmsdrm
+if [ -z "$DISPLAY" ];then
+	width=$(fbset |grep --color=never geometry|awk '{print $2}')
+	height=$(fbset |grep --color=never geometry|awk '{print $3}')
+	extra="+vid_usedesktopres 0 +vid_width $width +vid_height $height +vid_displayfrequency 999 +vid_gamma_workaround 0"
+	echo ""
+	echo "setting video mode based on current framebuffer resolution, use vid_width/vid_height to customize"
+	echo "use s_audiodevicelist list to list devices, set with s_audiodevice X"
+	echo ""
+fi
+
 olddir=$(pwd)
 cd "$currentdir"
 
-nice -n -5 ./ezquake-linux-x86_64 $*
+nice -n -5 ./ezquake-linux-x86_64 $extra $*
 
 cd "$olddir"
