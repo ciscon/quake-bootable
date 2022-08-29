@@ -1,0 +1,10 @@
+<driconf>
+  <device screen="0" driver="radeonsi">
+    <application name="Default">
+      <option name="adaptive_sync" value="false" />
+      <option name="force_glsl_extensions_warn" value="false" />
+      <option name="radeonsi_disable_sam" value="true" />
+      <option name="mesa_glthread" value="false" />
+    </application>
+  </device>
+</driconf>
