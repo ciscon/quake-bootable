@@ -8,7 +8,7 @@ quakedir="quake-base"
 imagename="quake_bootable-$(date +"%Y-%m-%d").img"
 mediahostname="quakeboot"
 
-distro="devuan" #devuan or debian
+distro="debian" #devuan or debian
 release="unstable"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git"
@@ -22,12 +22,12 @@ xinitrc="$currentdir/resources/xinitrc"
 quakedesktop="$currentdir/resources/quake.desktop"
 bashrc="$currentdir/resources/bashrc"
 hwclock="$currentdir/resources/hwclock"
-nouveauconf="$currentdir/resources/nouveau.conf"
 compositeconf="$currentdir/resources/01-composite.conf"
 sudoers="$currentdir/resources/sudoers"
 limitsconf="$currentdir/resources/limits.conf"
 background="$currentdir/resources/background.png"
 tintrc="$currentdir/resources/tint2rc"
+modprobe="$currentdir/resources/modprobe.d"
 
 PATH=$PATH:/sbin:/usr/sbin
 required="debootstrap sudo chroot truncate pigz fdisk git"
@@ -37,6 +37,11 @@ for require in $required;do
 		exit 1
 	fi
 done
+
+if [ -z "$workdir" ] || [ -z "$currentdir" ];then
+	echo "workdir or currentdir not set, bailing out."
+	exit 1
+fi
 
 #init debootstick submodule
 git submodule update --init --recursive >/dev/null 2>&1
@@ -65,8 +70,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 	export distro
 	
-	sudo mkdir -p "$workdir/etc/modprobe.d"
-	sudo cp -f "$nouveauconf" "$workdir/etc/modprobe.d/nouveau.conf"
+	sudo rm -rf "$workdir/etc/modprobe.d"
+	sudo cp -rf "$modprobe" "$workdir/etc/"
 	sudo cp -f "$rclocal" "$workdir/etc/rc.local"
 	sudo mkdir -p "$workdir/etc/systemd/system"
 	sudo cp -f "$rclocalservice" "$workdir/etc/systemd/system/rc-local.service"
@@ -236,7 +241,7 @@ sudo umount -lf "$workdir/proc" >/dev/null 2>&1
 
 export LVM_SYSTEM_DIR=$lvmdir
 
-sudo -E ./debootstick/debootstick --config-kernel-bootargs "+pcie_aspm=off +intel_idle.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err 
+sudo -E ./debootstick/debootstick --config-kernel-bootargs "+pcie_aspm=off +processor.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err 
 
 if [ $? -eq 0 ];then
 	echo "compressing..." && \

@@ -15,4 +15,14 @@ fi
 #fix resolv.conf to point to connman's
 /etc/init.d/connman >/dev/null 2>&1
 
+if [ -e /sys/class/drm/card0/device/power_dpm_force_performance_level ];then
+	echo "setting gpu performance options..."
+	if [ -e /sys/class/drm/card0/device/pp_power_profile_mode ];then
+		echo "manual" > /sys/class/drm/card0/device/power_dpm_force_performance_level 2>/dev/null
+		echo "5" > /sys/class/drm/card0/device/pp_power_profile_mode 2>/dev/null
+	else
+		echo "high" > /sys/class/drm/card0/device/power_dpm_force_performance_level 2>/dev/null
+	fi
+fi
+
 echo "booting..."
