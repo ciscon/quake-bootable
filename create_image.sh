@@ -1,9 +1,9 @@
 #!/bin/bash
 
-minimal_kmsdrm=0 #do not install x11 or nvidia driver
+minimal_kmsdrm=1 #do not install x11 or nvidia driver
 onlybuild=0 #use existing workdir and only build image
 
-distro="debian" #devuan or debian
+distro="devuan" #devuan or debian
 release="unstable"
 mediahostname="quakeboot"
 
@@ -19,6 +19,7 @@ if [ "$minimal_kmsdrm" = "1" ];then
 	imageminimal="min_kmsdrm-"
 fi
 imagename="${imagebase}${imageminimal}$(date +"%Y-%m-%d").img"
+imagelatestname="${imagebase}${imageminimal}latest"
 
 lvmdir="$currentdir/lvm"
 rclocal="$currentdir/resources/rc.local"
@@ -34,9 +35,10 @@ limitsconf="$currentdir/resources/limits.conf"
 background="$currentdir/resources/background.png"
 tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
+issueappend="$currentdir/resources/issue.append"
 
-packages="gnupg ca-certificates wget file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo linux-image-amd64 intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi iproute2 procps vim-nox unzip zstd alsa-utils grub2 pipewire pipewire-pulse wireplumber"
-packages_x11="xserver-xorg-core xserver-xorg-input-all xinit connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol"
+packages="gnupg ca-certificates wget file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo linux-image-amd64 intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi iproute2 procps vim-nox unzip zstd alsa-utils grub2 connman"
+packages_x11="xserver-xorg-core xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber"
 
 if [ "$minimal_kmsdrm" != "1" ];then
 	packages+=$packages_x11
@@ -47,7 +49,7 @@ export packages
 export ezquakegitrepo
 
 PATH=$PATH:/sbin:/usr/sbin
-required="debootstrap sudo chroot truncate pigz fdisk git"
+required="debootstrap sudo chroot truncate pigz fdisk git kpartx losetup"
 for require in $required;do
 	if ! hash $require >/dev/null 2>&1;then
 		echo "required program $require not found, bailing out."
@@ -108,6 +110,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	useradd -m -p quake -s /bin/bash quakeuser
 	mv -f /quake /home/quakeuser/.
+	echo -e "quakeuser\nquakeuser" | passwd
 	
 	#configure package manager and install packages
 	export DEBIAN_FRONTEND=noninteractive
@@ -125,7 +128,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	if [ "$distro" = "debian" ];then
 		echo "configuring log2ram..."
 		echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
-		wget -qO - https://azlux.fr/repo.gpg.key | apt-key add -
+		wget -qO - https://azlux.fr/repo.gpg.key | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
 		apt-get -qqy update
 		apt-get -qqy install log2ram
 	fi
@@ -223,6 +226,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	echo "finished commands within chroot"
 
+	cat "$issueappend" |sudo tee -a "$workdir/etc/issue" >/dev/null 2>&1
 	sudo cp -f "$nodm" "$workdir/etc/default/nodm"
 	sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
 	sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
@@ -255,12 +259,19 @@ sudo umount -lf "$workdir/proc" >/dev/null 2>&1
 
 export LVM_SYSTEM_DIR=$lvmdir
 
+#clean up old lvs/pvs
+#mount 2>/dev/null|grep --color=never DRAFT_|awk '{print $1}'|xargs -r sudo umount -lf
+#sudo -E lvs 2>/dev/null|grep --color=never DRAFT_|awk '{print $2"/"$1}'|xargs -r sudo -E lvremove -f
+#sudo -E vgs 2>/dev/null|grep --color=never DRAFT_|awk '{print $1}'|xargs -r sudo vgremove -f
+#sudo pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r sudo pvremove -f
+#sudo losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r sudo kpartx -d 
+
 sudo -E ./debootstick/debootstick --config-kernel-bootargs "+pcie_aspm=off +processor.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err 
 
 if [ $? -eq 0 ];then
 	echo "compressing..." && \
 	pigz --zip -9 "$imagename" -c > "${imagename}.zip" && \
-	ln -sf "${imagename}.zip" quake_bootable-latest.zip
+	ln -sf "${imagename}.zip" "${imagelatestname}.zip"
 else
 	echo "errors in process:"
 	cat /tmp/quake_bootable.err

@@ -17,11 +17,13 @@ if [ ! -f $HOME/.leavemealone ];then
   echo "run afterquake (using fte, qw and netquake compatible): quake-afterquake"
   echo ""
   echo "other:"
-  echo "run a web browser: browser"
-  echo "configure display(s): lxrandr"
-  echo "configure networking: connman-gtk (systray icon)"
-  echo "disable nvidia driver (use opensource driver nouveau): nvidia-disable"
-  echo "enable nvidia driver: nvidia-enable"
+  if [ ! -z "$DISPLAY" ];then
+  	echo "run a web browser: browser"
+  	echo "configure display(s): lxrandr"
+  	echo "configure networking: connman-gtk (systray icon)"
+  	echo "disable nvidia driver (use opensource driver nouveau): nvidia-disable"
+  	echo "enable nvidia driver: nvidia-enable"
+  fi
   echo "update system: update-system"
   echo "shutdown system: shutdown-system"
   echo ""
