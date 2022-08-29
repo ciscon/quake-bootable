@@ -22,6 +22,7 @@ imagename="${imagebase}${imageminimal}$(date +"%Y-%m-%d").img"
 imagelatestname="${imagebase}${imageminimal}latest"
 
 lvmdir="$currentdir/lvm"
+drirc="$currentdir/resources/drirc"
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
 nodm="$currentdir/resources/nodm"
@@ -186,14 +187,14 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	  apt-get -qqy install $ezquakedeps
 	fi
 	
-	#install afterquake
-	mkdir -p /home/quakeuser/quake-afterquake
-	wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip
-	unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
-	rm /tmp/aq.zip
-	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
-
 	if [ "$minimal_kmsdrm" != "1" ];then
+		#install afterquake
+		mkdir -p /home/quakeuser/quake-afterquake
+		wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip
+		unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
+		rm /tmp/aq.zip
+		chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
+
 		#install nvidia driver
 		apt-get -qqy install nvidia-driver nvidia-settings linux-headers-amd64
 	fi
@@ -232,6 +233,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	cat "$issueappend" |sudo tee -a "$workdir/etc/issue" >/dev/null 2>&1
 	sudo cp -f "$nodm" "$workdir/etc/default/nodm"
 	sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
+	sudo cp -f "$drirc" "$workdir/home/quakeuser/.drirc"
 	sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc"
 	sudo mkdir -p "$workdir/home/quakeuser/.local/share/applications"
