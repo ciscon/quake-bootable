@@ -1,5 +1,3 @@
-echo ""
-
 if [ -z "$XDG_RUNTIME_DIR" ];then
 	export XDG_RUNTIME_DIR="/tmp/$(id -u)"
 	mkdir -p "$XDG_RUNTIME_DIR"
@@ -17,11 +15,14 @@ alias shutdown-system="sudo shutdown -h now"
 alias leavemealone="touch $HOME/.leavemealone"
 
 if [ ! -f $HOME/.leavemealone ];then
+  echo ""
   echo "quake:"
   echo "run quake (using ezquake, qw compatible): quake"
   echo "change quake (ezquake) assets preset: quakepreset"
   echo "update quake (ezquake) from git: update-quake"
-  echo "run afterquake (using fte, qw and netquake compatible): quake-afterquake"
+  if [ ! -z "$DISPLAY" ];then
+    echo "run afterquake (using fte, qw and netquake compatible): quake-afterquake"
+  fi
   echo ""
   echo "other:"
   if [ ! -z "$DISPLAY" ];then
