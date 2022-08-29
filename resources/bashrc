@@ -1,3 +1,10 @@
+echo ""
+
+if [ -z "$XDG_RUNTIME_DIR" ];then
+	export XDG_RUNTIME_DIR="/tmp/$(id -u)"
+	mkdir -p "$XDG_RUNTIME_DIR"
+fi
+
 alias quake="currentdir=$(pwd);cd $HOME/quake;./quake;cd \"$currentdir\""
 alias quake-afterquake="currentdir=$(pwd);cd $HOME/quake-afterquake;nice -n -5 ./fteqw64;cd \"$currentdir\""
 alias quakepreset="currentdir=$(pwd);cd $HOME/quake;./choose-qw.sh;cd \"$currentdir\""
