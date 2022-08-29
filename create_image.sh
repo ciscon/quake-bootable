@@ -37,7 +37,7 @@ tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
-packages="gnupg ca-certificates wget file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo linux-image-amd64 intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi iproute2 procps vim-nox unzip zstd alsa-utils grub2 connman"
+packages="gnupg ca-certificates wget file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo linux-image-amd64 intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi iproute2 procps vim-nox unzip zstd alsa-utils grub2 connman cpufrequtils"
 packages_x11="xserver-xorg-core xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber"
 
 if [ "$minimal_kmsdrm" != "1" ];then
@@ -208,6 +208,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	if [ -f /etc/default/tmpfs ];then
 		sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
 	fi
+
+	#configure cpufreq
+	echo "GOVERNOR=performance" > /etc/default/cpufrequtils
 	
 	#configure grub
 	sed -i "s/GRUB_TIMEOUT.*/GRUB_TIMEOUT=1/g" /etc/default/grub
