@@ -22,6 +22,7 @@ imagename="${imagebase}${imageminimal}$(date +"%Y-%m-%d").img"
 imagelatestname="${imagebase}${imageminimal}latest"
 
 lvmdir="$currentdir/lvm"
+pipewire="$currentdir/resources/pipewire.conf"
 drirc="$currentdir/resources/drirc"
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
@@ -39,7 +40,7 @@ modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
 packages="gnupg wget file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo linux-image-amd64 intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset "
-packages_x11=" xserver-xorg-core xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber"
+packages_x11=" xserver-xorg-core xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit"
 
 if [ "$minimal_kmsdrm" != "1" ];then
 	packages+=$packages_x11
@@ -236,6 +237,12 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$drirc" "$workdir/home/quakeuser/.drirc"
 	sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc"
+	if [ -d "$workdir/usr/share/pipewire" ];then
+		mkdir -p "$workdir/home/quakeuser/.config"
+		rm -rf "$workdir/home/quakeuser/.config/pipewire"
+		cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
+		sudo cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"
+	fi
 	sudo mkdir -p "$workdir/home/quakeuser/.local/share/applications"
 	sudo cp -f "$quakedesktop" "$workdir/home/quakeuser/.local/share/applications/ezQuake.desktop"
 	sudo ln -sf "/home/quakeuser/.local/share/applications/ezQuake.desktop" "$workdir/usr/share/applications/ezQuake.desktop"

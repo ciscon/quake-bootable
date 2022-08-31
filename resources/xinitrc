@@ -12,6 +12,9 @@ export LDFLAGS="$CFLAGS"
 #start tint first
 nice tint2&
 
+#pipewire
+pgrep -f pipewire >/dev/null 2>&1 || pipewire&
+
 #connman
 (
 	pkill -f connman-gtk >/dev/null 2>&1
