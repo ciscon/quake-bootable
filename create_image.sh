@@ -38,7 +38,7 @@ tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
-packages="gnupg ca-certificates wget file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo linux-image-amd64 intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset "
+packages="gnupg wget file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo linux-image-amd64 intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset "
 packages_x11=" xserver-xorg-core xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber"
 
 if [ "$minimal_kmsdrm" != "1" ];then
@@ -84,9 +84,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	mkdir -p "$workdir"
 	
 	if [ "$distro" = "devuan" ];then
-		sudo debootstrap --include="devuan-keyring" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://deb.devuan.org/merged/
+		sudo debootstrap --include="devuan-keyring ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
 	else
-		sudo debootstrap --include="debian-keyring" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
+		sudo debootstrap --include="debian-keyring ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
 	fi
 	export distro
 	
