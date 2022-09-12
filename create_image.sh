@@ -162,7 +162,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	#build ezquake
 	echo "building ezquake"
-	export CFLAGS="-march=nehalem -flto=$(nproc) -fwhole-program -O3"
+	export CFLAGS="-march=nehalem -O3 -ffast-math -flto=$(nproc) -pipe"
 	export LDFLAGS="$CFLAGS"
 	rm -rf /home/quakeuser/build
 	mkdir /home/quakeuser/build
