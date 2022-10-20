@@ -5,8 +5,8 @@ currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 if lsmod|grep nvidia_modeset >/dev/null 2>&1;then
     echo "loading nvidia preferences"
     export __GL_YIELD="NOTHING"
-    export __GL_MaxFramesAllowed=1
-    export __GL_THREADED_OPTIMIZATIONS=0
+    export __GL_MaxFramesAllowed=2
+    export __GL_THREADED_OPTIMIZATIONS=1
 
     if [ $__GL_THREADED_OPTIMIZATIONS -ne 0 ];then
         if [ $(/sbin/ldconfig -Np|grep libpthread.so.0$ -c) -gt 0 ];then
