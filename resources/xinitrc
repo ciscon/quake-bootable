@@ -35,4 +35,8 @@ xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
 fbautostart&
 xterm&
 
+for app in $HOME/.config/autostart/*.desktop;do
+	dex "$app"&
+done
+
 exec openbox-session
