@@ -170,6 +170,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	cd /home/quakeuser/build/ezquake-source-official
 	eval $(grep --color=never PKGS_DEB build-linux.sh|head -n1)
 	apt-get -qqy install $PKGS_DEB
+	git submodule update --init --recursive --remote
 	make -j$(nproc)
 	strip ezquake-linux-x86_64
 	cp -f /home/quakeuser/build/ezquake-source-official/ezquake-linux-x86_64 /home/quakeuser/quake/.
