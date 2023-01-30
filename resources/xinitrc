@@ -6,7 +6,7 @@ if [[ "$(systemctl is-system-running || true)" == "stopping" ]]; then
 fi
 
 #if we build again inside bootable environment, use current hardware for optimizations
-export CFLAGS="-march=native -ffast-math -O3 -flto=$(nproc) -pipe"
+export CFLAGS="-march=native -O3 -flto=$(nproc) -pipe"
 export LDFLAGS="$CFLAGS"
 
 #start tint first
