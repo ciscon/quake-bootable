@@ -5,6 +5,16 @@ if [[ "$(systemctl is-system-running || true)" == "stopping" ]]; then
 	sudo /etc/init.d/nodm stop
 fi
 
+xrdb -load $HOME/.Xresources
+
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+export NO_AT_BRIDGE=1
+
+dbus-cleanup-sockets >/dev/null 2>&1
+[ -z "$DBUS_SESSION_BUS_ADDRESS" ] && eval $(/usr/bin/dbus-launch --exit-with-session --sh-syntax)
+dbus-update-activation-environment --all >/dev/null 2>&1
+
+
 #if we build again inside bootable environment, use current hardware for optimizations
 export CFLAGS="-march=native -O3 -flto=$(nproc) -pipe"
 export LDFLAGS="$CFLAGS"

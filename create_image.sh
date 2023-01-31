@@ -3,7 +3,7 @@
 minimal_kmsdrm=0 #do not install x11 or nvidia driver
 onlybuild=0 #use existing workdir and only build image
 
-distro="devuan" #devuan or debian
+distro="debian" #devuan or debian
 release="unstable"
 mediahostname="quakeboot"
 
@@ -22,6 +22,7 @@ imagename="${imagebase}${imageminimal}$(date +"%Y-%m-%d").img"
 imagelatestname="${imagebase}${imageminimal}latest"
 
 lvmdir="$currentdir/lvm"
+xresources="$currentdir/resources/xresources"
 pipewire="$currentdir/resources/pipewire.conf"
 drirc="$currentdir/resources/drirc"
 rclocal="$currentdir/resources/rc.local"
@@ -39,8 +40,8 @@ tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
-packages="gnupg wget file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo linux-image-amd64 intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-realtek firmware-iwlwifi iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset chrony "
-packages_x11=" xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex "
+packages="linux-xanmod file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset chrony lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free "
+packages_x11=" xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin"
 
 if [ "$minimal_kmsdrm" != "1" ];then
 	packages+=$packages_x11
@@ -85,15 +86,14 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	mkdir -p "$workdir"
 	
 	if [ "$distro" = "devuan" ];then
-		sudo debootstrap --include="devuan-keyring ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
+		sudo debootstrap --include="devuan-keyring gnupg wget ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
 	else
-		sudo debootstrap --include="debian-keyring ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
+		sudo debootstrap --include="debian-keyring gnupg wget ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
 	fi
 	export distro
 	
 	sudo rm -rf "$workdir/etc/modprobe.d"
 	sudo cp -rf "$modprobe" "$workdir/etc/"
-	sudo cp -f "$rclocal" "$workdir/etc/rc.local"
 	sudo mkdir -p "$workdir/etc/systemd/system"
 	sudo cp -f "$rclocalservice" "$workdir/etc/systemd/system/rc-local.service"
 	if [ -d "$workdir/root/quake" ];then
@@ -101,7 +101,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 	sudo mkdir -p "$workdir/root"
 	sudo cp -fR "$quakedir" "$workdir/quake"
-	
+
 	sudo --preserve-env=ezquakegitrepo,packages,distro,minimal_kmsdrm chroot "$workdir" bash -e -c '
 	
 	#configure hostname
@@ -121,19 +121,39 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	echo "path-exclude=/usr/share/doc/*" > /etc/dpkg/dpkg.cfg.d/01_nodoc
 	rm -rf /usr/share/doc
 	sed -i "s/main$/main contrib non-free/g" /etc/apt/sources.list
+
+	#xanmod
+	echo "deb http://deb.xanmod.org releases main" > /etc/apt/sources.list.d/xanmod.list
+	gpg --keyserver pgp.mit.edu --recv-keys 86F7D09EE734E623 
+	gpg --output - --export --armor > /tmp/xanmod.gpg
+	APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key --keyring /etc/apt/trusted.gpg.d/xanmod-kernel.gpg add /tmp/xanmod.gpg
+	rm -f /tmp/xanmod.gpg
+
 	apt-get -qqy update
 	(mount -t devpts devpts /dev/pts||true)
 	(mount proc /proc -t proc||true)
+
 	apt-get -qqy install $packages
-	
-	#log2ram on debian, devuan does not have systemd so the installation will fail
+
+	#install firmware from git?
+	#rm -rf /lib/firmware
+	#git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git /lib/firmware
+
+	#replace systemd with openrc, multiple steps required
 	if [ "$distro" = "debian" ];then
-		echo "configuring log2ram..."
-		echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
-		wget -qO - https://azlux.fr/repo.gpg.key | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
-		apt-get -qqy update
-		apt-get -qqy install log2ram
+		apt-get -qqy install openrc sysvinit-core
+		apt-get -qqy install elogind libpam-elogind orphan-sysvinit-scripts systemctl procps
+		apt-get -qqy purge systemd
 	fi
+	
+	##log2ram on debian, devuan does not have systemd so the installation will fail
+	#if [ "$distro" = "debian" ];then
+	#	echo "configuring log2ram..."
+	#	echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
+	#	wget -qO - https://azlux.fr/repo.gpg.key | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
+	#	apt-get -qqy update
+	#	apt-get -qqy install log2ram
+	#fi
 
 	#configure rc.local
 	echo "configuring rc.local"
@@ -198,7 +218,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
 
 		#install nvidia and openrazer drivers
-		apt-get -qqy install nvidia-driver openrazer-driver-dkms nvidia-settings linux-headers-amd64
+		apt-get -qqy install nvidia-driver openrazer-driver-dkms nvidia-settings
 	fi
 	
 	#remove package cache
@@ -233,6 +253,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	echo "finished commands within chroot"
 
 	cat "$issueappend" |sudo tee -a "$workdir/etc/issue" >/dev/null 2>&1
+	sudo cp -f "$rclocal" "$workdir/etc/rc.local"
 	sudo cp -f "$nodm" "$workdir/etc/default/nodm"
 	sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
 	sudo cp -f "$drirc" "$workdir/home/quakeuser/.drirc"
@@ -244,6 +265,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
 		sudo cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"
 	fi
+	sudo cp -f "$xresources" "$workdir/home/quakeuser/.Xresources"
 	sudo mkdir -p "$workdir/home/quakeuser/.local/share/applications"
 	sudo cp -f "$quakedesktop" "$workdir/home/quakeuser/.local/share/applications/ezQuake.desktop"
 	sudo ln -sf "/home/quakeuser/.local/share/applications/ezQuake.desktop" "$workdir/usr/share/applications/ezQuake.desktop"
@@ -279,7 +301,7 @@ export LVM_SYSTEM_DIR=$lvmdir
 #sudo pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r sudo pvremove -f
 #sudo losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r sudo kpartx -d 
 
-sudo -E ./debootstick/debootstick --config-kernel-bootargs "+pcie_aspm=off +processor.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err 
+sudo -E ./debootstick/debootstick --kernel-package "linux-xanmod" --config-kernel-bootargs "+pcie_aspm=off +processor.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err 
 
 if [ $? -eq 0 ];then
 	echo "compressing..." && \
