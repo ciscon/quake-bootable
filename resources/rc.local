@@ -20,14 +20,14 @@ if [ -e /sys/class/drm/card0/device/power_dpm_force_performance_level ];then
 	if [ -e /sys/class/drm/card0/device/pp_power_profile_mode ];then
 		echo "manual" > /sys/class/drm/card0/device/power_dpm_force_performance_level 2>/dev/null
 		#set vr profile
-		amdprofile=$(grep --color=never 'VR.*:$' /sys/class/drm/card*/device/pp_power_profile_mode|awk '{print $1}')
-		if [ ! -z "$amdprofile" ];then
+		amdprofile=$(grep --color=never 'VR.*:$' /sys/class/drm/card*/device/pp_power_profile_mode|awk '{print $1}' 2>/dev/null)
+		if [ ! -z "$amdprofile" ] && [ -e /sys/class/drm/card*/device/pp_power_profile_mode ];then
 			echo "$amdprofile" > /sys/class/drm/card*/device/pp_power_profile_mode 2>/dev/null
 		fi
 		#force memory clock to full
 		echo "3" > /sys/class/drm/card*/device/pp_dpm_mclk 2>/dev/null
 	fi
-else
+elif [ -e /sys/class/drm/card0/device/power_dpm_force_performance_level ];then
 	echo "high" > /sys/class/drm/card0/device/power_dpm_force_performance_level 2>/dev/null
 fi
 
