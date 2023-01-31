@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 minimal_kmsdrm=0 #do not install x11 or nvidia driver
 onlybuild=0 #use existing workdir and only build image
 
@@ -40,7 +40,7 @@ tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
-packages="linux-xanmod file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset chrony lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free "
+packages="file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset chrony lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free "
 packages_x11=" xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin"
 
 if [ "$minimal_kmsdrm" != "1" ];then
@@ -77,8 +77,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#clean up previous build
 	if [ -e "$workdir/dev/pts" ];then
-		sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
-		sudo umount -lf "$workdir/proc" >/dev/null 2>&1
+		sudo umount -qlf "$workdir/dev/pts"||true >/dev/null 2>&1
+		sudo umount -qlf "$workdir/proc"||true >/dev/null 2>&1
 	fi
 	if [ $clean -eq 1 ] && [ ! -z "$workdir" ];then
 		sudo rm -rf "$workdir"
