@@ -124,16 +124,17 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#xanmod
 	echo "deb http://deb.xanmod.org releases main" > /etc/apt/sources.list.d/xanmod.list
-	gpg --keyserver pgp.mit.edu --recv-keys 86F7D09EE734E623 
+	gpg --keyserver keyserver.ubuntu.com --recv-keys 86F7D09EE734E623 || \
+		gpg --keyserver pgp.mit.edu --recv-keys 86F7D09EE734E623 
 	gpg --output - --export --armor > /tmp/xanmod.gpg
 	APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key --keyring /etc/apt/trusted.gpg.d/xanmod-kernel.gpg add /tmp/xanmod.gpg
 	rm -f /tmp/xanmod.gpg
 
-	apt-get -qqy update
+	apt-get -qy update
 	(mount -t devpts devpts /dev/pts||true)
 	(mount proc /proc -t proc||true)
 
-	apt-get -qqy install $packages
+	apt-get -qy install $packages
 
 	#install firmware from git?
 	#rm -rf /lib/firmware
@@ -141,9 +142,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#replace systemd with openrc, multiple steps required
 	if [ "$distro" = "debian" ];then
-		apt-get -qqy install openrc sysvinit-core
-		apt-get -qqy install elogind libpam-elogind orphan-sysvinit-scripts systemctl procps
-		apt-get -qqy purge systemd
+		apt-get -qy install openrc sysvinit-core
+		apt-get -qy install elogind libpam-elogind orphan-sysvinit-scripts systemctl procps
+		apt-get -qy purge systemd
 	fi
 	
 	##log2ram on debian, devuan does not have systemd so the installation will fail
@@ -151,8 +152,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#	echo "configuring log2ram..."
 	#	echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
 	#	wget -qO - https://azlux.fr/repo.gpg.key | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
-	#	apt-get -qqy update
-	#	apt-get -qqy install log2ram
+	#	apt-get -qy update
+	#	apt-get -qy install log2ram
 	#fi
 
 	#configure rc.local
@@ -189,7 +190,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	git clone --depth=1 $ezquakegitrepo /home/quakeuser/build/ezquake-source-official
 	cd /home/quakeuser/build/ezquake-source-official
 	eval $(grep --color=never PKGS_DEB build-linux.sh|head -n1)
-	apt-get -qqy install $PKGS_DEB
+	apt-get -qy install $PKGS_DEB
 	git submodule update --init --recursive --remote
 	make -j$(nproc)
 	strip ezquake-linux-x86_64
@@ -198,15 +199,15 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	echo "cleaning up packages"
 	#clean up dev packages
-	apt-get -qqy purge "*-dev"
+	apt-get -qy purge "*-dev"
 	#clean up packages
-	apt-get -qqy autopurge
+	apt-get -qy autopurge
 	
 	#reinstall ezquake deps
 	echo "reinstalling ezquake deps"
 	ezquakedeps=$(apt-get --simulate install $(echo "$PKGS_DEB"|sed "s/build-essential//g") 2>/dev/null|grep --color=never "^Inst"|awk "{print \$2}"|grep --color=never -v "\-dev$"|tr "\n" " ")
 	if [ ! -z "$ezquakedeps" ];then
-	  apt-get -qqy install $ezquakedeps
+	  apt-get -qy install $ezquakedeps
 	fi
 	
 	if [ "$minimal_kmsdrm" != "1" ];then
@@ -218,11 +219,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
 
 		#install nvidia and openrazer drivers
-		apt-get -qqy install nvidia-driver openrazer-driver-dkms nvidia-settings
+		apt-get -qy install nvidia-driver openrazer-driver-dkms nvidia-settings
 	fi
 	
 	#remove package cache
-	apt-get -qqy clean 
+	apt-get -qy clean
 	
 	#clean up lists
 	rm -rf /var/lib/apt/lists/*
