@@ -1,5 +1,5 @@
-#!/bin/bash
-set -e
+#!/bin/bash -e
+
 minimal_kmsdrm=0 #do not install x11 or nvidia driver
 onlybuild=0 #use existing workdir and only build image
 
@@ -9,6 +9,8 @@ mediahostname="quakeboot"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git" #repository to use for ezquake build
 
+builddate=$(date +%s)
+gitcommit=$(git log -n 1|head -1|awk '{print $2}'|cut -c1-6)
 currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 workdir="$currentdir/workdir"
 quakedir="quake-base"
@@ -41,7 +43,7 @@ modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
 packages="file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset chrony lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free "
-packages_x11=" xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin"
+packages_x11=" xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick"
 
 if [ "$minimal_kmsdrm" != "1" ];then
 	packages+=$packages_x11
@@ -101,6 +103,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 	sudo mkdir -p "$workdir/root"
 	sudo cp -fR "$quakedir" "$workdir/quake"
+	sudo cp -f "$background" "$workdir/background.png"
 
 	sudo --preserve-env=ezquakegitrepo,packages,distro,minimal_kmsdrm chroot "$workdir" bash -e -c '
 	
@@ -139,6 +142,14 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#install firmware from git?
 	#rm -rf /lib/firmware
 	#git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git /lib/firmware
+
+	#version
+	touch /'${builddate}~${gitcommit}'
+	if hash convert >/dev/null 2>&1;then
+		convert /background.png -fill grey -pointsize 24 -gravity north -annotate +0+5 "build: '${builddate}~${gitcommit}'" /home/quakeuser/background.png
+		rm -f /background.png
+		apt-get -qy purge imagemagick
+	fi
 
 	#replace systemd with openrc, multiple steps required
 	if [ "$distro" = "debian" ];then
@@ -281,7 +292,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
 	
 	sudo cp -f "$bashrc" "$workdir/home/quakeuser/.bashrc"
-	sudo cp -f "$background" "$workdir/home/quakeuser/background.png"
 	
 	#fix ownership for quakeuser
 	sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
