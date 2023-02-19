@@ -4,10 +4,13 @@ minimal_kmsdrm=0 #do not install x11 or nvidia driver
 onlybuild=0 #use existing workdir and only build image
 
 distro="debian" #devuan or debian
-release="unstable"
+release="testing"
 mediahostname="quakeboot"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git" #repository to use for ezquake build
+
+#for releases
+targetdir="/mnt/nas-quake/quake_bootable"
 
 builddate=$(date +%s)
 gitcommit=$(git log -n 1|head -1|awk '{print $2}'|cut -c1-6)
@@ -323,4 +326,9 @@ else
 	cat /tmp/quake_bootable.err
 fi
 
-echo "complete."
+if [ -d "$targetdir" ];then
+	echo -e "\ncopying to $targetdir"
+	rsync -av *.zip "$targetdir/."
+fi
+
+echo -e "\ncomplete."
