@@ -126,7 +126,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	echo "APT::Install-Suggests \"0\";APT::Install-Recommends \"false\";APT::AutoRemove::RecommendsImportant \"false\";" > /etc/apt/apt.conf.d/01lean
 	echo "path-exclude=/usr/share/doc/*" > /etc/dpkg/dpkg.cfg.d/01_nodoc
 	rm -rf /usr/share/doc
-	sed -i "s/main$/main contrib non-free/g" /etc/apt/sources.list
+	sed -i "s/main$/main contrib non-free non-free-firmware/g" /etc/apt/sources.list
 
 	#xanmod
 	echo "deb http://deb.xanmod.org releases main" > /etc/apt/sources.list.d/xanmod.list
