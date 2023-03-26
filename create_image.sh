@@ -31,7 +31,7 @@ fi
 #for releases - without a target dir this means we're doing the build on github
 targetdir="/mnt/nas-quake/quake_bootable"
 if [ -d "$targetdir" ];then
-	imagename="${imagebase}${imagesuffix}$(date +"%Y-%m-%d").img"
+	imagename="${imagebase}${imagesuffix}-$(date +"%Y-%m-%d").img"
 	imagelatestname="${imagebase}${imagesuffix}-latest"
 else
 	imagename="${imagebase}${imagesuffix}.img"
@@ -251,11 +251,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#update nquake resources
 	echo "updating nquake resources..."
-	mkdir -p /home/quakeuser/qw.nquake
+	mkdir -p /home/quakeuser/quake/qw.nquake
 	mkdir -p /tmp/nquakeresources
 	for res in $nquakezips;do
 	  wget "$nquakeresourcesurl/$res" -O /tmp/nquakeresources/$res || exit 5
-		bsdtar xf /tmp/nquakeresources/$res --strip-components=1 -C /home/quakeuser/qw.nquake || exit 6
+		bsdtar xf /tmp/nquakeresources/$res --strip-components=1 -C /home/quakeuser/quake/qw.nquake || exit 6
   done
   rm -rf /tmp/nquakeresources
 	
