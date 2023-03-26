@@ -9,16 +9,20 @@ jobs:
   build:
     name: Publish Image
     runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          KMSDRM: [0,1]
 
     steps:
     - uses: actions/checkout@v3
     - name: Install deps
       run: sudo apt-get install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
     - name: Build
+      env:
+        KMSDRM: ${{matrix.KMSDRM}}
       run: |
         rm -f ./*.zip
         bash ./create_image.sh
-        KMSDRM=1 bash ./create_image.sh
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
