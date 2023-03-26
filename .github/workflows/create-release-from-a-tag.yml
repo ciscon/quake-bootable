@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
     - name: Install deps
       run: sudo apt-get install debootstrap chroot truncate pigz fdisk kpartx losetup uuid-runtime lvm2
     - name: Build
