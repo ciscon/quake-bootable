@@ -9,6 +9,10 @@ mediahostname="quakeboot"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git" #repository to use for ezquake build
 
+#nquake resources
+nquakeresourcesurl="https://github.com/nQuake/distfiles/releases/download/snapshot"
+nquakezips="gpl.zip non-gpl.zip"
+
 #for releases
 targetdir="/mnt/nas-quake/quake_bootable"
 
@@ -45,7 +49,7 @@ tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
-packages="file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset chrony lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free "
+packages="file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset chrony lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free libarchive-tools linux-image-amd64 "
 packages_x11=" xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm"
 
 if [ "$minimal_kmsdrm" != "1" ];then
@@ -55,6 +59,8 @@ else
 fi
 export packages
 export ezquakegitrepo
+export nquakeresourcesurl
+export nquakezips
 
 PATH=$PATH:/sbin:/usr/sbin
 required="debootstrap sudo chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan"
@@ -108,7 +114,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -fR "$quakedir" "$workdir/quake"
 	sudo cp -f "$background" "$workdir/background.png"
 
-	sudo --preserve-env=ezquakegitrepo,packages,distro,minimal_kmsdrm chroot "$workdir" bash -e -c '
+	sudo --preserve-env=nquakeresourcesurl,nquakezips,ezquakegitrepo,packages,distro,minimal_kmsdrm chroot "$workdir" bash -e -c '
 	
 	#configure hostname
 	echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
@@ -235,6 +241,16 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		#install nvidia and openrazer drivers
 		apt-get -qy install nvidia-driver openrazer-driver-dkms nvidia-settings
 	fi
+
+	#update nquake resources
+	echo "updating nquake resources..."
+	mkdir -p /home/quakeuser/qw.nquake
+	mkdir -p /tmp/nquakeresources
+	for res in $nquakezips;do
+	  wget "$nquakeresourcesurl/$res" -O /tmp/nquakeresources/$res || echo "failed to get resource $res"
+		bsdtar xf --strip-components=1 -C /home/quakeuser/qw.nquake || echo "failed to unzip $res"
+  done
+  rm -rf /tmp/nquakeresources
 	
 	#remove package cache
 	apt-get -qy clean
