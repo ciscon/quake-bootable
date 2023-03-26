@@ -291,9 +291,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc"
 	if [ -d "$workdir/usr/share/pipewire" ];then
-		mkdir -p "$workdir/home/quakeuser/.config"
-		rm -rf "$workdir/home/quakeuser/.config/pipewire"
-		cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
+		sudo mkdir -p "$workdir/home/quakeuser/.config"
+		sudo rm -rf "$workdir/home/quakeuser/.config/pipewire"
+		sudo cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
 		sudo cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"
 	fi
 	sudo cp -f "$xresources" "$workdir/home/quakeuser/.Xresources"
