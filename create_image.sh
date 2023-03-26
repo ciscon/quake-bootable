@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-minimal_kmsdrm=0 #do not install x11 or nvidia driver
+minimal_kmsdrm=${KMSDRM:-0} #do not install x11 or nvidia driver
 onlybuild=0 #use existing workdir and only build image
 
 distro="debian" #devuan or debian
@@ -337,8 +337,11 @@ sudo -E ./debootstick/debootstick --config-kernel-bootargs "+pcie_aspm=off +proc
 
 if [ $? -eq 0 ];then
 	echo "compressing..." && \
-	pigz --zip -9 "$imagename" -c > "${imagename}.zip" && \
-	ln -sf "${imagename}.zip" "${imagelatestname}.zip"
+	mkdir -p ./output
+	pigz --zip -9 "$imagename" -c > "./output/${imagename}.zip" && \
+	md5sum "./output/${imagename}.zip" > "./output/${imagename}.zip.md5sum" && \
+	ln -sf "${imagename}.zip" "./output/${imagelatestname}.zip"
+	ln -sf "${imagename}.zip.md5sum" "./output/${imagelatestname}.zip.md5sum"
 else
 	echo "errors in process:"
 	cat /tmp/quake_bootable.err
@@ -346,7 +349,7 @@ fi
 
 if [ -d "$targetdir" ];then
 	echo -e "\ncopying to $targetdir"
-	rsync -av *.zip "$targetdir/."
+	rsync -av ./output/* "$targetdir/."
 fi
 
 echo -e "\ncomplete."
