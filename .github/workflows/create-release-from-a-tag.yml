@@ -9,9 +9,9 @@ jobs:
   build:
     name: Publish Image
     runs-on: ubuntu-latest
-      strategy:
-        matrix:
-          KMSDRM: [0,1]
+    strategy:
+      matrix:
+        KMSDRM: [0,1]
 
     steps:
     - uses: actions/checkout@v3
