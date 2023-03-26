@@ -22,7 +22,7 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        files: *.zip
+        file: quake_bootable*.zip
         asset_name: quake-bootable
         tag: ${{ github.ref }}
         overwrite: true
