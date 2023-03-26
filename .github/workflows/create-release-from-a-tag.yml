@@ -15,6 +15,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Read release.md and use it as a body of new release
+      id: read_release
+      shell: bash
+      run: |
+        r=$(cat ./release.md)
+        r="${r//'%'/'%25'}"
+        r="${r//$'\n'/'%0A'}"
+        r="${r//$'\r'/'%0D'}"
+        echo "RELEASE_BODY=$r" >> $GITHUB_OUTPUT
     - name: Install deps
       run: sudo apt-get install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
     - name: Build
@@ -31,3 +40,5 @@ jobs:
         file: ./output/*
         tag: ${{ github.ref }}
         overwrite: true
+        body: |
+          ${{ steps.read_release.outputs.RELEASE_BODY }}

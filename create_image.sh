@@ -13,8 +13,6 @@ ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git" #repository to us
 nquakeresourcesurl="https://github.com/nQuake/distfiles/releases/download/snapshot"
 nquakezips="gpl.zip non-gpl.zip"
 
-#for releases
-targetdir="/mnt/nas-quake/quake_bootable"
 
 builddate=$(date +%s)
 gitcommit=$(git log -n 1|head -1|awk '{print $2}'|cut -c1-6)
@@ -23,12 +21,19 @@ workdir="$currentdir/workdir"
 quakedir="quake-base"
 clean=1 #clean up previous environment
 
-imagebase="quake_bootable-"
+imagebase="quake_bootable"
 if [ "$minimal_kmsdrm" = "1" ];then
-	imageminimal="min_kmsdrm-"
+	imageminimal="-min_kmsdrm"
 fi
-imagename="${imagebase}${imageminimal}$(date +"%Y-%m-%d").img"
-imagelatestname="${imagebase}${imageminimal}latest"
+
+#for releases - without a target dir this means we're doing the build on github
+targetdir="/mnt/nas-quake/quake_bootable"
+if [ -d "$targetdir" ];then
+	imagename="${imagebase}${imageminimal}$(date +"%Y-%m-%d").img"
+	imagelatestname="${imagebase}${imageminimal}-latest"
+else
+	imagename="${imagebase}${imageminimal}.img"
+fi
 
 lvmdir="$currentdir/lvm"
 xresources="$currentdir/resources/xresources"
@@ -339,9 +344,11 @@ if [ $? -eq 0 ];then
 	echo "compressing..." && \
 	mkdir -p ./output
 	pigz --zip -9 "$imagename" -c > "./output/${imagename}.zip" && \
-	md5sum "./output/${imagename}.zip" > "./output/${imagename}.zip.md5sum" && \
-	ln -sf "${imagename}.zip" "./output/${imagelatestname}.zip"
-	ln -sf "${imagename}.zip.md5sum" "./output/${imagelatestname}.zip.md5sum"
+	md5sum "./output/${imagename}.zip" > "./output/${imagename}.zip.md5sum"
+	if [ ! -z "$imagelatestname" ];then
+		ln -sf "${imagename}.zip" "./output/${imagelatestname}.zip" && \
+		ln -sf "${imagename}.zip.md5sum" "./output/${imagelatestname}.zip.md5sum"
+	fi
 else
 	echo "errors in process:"
 	cat /tmp/quake_bootable.err
