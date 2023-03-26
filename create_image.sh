@@ -57,7 +57,7 @@ export packages
 export ezquakegitrepo
 
 PATH=$PATH:/sbin:/usr/sbin
-required="debootstrap sudo chroot truncate pigz fdisk git kpartx losetup uuidgen"
+required="debootstrap sudo chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan"
 for require in $required;do
 	if ! hash $require >/dev/null 2>&1;then
 		echo "required program $require not found, bailing out."
@@ -81,7 +81,7 @@ fi
 if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#clean up previous build
-	if [ -e "$workdir/dev/pts" ];then
+	if [ -e "$workdir/dev/pts/0" ];then
 		sudo umount -qlf "$workdir/dev/pts"||true >/dev/null 2>&1
 		sudo umount -qlf "$workdir/proc"||true >/dev/null 2>&1
 	fi
@@ -128,13 +128,13 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	rm -rf /usr/share/doc
 	sed -i "s/main$/main contrib non-free non-free-firmware/g" /etc/apt/sources.list
 
-	#xanmod
-	echo "deb http://deb.xanmod.org releases main" > /etc/apt/sources.list.d/xanmod.list
-	gpg --keyserver keyserver.ubuntu.com --recv-keys 86F7D09EE734E623 || \
-		gpg --keyserver pgp.mit.edu --recv-keys 86F7D09EE734E623 
-	gpg --output - --export --armor > /tmp/xanmod.gpg
-	APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key --keyring /etc/apt/trusted.gpg.d/xanmod-kernel.gpg add /tmp/xanmod.gpg
-	rm -f /tmp/xanmod.gpg
+	##xanmod
+	#echo "deb http://deb.xanmod.org releases main" > /etc/apt/sources.list.d/xanmod.list
+	#gpg --keyserver keyserver.ubuntu.com --recv-keys 86F7D09EE734E623 || \
+	#	gpg --keyserver pgp.mit.edu --recv-keys 86F7D09EE734E623 
+	#gpg --output - --export --armor > /tmp/xanmod.gpg
+	#APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key --keyring /etc/apt/trusted.gpg.d/xanmod-kernel.gpg add /tmp/xanmod.gpg
+	#rm -f /tmp/xanmod.gpg
 
 	apt-get -qy update
 	(mount -t devpts devpts /dev/pts||true)
@@ -303,8 +303,10 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 fi
 
-sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
-sudo umount -lf "$workdir/proc" >/dev/null 2>&1
+if [ -e "$workdir/dev/pts/0" ];then
+	sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
+	sudo umount -lf "$workdir/proc" >/dev/null 2>&1
+fi
 
 export LVM_SYSTEM_DIR=$lvmdir
 
@@ -315,7 +317,7 @@ export LVM_SYSTEM_DIR=$lvmdir
 #sudo pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r sudo pvremove -f
 #sudo losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r sudo kpartx -d 
 
-sudo -E ./debootstick/debootstick --kernel-package "linux-xanmod" --config-kernel-bootargs "+pcie_aspm=off +processor.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err 
+sudo -E ./debootstick/debootstick --config-kernel-bootargs "+pcie_aspm=off +processor.max_cstate=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +tsc=reliable -quiet +nosplash" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err 
 
 if [ $? -eq 0 ];then
 	echo "compressing..." && \
