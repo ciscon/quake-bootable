@@ -1,31 +1,32 @@
+name: Create Release
+
 on:
 	push:
 		tags:
 			- 'release*' # Push events to matching release*, i.e. release-1.0, release-20.15.10, release-2020-10-28-10-26-15
 
-	name: Create Release
 
-	jobs:
-		build:
-			name: Create Release
-		runs-on: ubuntu-latest
-		steps:
-			- name: Checkout code
-				uses: actions/checkout@v2
-				with:
-					fetch-depth: 0
-			- name: "Get latest tag"
-				id: latest_tag
-				run: echo "::set-output name=name::$(git tag --sort=-creatordate | head -1)"
-			- name: "Install deps"
-				run: sudo apt-get install debootstrap chroot truncate pigz fdisk kpartx losetup uuid-runtime lvm2
-			- name: "Build"
-				run: |
-          rm -f ./*.zip
-				  bash ./create_image.sh
-			- name: Release
-				uses: softprops/action-gh-release@v1
-				with:
-					files: *.zip
-				env:
-					GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+	build:
+		name: Create Release
+	runs-on: ubuntu-latest
+	steps:
+		- name: Checkout code
+			uses: actions/checkout@v2
+			with:
+				fetch-depth: 0
+		- name: "Get latest tag"
+			id: latest_tag
+			run: echo "::set-output name=name::$(git tag --sort=-creatordate | head -1)"
+		- name: "Install deps"
+			run: sudo apt-get install debootstrap chroot truncate pigz fdisk kpartx losetup uuid-runtime lvm2
+		- name: "Build"
+			run: |
+        rm -f ./*.zip
+			  bash ./create_image.sh
+		- name: Release
+			uses: softprops/action-gh-release@v1
+			with:
+				files: *.zip
+			env:
+				GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
