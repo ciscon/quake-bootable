@@ -23,16 +23,18 @@ clean=1 #clean up previous environment
 
 imagebase="quake_bootable"
 if [ "$minimal_kmsdrm" = "1" ];then
-	imageminimal="-min_kmsdrm"
+	imagesuffix="-min_kmsdrm"
+else
+	imagesuffix="-full"
 fi
 
 #for releases - without a target dir this means we're doing the build on github
 targetdir="/mnt/nas-quake/quake_bootable"
 if [ -d "$targetdir" ];then
-	imagename="${imagebase}${imageminimal}$(date +"%Y-%m-%d").img"
-	imagelatestname="${imagebase}${imageminimal}-latest"
+	imagename="${imagebase}${imagesuffix}$(date +"%Y-%m-%d").img"
+	imagelatestname="${imagebase}${imagesuffix}-latest"
 else
-	imagename="${imagebase}${imageminimal}.img"
+	imagename="${imagebase}${imagesuffix}.img"
 fi
 
 lvmdir="$currentdir/lvm"
