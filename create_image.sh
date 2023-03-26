@@ -254,8 +254,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	mkdir -p /home/quakeuser/qw.nquake
 	mkdir -p /tmp/nquakeresources
 	for res in $nquakezips;do
-	  wget "$nquakeresourcesurl/$res" -O /tmp/nquakeresources/$res || echo "failed to get resource $res"
-		bsdtar xf --strip-components=1 -C /home/quakeuser/qw.nquake || echo "failed to unzip $res"
+	  wget "$nquakeresourcesurl/$res" -O /tmp/nquakeresources/$res || exit 5
+		bsdtar xf /tmp/nquakeresources/$res --strip-components=1 -C /home/quakeuser/qw.nquake || exit 6
   done
   rm -rf /tmp/nquakeresources
 	
