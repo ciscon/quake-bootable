@@ -20,8 +20,9 @@ on:
 			- name: "Install deps"
 				run: sudo apt-get install debootstrap chroot truncate pigz fdisk kpartx losetup uuid-runtime lvm2
 			- name: "Build"
-				run: rm -f ./*.zip
-				run: bash ./create_image.sh
+				run: |
+          rm -f ./*.zip
+				  bash ./create_image.sh
 			- name: Release
 				uses: softprops/action-gh-release@v1
 				with:
