@@ -81,7 +81,7 @@ fi
 if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#clean up previous build
-	if [ -e "$workdir/dev/pts/0" ];then
+	if [ -e "$workdir/dev/pts/ptmx" ];then
 		sudo umount -qlf "$workdir/dev/pts"||true >/dev/null 2>&1
 		sudo umount -qlf "$workdir/proc"||true >/dev/null 2>&1
 	fi
@@ -303,7 +303,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 fi
 
-if [ -e "$workdir/dev/pts/0" ];then
+if [ -e "$workdir/dev/pts/ptmx" ];then
 	sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
 	sudo umount -lf "$workdir/proc" >/dev/null 2>&1
 fi
