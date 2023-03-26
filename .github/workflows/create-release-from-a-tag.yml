@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install deps
-      run: sudo apt-get install debootstrap chroot truncate pigz fdisk kpartx losetup uuid-runtime lvm2
+      run: sudo apt-get install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
     - name: Build
       run: |
         rm -f ./*.zip
