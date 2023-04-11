@@ -33,6 +33,15 @@ pgrep -f pipewire >/dev/null 2>&1 || pipewire&
 	done
 )&
 
+#pasystray
+(
+	pkill -f pasystray >/dev/null 2>&1
+	while :; do
+	nice pasystray
+	sleep 1
+	done
+)&
+
 #set background
 if [ -f $HOME/background.png ];then
 	feh --bg-max $HOME/background.png

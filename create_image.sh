@@ -277,6 +277,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		sed -i "s/#RAMTMP=.*/RAMTMP=yes/g" /etc/default/tmpfs
 	fi
 
+	#remove pasystray autostart, we do this ourselves so we do not end up with multiple instances
+	rm -f /etc/xdg/autostart/pasystray.desktop
+
 	#configure cpufreq
 	echo "GOVERNOR=performance" > /etc/default/cpufrequtils
 
