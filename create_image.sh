@@ -16,6 +16,9 @@ nquakezips="gpl.zip non-gpl.zip"
 
 builddate=$(date +%s)
 gitcommit=$(git log -n 1|head -1|awk '{print $2}'|cut -c1-6)
+githubref=${GITHUB_REF_NAME:-v0}
+release_ver="${githubref}-${builddate}~${gitcommit}"
+
 currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 workdir="$currentdir/workdir"
 quakedir="quake-base"
@@ -160,9 +163,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git /lib/firmware
 
 	#version
-	touch /'${builddate}~${gitcommit}'
+	touch /'${release_ver}'
 	if hash convert >/dev/null 2>&1;then
-		convert /background.png -fill grey -pointsize 24 -gravity north -annotate +0+5 "build: '${builddate}~${gitcommit}'" /home/quakeuser/background.png
+		convert /background.png -fill grey -pointsize 24 -gravity north -annotate +0+5 "build: '${release_ver}'" /home/quakeuser/background.png
 		rm -f /background.png
 		apt-get -qy purge imagemagick
 	fi
