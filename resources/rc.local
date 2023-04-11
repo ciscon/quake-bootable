@@ -32,3 +32,7 @@ elif [ -e /sys/class/drm/card0/device/power_dpm_force_performance_level ];then
 fi
 
 echo "booting..."
+
+if hash X 2>/dev/null;then
+	su - quakeuser -l -c /usr/bin/startx
+fi

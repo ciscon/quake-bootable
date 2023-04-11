@@ -43,10 +43,10 @@ pipewire="$currentdir/resources/pipewire.conf"
 drirc="$currentdir/resources/drirc"
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
-nodm="$currentdir/resources/nodm"
 xinitrc="$currentdir/resources/xinitrc"
 quakedesktop="$currentdir/resources/quake.desktop"
 bashrc="$currentdir/resources/bashrc"
+profile="$currentdir/resources/profile"
 hwclock="$currentdir/resources/hwclock"
 compositeconf="$currentdir/resources/01-composite.conf"
 sudoers="$currentdir/resources/sudoers"
@@ -57,7 +57,7 @@ modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
 packages="file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset chrony lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free libarchive-tools linux-image-amd64 "
-packages_x11=" xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu nodm xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm"
+packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm"
 
 if [ "$minimal_kmsdrm" != "1" ];then
 	packages+=$packages_x11
@@ -172,6 +172,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		apt-get -qy install openrc sysvinit-core
 		apt-get -qy install elogind libpam-elogind orphan-sysvinit-scripts systemctl procps
 		apt-get -qy purge systemd
+		apt-get -qy purge systemctl
 	fi
 	
 	##log2ram on debian, devuan does not have systemd so the installation will fail
@@ -198,7 +199,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	#add our user to some groups
 	if grep messagebus /etc/group >/dev/null 2>&1;then messagebus="messagebus,";fi
-	usermod -a -G ${messagebus}tty,video,audio,games,input,sudo,adm quakeuser
+	usermod -a -G ${messagebus}tty,video,audio,games,input,sudo,adm,plugdev quakeuser
 	
 	if [ "$minimal_kmsdrm" != "1" ];then
 		#configure evte path for openbox running terminal applications
@@ -275,6 +276,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#configure cpufreq
 	echo "GOVERNOR=performance" > /etc/default/cpufrequtils
+
+	#allow any user to start x
+	echo -e "allowed_users=anybody\nneeds_root_rights=yes" > /etc/X11/Xwrapper.config
 	
 	#configure grub
 	sed -i "s/GRUB_TIMEOUT.*/GRUB_TIMEOUT=1/g" /etc/default/grub
@@ -295,7 +299,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	cat "$issueappend" |sudo tee -a "$workdir/etc/issue" >/dev/null 2>&1
 	sudo cp -f "$rclocal" "$workdir/etc/rc.local"
-	sudo cp -f "$nodm" "$workdir/etc/default/nodm"
 	sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
 	sudo cp -f "$drirc" "$workdir/home/quakeuser/.drirc"
 	sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
@@ -321,6 +324,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
 	
 	sudo cp -f "$bashrc" "$workdir/home/quakeuser/.bashrc"
+	sudo cp -f "$profile" "$workdir/home/quakeuser/.profile"
 	
 	#fix ownership for quakeuser
 	sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
