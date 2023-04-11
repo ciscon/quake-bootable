@@ -39,6 +39,7 @@ alias quake-afterquake="currentdir=$(pwd);cd $HOME/quake-afterquake;nice -n -5 .
 alias quakepreset="currentdir=$(pwd);cd $HOME/quake;./choose-qw.sh;cd \"$currentdir\""
 alias browser="chromium"
 alias filebrowser="pcmanfm"
+alias discord='nice chromium --disable-gpu --user-data-dir="${HOME}/discordchrome" --app="https://discordapp.com/channels/@me" --class="discord"'
 alias update-quake="export DEBIAN_FRONTEND=noninteractive;cd $HOME/build/ezquake-source-official && git reset --hard && git clean -qfdx && git pull && git submodule update --remote --init && eval \$(grep --color=never PKGS_DEB build-linux.sh|head -n1) && echo 'installing deps...' && sudo apt -qqy update;sudo apt -qqy install \$PKGS_DEB && make -j$(nproc);cp ezquake-linux-x86_64 $HOME/quake/. && echo 'copied, update complete.'"
 alias nvidia-disable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy purge '*nvidia*';sudo apt -qqy autopurge"
 alias nvidia-enable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy install libnvidia-glvkspirv libnvidia-glvkspirv nvidia-driver nvidia-smi nvidia-settings nvidia-vulkan-icd nvidia-driver-libs libgles-nvidia1 libgles-nvidia2 nvidia-vulkan-icd;sudo apt -qqy -f install"

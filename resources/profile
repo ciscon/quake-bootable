@@ -37,6 +37,7 @@ if [ ! -f $HOME/.leavemealone ];then
   if [ ! -z "$DISPLAY" ];then
     echo "run a web browser: browser"
     echo "run a file browser: filebrowser"
+    echo "run discord: discord"
     echo "configure display(s): lxrandr"
     echo "configure networking: connman-gtk (systray icon)"
     echo "disable nvidia driver (use opensource driver nouveau): nvidia-disable"
