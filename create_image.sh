@@ -236,7 +236,10 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	if [ ! -z "$ezquakedeps" ];then
 	  apt-get -qy install $ezquakedeps
 	fi
-	
+
+	#openrazer and kernel headers	
+	apt-get -qy install openrazer-driver-dkms linux-headers-amd64
+
 	if [ "$minimal_kmsdrm" != "1" ];then
 		#install afterquake
 		mkdir -p /home/quakeuser/quake-afterquake
@@ -246,7 +249,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
 
 		#install nvidia and openrazer drivers
-		apt-get -qy install nvidia-driver openrazer-driver-dkms nvidia-settings linux-headers-amd64
+		apt-get -qy install nvidia-driver nvidia-settings
 	fi
 
 	#update nquake resources
