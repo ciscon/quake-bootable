@@ -1,4 +1,12 @@
 #!/bin/bash
+#
+echo "grow partition..."
+growpart $(blkid|grep --color=never LVM2_member|awk -F: '{print $1}'|sed 's/\([0-9]\+$\)/ \1/g') && \
+lvextend -l +100%FREE /dev/mapper/DBSTCK_* && \
+resize2fs /dev/mapper/DBSTCK_* && \
+echo "resized!"
+sync
+
 
 if ! grep noatime /mnt/temp/etc/fstab >/dev/null 2>&1;then
 	echo "fixing fstab..."
