@@ -42,10 +42,17 @@ pgrep -f pipewire >/dev/null 2>&1 || pipewire&
 	done
 )&
 
-#set background
-if [ -f $HOME/background.png ];then
-	feh --bg-max $HOME/background.png
+(
+#overlay background
+if [ ! -f "$HOME/background.png" ];then
+		convert /background.png -fill grey -pointsize 14 -gravity northwest -annotate +10+10 "$(. /home/quakeuser/.profile_messages)" \
+			-fill grey -pointsize 24 -gravity north -annotate +0+5 "build: $(cat /version)" "$HOME/background.png"
 fi
+#set background
+if [ -f "$HOME/background.png" ];then
+		feh --bg-max $HOME/background.png
+fi
+)&
 
 #make sure ezquake is registered
 xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
