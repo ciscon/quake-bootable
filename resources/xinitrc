@@ -52,9 +52,7 @@ if [ ! -f "$HOME/background.png" ];then
 	done
 fi
 #set background
-if [ -f "$HOME/background.png" ];then
-		feh --bg-max $HOME/background.png
-fi
+feh --bg-max "$HOME/background.png"
 )&
 
 #make sure ezquake is registered
