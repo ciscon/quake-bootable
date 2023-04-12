@@ -15,39 +15,8 @@ if [ -f ${HOME}/.razer_mode ];then
 	razer-mode $(cat ${HOME}/.razer_mode) >/dev/null 2>&1
 fi
 
-#user messages
-if [ ! -f $HOME/.leavemealone ];then
-  echo ""
-  echo "quake :"
-  echo "run quake (using ezquake, qw compatible): quake"
-  echo "change quake (ezquake) assets preset: quakepreset"
-  echo "update quake (ezquake) from git: update-quake"
-  if [ ! -z "$DISPLAY" ];then
-    echo "run afterquake (using fte, qw and netquake compatible): quake-afterquake"
-  fi
-  echo ""
-  #razer mouse functions
-  if ls /sys/module/razermouse/drivers/hid:razermouse/*/device_mode > /dev/null 2>&1;then
-    echo "razer mouse :"
-    echo "set dpi: razer-dpi XXX"
-    echo "set polling rate: razer-poll XXX"
-    echo ""
-  fi
-  echo "other :"
-  if [ ! -z "$DISPLAY" ];then
-    echo "run a web browser: browser"
-    echo "run a file browser: filebrowser"
-    echo "run discord: discord"
-    echo "configure display(s): lxrandr"
-    echo "configure networking: connman-gtk (systray icon)"
-    echo "disable nvidia driver (use opensource driver nouveau): nvidia-disable"
-    echo "enable nvidia driver: nvidia-enable"
-  else
-    echo "configure networking: connmanctl"
-  fi
-  echo "update system: update-system"
-  echo "shutdown system: shutdown-system"
-  echo ""
-  echo "to disable these messages: leavemealone"
-  echo ""
-fi
+. $HOME/.profile_messages
+echo ""
+echo "to disable these messages: leavemealone"
+echo ""
+

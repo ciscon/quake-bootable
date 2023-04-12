@@ -50,6 +50,7 @@ xinitrc="$currentdir/resources/xinitrc"
 quakedesktop="$currentdir/resources/quake.desktop"
 bashrc="$currentdir/resources/bashrc"
 profile="$currentdir/resources/profile"
+profilemessages="$currentdir/resources/profile_messages"
 hwclock="$currentdir/resources/hwclock"
 compositeconf="$currentdir/resources/01-composite.conf"
 sudoers="$currentdir/resources/sudoers"
@@ -164,11 +165,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#version
 	touch /'${release_ver}'
-	if hash convert >/dev/null 2>&1;then
-		convert /background.png -fill grey -pointsize 24 -gravity north -annotate +0+5 "build: '${release_ver}'" /home/quakeuser/background.png
-		rm -f /background.png
-		apt-get -qy purge imagemagick
-	fi
 
 	#replace systemd with openrc, multiple steps required
 	if [ "$distro" = "debian" ];then
@@ -333,9 +329,17 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	sudo cp -f "$bashrc" "$workdir/home/quakeuser/.bashrc"
 	sudo cp -f "$profile" "$workdir/home/quakeuser/.profile"
+	sudo cp -f "$profile_messages" "$workdir/home/quakeuser/.profile_messages"
 	
 	#fix ownership for quakeuser
 	sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
+
+	#add shortcuts and version to background
+	sudo chroot "$workdir" bash -c '
+		if hash convert >/dev/null 2>&1;then
+		convert /background.png -fill grey -pointsize 14 -gravity northwest -annotate +10+10 "$(. /home/quakeuser/.profile_messages)" \
+ 			-fill grey -pointsize 24 -gravity north -annotate +0+5 "build: '${release_ver}'" /home/quakeuser/background.png;sudo rm -f /background.png
+		fi'
 	
 	echo "configured chroot"
 
