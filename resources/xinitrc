@@ -46,7 +46,7 @@ pgrep -f pipewire >/dev/null 2>&1 || pipewire&
 #overlay background
 if [ ! -f "$HOME/background.png" ];then
 		convert /background.png -fill grey -pointsize 14 -gravity northwest -annotate +10+10 "$(. /home/quakeuser/.profile_messages)" \
-			-fill grey -pointsize 24 -gravity north -annotate +0+5 "build: $(cat /version)" "$HOME/background.png"
+			-fill grey30 -pointsize 14 -gravity north -annotate +0+5 "build: $(cat /version)" "$HOME/background.png"
 fi
 #set background
 if [ -f "$HOME/background.png" ];then
