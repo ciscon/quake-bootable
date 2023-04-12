@@ -50,6 +50,7 @@ fi
 #make sure ezquake is registered
 xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
 
+lxpolkit&
 fbautostart&
 xterm -ls&
 
