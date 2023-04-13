@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec nice chromium --disable-gpu --user-data-dir="${HOME}/discordchrome" --app="https://discordapp.com/channels/@me" --class="discord"

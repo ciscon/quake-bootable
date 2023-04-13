@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Discord
+GenericName=discord
+Comment=Discord Chat
+Keywords=discord,chat
+Categories=Game;Chat;InstantMessaging
+Exec=/usr/local/bin/discord
+Terminal=false
+StartupNotify=true

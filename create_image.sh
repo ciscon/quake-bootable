@@ -47,7 +47,6 @@ drirc="$currentdir/resources/drirc"
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
 xinitrc="$currentdir/resources/xinitrc"
-quakedesktop="$currentdir/resources/quake.desktop"
 bashrc="$currentdir/resources/bashrc"
 profile="$currentdir/resources/profile"
 profilemessages="$currentdir/resources/profile_messages"
@@ -315,8 +314,15 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 	sudo cp -f "$xresources" "$workdir/home/quakeuser/.Xresources"
 	sudo mkdir -p "$workdir/home/quakeuser/.local/share/applications"
-	sudo cp -f "$quakedesktop" "$workdir/home/quakeuser/.local/share/applications/ezQuake.desktop"
-	sudo ln -sf "/home/quakeuser/.local/share/applications/ezQuake.desktop" "$workdir/usr/share/applications/ezQuake.desktop"
+
+	#desktop files
+	for dfile in "$currentdir/resources/applications/"*;do
+		sudo cp -f "$dfile" "$workdir/usr/share/applications/."
+	done
+
+	#/usr/local/bin
+	sudo cp -f "$currentdir/resources/bin/"* "$workdir/usr/local/bin/."
+
 	sudo mkdir -p "$workdir/home/quakeuser/.config/tint2"
 	sudo cp -f "$tintrc" "$workdir/home/quakeuser/.config/tint2/tint2rc"
 	
