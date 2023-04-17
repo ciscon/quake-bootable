@@ -59,7 +59,7 @@ tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
-packages="file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free libarchive-tools linux-image-amd64 ntfs-3g "
+packages="file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman iw cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free libarchive-tools linux-image-amd64 ntfs-3g "
 packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit "
 packages_x11_post_systemd_removal=" lxpolkit "
 
