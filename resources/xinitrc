@@ -13,6 +13,9 @@ dbus-cleanup-sockets >/dev/null 2>&1
 [ -z "$DBUS_SESSION_BUS_ADDRESS" ] && eval $(/usr/bin/dbus-launch --exit-with-session --sh-syntax)
 dbus-update-activation-environment --all >/dev/null 2>&1
 
+#disable tearfree
+for device in $(xrandr |awk '{print $1}'|grep --color=never -v '^Screen'|grep --color=never -v '^[0-9]');do xrandr --output "$device" --set TearFree off >/dev/null 2>&1;done&
+
 #start tint first
 nice tint2&
 
