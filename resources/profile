@@ -22,3 +22,9 @@ if [ ! -f $HOME/.leavemealone ];then
   echo ""
 fi
 
+#if we build again inside bootable environment, use current hardware for optimizations
+export CC="clang-15"
+export CXX="clang++-15"
+export CFLAGS="-march=native -mtune=native -O3 -pipe -flto -ftree-slp-vectorize -funroll-loops"
+export CXXFLAGS="$CFLAGS"
+export LDFLAGS="$CFLAGS"

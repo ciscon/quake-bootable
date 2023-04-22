@@ -13,11 +13,6 @@ dbus-cleanup-sockets >/dev/null 2>&1
 [ -z "$DBUS_SESSION_BUS_ADDRESS" ] && eval $(/usr/bin/dbus-launch --exit-with-session --sh-syntax)
 dbus-update-activation-environment --all >/dev/null 2>&1
 
-
-#if we build again inside bootable environment, use current hardware for optimizations
-export CFLAGS="-march=native -O3 -flto=$(nproc) -pipe"
-export LDFLAGS="$CFLAGS"
-
 #start tint first
 nice tint2&
 
