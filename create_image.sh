@@ -233,7 +233,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	echo "cleaning up packages"
 	#clean up dev packages
-	apt-get -qy purge "*-dev clang"
+	apt-get -qy purge "*-dev"
 	#clean up packages
 	apt-get -qy autopurge
 	
@@ -296,7 +296,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	rm -rf /tmp/*
 	rm -rf /var/log/*
 
-	sudo apt -y purge linux-image-amd64 linux-headers-amd64
+	apt -y purge linux-image-amd64 linux-headers-amd64
+	apt-get -qy purge clang gcc
+	apt-get -qy autopurge
 	
 	#remove temporary resolv.conf
 	rm -f /etc/resolv.conf
