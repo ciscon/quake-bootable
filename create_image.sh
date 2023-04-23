@@ -216,7 +216,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	#build ezquake
 	echo "building ezquake"
-	export CFLAGS="-march=nehalem -O3 -pipe -flto=$(nproc) -flto-partition=none -ftree-slp-vectorize"
+	export CFLAGS="-pipe -march=nehalem -O3 -flto=$(nproc) -flto-partition=balanced -ftree-slp-vectorize -ffp-contract=fast -fno-defer-pop -finline-limit=64 -fmerge-all-constants"
 	export LDFLAGS="$CFLAGS"
 	rm -rf /home/quakeuser/build
 	mkdir /home/quakeuser/build
