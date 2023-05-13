@@ -59,13 +59,15 @@ tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
-packages="file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo iproute2 procps vim-tiny unzip zstd alsa-utils grub2 connman iw cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free libarchive-tools linux-image-amd64 ntfs-3g "
-packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit "
+packages="file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo procps vim-tiny unzip zstd alsa-utils grub2 cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free libarchive-tools linux-image-amd64 ntfs-3g "
+packages_nox11="ifupdown dhcpcd-base"
+packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit "
 packages_x11_post_systemd_removal=" lxpolkit "
 
 if [ "$minimal_kmsdrm" != "1" ];then
 	packages+=$packages_x11
 else
+	packages+=$packages_nox11
 	export minimal_kmsdrm
 fi
 export packages
@@ -169,8 +171,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#replace systemd with openrc, multiple steps required
 	if [ "$distro" = "debian" ];then
+		if [ "$minimal_kmsdrm" != "1" ];then
+			elogind="elogind libpam-elogind"
+		fi
 		apt-get -qy install openrc sysvinit-core
-		apt-get -qy install elogind libpam-elogind orphan-sysvinit-scripts systemctl procps
+		apt-get -qy install $elogind orphan-sysvinit-scripts systemctl procps
 		apt-get -qy purge systemd
 		apt-get -qy purge systemctl
 	fi
@@ -287,6 +292,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#allow any user to start x
 	echo -e "allowed_users=anybody\nneeds_root_rights=yes" > /etc/X11/Xwrapper.config
+
+	#configure networking for minimal build
+	if [ "$minimal_kmsdrm" = "1" ];then
+		echo -e "auto /e*=eth\n  iface eth inet dhcp" > /etc/network/interfaces
+	fi
 	
 	#configure grub
 	sed -i "s/GRUB_TIMEOUT.*/GRUB_TIMEOUT=1/g" /etc/default/grub
