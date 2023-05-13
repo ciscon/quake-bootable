@@ -26,8 +26,6 @@ if [ ! -z "$DISPLAY" ];then
     echo "disable nvidia driver (use opensource driver nouveau): nvidia-disable"
     echo "enable nvidia driver: nvidia-enable"
   fi
-else
-  echo "configure networking: connmanctl"
 fi
 echo "update system: update-system"
 echo "shutdown system: shutdown-system"
