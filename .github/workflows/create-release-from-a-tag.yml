@@ -1,11 +1,13 @@
-name: BuildAndPublish
+name: Publish
 
 on:
-  [push]
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
-    name: Build and Publish Image
+    name: Publish Image
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,7 +33,6 @@ jobs:
         rm -f ./*.zip
         bash ./create_image.sh
     - name: Upload binaries to release
-      if: startsWith(github.ref, 'refs/tags/v')
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
