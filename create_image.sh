@@ -146,6 +146,10 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	echo "APT::Install-Suggests \"0\";APT::Install-Recommends \"false\";APT::AutoRemove::RecommendsImportant \"false\";" > /etc/apt/apt.conf.d/01lean
 	echo "path-exclude=/usr/share/doc/*" > /etc/dpkg/dpkg.cfg.d/01_nodoc
 	rm -rf /usr/share/doc
+	echo "path-exclude=/usr/share/man/*" > /etc/dpkg/dpkg.cfg.d/01_noman
+	rm -rf /usr/share/man
+	echo "path-exclude=/usr/share/locale/*" > /etc/dpkg/dpkg.cfg.d/01_nolocale
+	rm -rf /usr/share/locale
 	sed -i "s/main$/main contrib non-free non-free-firmware/g" /etc/apt/sources.list
 
 	##xanmod
