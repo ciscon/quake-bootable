@@ -33,7 +33,7 @@ fi
 if [ -z "$DISPLAY" ];then
 	width=$(fbset |grep --color=never geometry|awk '{print $2}')
 	height=$(fbset |grep --color=never geometry|awk '{print $3}')
-	extra="+vid_usedesktopres 0 +vid_width $width +vid_height $height +vid_displayfrequency 999 +vid_gamma_workaround 0"
+	extra="+vid_usedesktopres 0 +vid_width $width +vid_height $height +vid_displayfrequency 999 +vid_gamma_workaround 0 +exec configs/config.cfg"
 	echo ""
 	echo "setting video mode based on current framebuffer resolution, use vid_width/vid_height to customize"
 	echo "use s_audiodevicelist list to list devices, set with s_audiodevice X"
