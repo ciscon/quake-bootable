@@ -314,8 +314,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#let debootstick install this
 	apt -y purge linux-image-amd64 || true
 	apt -y purge linux-headers-amd64 || true
-	apt-get -qy purge gcc
-	apt-get -qy autopurge
+	apt-get -qy purge gcc || true
+	apt-get -qy autopurge || true
 	
 	#remove temporary resolv.conf
 	rm -f /etc/resolv.conf
