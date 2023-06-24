@@ -11,6 +11,7 @@ ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git" #repository to us
 
 #nquake resources
 nquakeresourcesurl="https://github.com/nQuake/distfiles/releases/download/snapshot"
+nquakeresourcesurl_backup="https://github.com/ciscon/distfiles/releases/download/snapshot"
 nquakezips="gpl.zip non-gpl.zip"
 
 
@@ -74,6 +75,7 @@ export packages
 export packages_x11_post_systemd_removal
 export ezquakegitrepo
 export nquakeresourcesurl
+export nquakeresourcesurl_backup
 export nquakezips
 
 PATH=$PATH:/sbin:/usr/sbin
@@ -128,7 +130,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -fR "$quakedir" "$workdir/quake"
 	sudo cp -f "$background" "$workdir/background.png"
 
-	sudo --preserve-env=nquakeresourcesurl,nquakezips,ezquakegitrepo,packages,packages_x11_post_systemd_removal,distro,minimal_kmsdrm chroot "$workdir" bash -e -c '
+	sudo --preserve-env=nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,packages_x11_post_systemd_removal,distro,minimal_kmsdrm chroot "$workdir" bash -e -c '
 	
 	#configure hostname
 	echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
@@ -272,7 +274,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	mkdir -p /home/quakeuser/quake/qw.nquake
 	mkdir -p /tmp/nquakeresources
 	for res in $nquakezips;do
-	  wget "$nquakeresourcesurl/$res" -O /tmp/nquakeresources/$res || exit 5
+	  wget "$nquakeresourcesurl/$res" -O /tmp/nquakeresources/$res || wget "$nquakeresourcesurl_backup/$res" -O /tmp/nquakeresources/$res || exit 5
 		bsdtar xf /tmp/nquakeresources/$res --strip-components=1 -C /home/quakeuser/quake/qw.nquake || exit 6
   done
   rm -rf /tmp/nquakeresources
