@@ -311,7 +311,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	rm -rf /tmp/*
 	rm -rf /var/log/*
 
-	apt -y purge linux-image-amd64 linux-headers-amd64
+	#let debootstick install this
+	apt -y purge linux-image-amd64 || true
+	apt -y purge linux-headers-amd64 || true
 	apt-get -qy purge gcc
 	apt-get -qy autopurge
 	
