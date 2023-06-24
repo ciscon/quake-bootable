@@ -2,8 +2,8 @@ name: Publish
 
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - 'main'
 
 jobs:
   build:
@@ -32,13 +32,19 @@ jobs:
       run: |
         rm -f ./*.zip
         bash ./create_image.sh
+    - name: Bump version and push tag
+      id: bump_version
+      uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
+        WITH_V: true
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file_glob: true
         file: ./output/*
-        tag: ${{ github.ref }}
+        tag: ${{ steps.bump_version.outputs.new_tag }}
         overwrite: true
         body: |
           ${{ steps.read_release.outputs.RELEASE_BODY }}
