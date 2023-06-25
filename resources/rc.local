@@ -40,11 +40,13 @@ if [ -e /sys/class/drm/card*/device/power_dpm_force_performance_level ];then
 		if [ ! -z "$amdprofile" ] && [ -e /sys/class/drm/card*/device/pp_power_profile_mode ];then
 			echo "$amdprofile" > /sys/class/drm/card*/device/pp_power_profile_mode 2>/dev/null
 		fi
+	else
+		echo "high" > /sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
+	fi
+	if [ -e /sys/class/drm/card*/device/pp_dpm_mclk ];then
 		#force memory clock to full
 		echo "3" > /sys/class/drm/card*/device/pp_dpm_mclk 2>/dev/null
 	fi
-elif [ -e /sys/class/drm/card*/device/power_dpm_force_performance_level ];then
-	echo "high" > /sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
 fi
 
 echo "booting..."
