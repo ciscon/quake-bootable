@@ -239,7 +239,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	echo "cleaning up packages"
 	#clean up dev packages
-	apt-get -qy purge "*-dev"
+	apt-get -qy purge build-essential || true
+	#apt-get -qy purge "*-dev"
 	#clean up packages
 	apt-get -qy autopurge
 	
