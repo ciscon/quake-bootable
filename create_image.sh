@@ -303,7 +303,19 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	#configure grub
 	sed -i "s/GRUB_TIMEOUT.*/GRUB_TIMEOUT=1/g" /etc/default/grub
-	sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"mitigations=off tsc=reliable nosplash\"/g" /etc/default/grub
+
+	#explicitly disable selinux just to get rid of warnings on boot
+	echo "SELINUX=disabled" > /etc/selinux/config
+
+	#configure openrc to run jobs in parallel
+	if [ -f /etc/rc.conf ];then
+		sed -i "s/.*rc_parallel=.*/rc_parallel=\"YES\"/g" /etc/rc.conf
+	fi
+
+	#configure rcS to be quiet
+	if [ -f /etc/default/rcS ];then
+		sed -i "s/#*\(.*\)VERBOSE=.*/\1VERBOSE=\"no\"/g" /etc/default/rcS
+	fi
 	
 	rm -rf /tmp/*
 	rm -rf /var/log/*
