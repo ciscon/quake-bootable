@@ -63,7 +63,6 @@ issueappend="$currentdir/resources/issue.append"
 packages="iputils-ping file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo procps vim-tiny unzip zstd alsa-utils grub2 cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free libarchive-tools linux-image-amd64 ntfs-3g nfs-common "
 packages_nox11="ifupdown dhcpcd-base"
 packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit "
-packages_x11_post_systemd_removal=" lxpolkit "
 
 if [ "$minimal_kmsdrm" != "1" ];then
 	packages+=$packages_x11
@@ -72,7 +71,6 @@ else
 	export minimal_kmsdrm
 fi
 export packages
-export packages_x11_post_systemd_removal
 export ezquakegitrepo
 export nquakeresourcesurl
 export nquakeresourcesurl_backup
@@ -130,7 +128,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -fR "$quakedir" "$workdir/quake"
 	sudo cp -f "$background" "$workdir/background.png"
 
-	sudo --preserve-env=nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,packages_x11_post_systemd_removal,distro,minimal_kmsdrm chroot "$workdir" bash -e -c '
+	sudo --preserve-env=nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,minimal_kmsdrm chroot "$workdir" bash -e -c '
 	
 	#configure hostname
 	echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
@@ -166,7 +164,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	(mount -t devpts devpts /dev/pts||true)
 	(mount proc /proc -t proc||true)
 
-	apt-get -qy install $packages
+	#apt-get -qy install $packages
 
 	#install firmware from git?
 	#rm -rf /lib/firmware
@@ -187,9 +185,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 
 	#reinstall packages that may have been removed by systemd purge
-	if [ "$minimal_kmsdrm" != "1" ];then
-		apt-get -qy install $packages_x11_post_systemd_removal
-	fi
+	apt-get -qy install $packages
 	
 	##log2ram on debian, devuan does not have systemd so the installation will fail
 	#if [ "$distro" = "debian" ];then
