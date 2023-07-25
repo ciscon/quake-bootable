@@ -41,6 +41,8 @@ if [ -e /sys/class/drm/card*/device/power_dpm_force_performance_level ];then
 		amdprofile=$(grep --color=never 'VR.*:$' /sys/class/drm/card*/device/pp_power_profile_mode|awk '{print $1}' 2>/dev/null)
 		if [ ! -z "$amdprofile" ] && [ -e /sys/class/drm/card*/device/pp_power_profile_mode ];then
 			echo "$amdprofile" > /sys/class/drm/card*/device/pp_power_profile_mode 2>/dev/null
+		else
+			echo "high" > /sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
 		fi
 	else
 		echo "high" > /sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
