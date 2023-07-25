@@ -121,8 +121,12 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -rf "$modprobe" "$workdir/etc/"
 	sudo mkdir -p "$workdir/etc/systemd/system"
 	sudo cp -f "$rclocalservice" "$workdir/etc/systemd/system/rc-local.service"
+
 	sudo mkdir -p "$workdir/root"
 	sudo cp -f "$profile" "$workdir/root/.profile"
+	sudo cp -f "$bashrc" "$workdir/root/.bashrc"
+	sudo cp -f "$profilemessages" "$workdir/root/.profile_messages"
+
 	if [ -d "$workdir/quake" ];then
 		sudo rm -rf "$workdir/quake"
 	fi
@@ -140,6 +144,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	useradd -m -p quake -s /bin/bash quakeuser
 	mv -f /quake /home/quakeuser/.
 	cp -f /root/.profile /home/quakeuser/.
+	cp -f /root/.profile_messages /home/quakeuser/.
+	cp -f /root/.bashrc /home/quakeuser/.
 	echo -e "quakeuser\nquakeuser" | passwd quakeuser
 	
 	#configure package manager and install packages
@@ -367,9 +373,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$sudoers" "$workdir/etc/sudoers"
 	
 	sudo cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
-	
-	sudo cp -f "$bashrc" "$workdir/home/quakeuser/.bashrc"
-	sudo cp -f "$profilemessages" "$workdir/home/quakeuser/.profile_messages"
 	
 	#fix ownership for quakeuser
 	sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
