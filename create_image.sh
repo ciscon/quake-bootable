@@ -232,6 +232,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#build ezquake
 	echo "building ezquake"
 	. /home/quakeuser/.profile
+	#drop march to nehalem instead of native
+	export CFLAGS="${CFLAGS} -march=nehalem"
+	export LDFLAGS="${CFLAGS}"
 	rm -rf /home/quakeuser/build
 	mkdir /home/quakeuser/build
 	git clone --depth=1 $ezquakegitrepo /home/quakeuser/build/ezquake-source-official
