@@ -121,10 +121,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -rf "$modprobe" "$workdir/etc/"
 	sudo mkdir -p "$workdir/etc/systemd/system"
 	sudo cp -f "$rclocalservice" "$workdir/etc/systemd/system/rc-local.service"
-	if [ -d "$workdir/root/quake" ];then
-		sudo rm -rf "$workdir/root/quake"
-	fi
 	sudo mkdir -p "$workdir/root"
+	sudo cp -f "$profile" "$workdir/root/.profile"
+	if [ -d "$workdir/quake" ];then
+		sudo rm -rf "$workdir/quake"
+	fi
 	sudo cp -fR "$quakedir" "$workdir/quake"
 	sudo cp -f "$background" "$workdir/background.png"
 
@@ -138,6 +139,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	useradd -m -p quake -s /bin/bash quakeuser
 	mv -f /quake /home/quakeuser/.
+	cp -f /root/.profile /home/quakeuser/.
 	echo -e "quakeuser\nquakeuser" | passwd quakeuser
 	
 	#configure package manager and install packages
@@ -223,8 +225,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	#build ezquake
 	echo "building ezquake"
-	export CFLAGS="-pipe -march=nehalem -O3 -flto=$(nproc) -flto-partition=balanced -ftree-slp-vectorize -ffp-contract=fast -fno-defer-pop -finline-limit=64 -fmerge-all-constants"
-	export LDFLAGS="$CFLAGS"
+	. /home/quakeuser/.profile
 	rm -rf /home/quakeuser/build
 	mkdir /home/quakeuser/build
 	git clone --depth=1 $ezquakegitrepo /home/quakeuser/build/ezquake-source-official
@@ -368,7 +369,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
 	
 	sudo cp -f "$bashrc" "$workdir/home/quakeuser/.bashrc"
-	sudo cp -f "$profile" "$workdir/home/quakeuser/.profile"
 	sudo cp -f "$profilemessages" "$workdir/home/quakeuser/.profile_messages"
 	
 	#fix ownership for quakeuser
