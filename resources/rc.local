@@ -10,17 +10,6 @@
 #sync
 
 
-#items to run on first boot
-if [ ! -e /firstboot ];then
-	update-grub&
-	if ! grep noatime /etc/fstab >/dev/null 2>&1;then
-		echo "fixing fstab..."
-		sed -i 's/\(.*\)ext4[[:space:]]\+errors=remount-ro[[:space:]]\+\(.*\)/\1ext4 noatime,nodiratime,errors=remount-ro \2/g' /etc/fstab
-		sync
-		mount -o remount /&
-	fi
-	touch /firstboot
-fi
 
 #set local time for windows users
 if hash timedatectl >/dev/null 2>&1;then
@@ -67,6 +56,20 @@ elif [ -e /sys/class/drm/card*/gt_max_freq_mhz ];then
 		#force max frequency
 		echo "$maxfreq" > /sys/class/drm/card*/gt_min_freq_mhz
 	fi
+fi
+
+#items to run on first boot
+if [ ! -e /firstboot ];then
+	echo "first boot"
+	sync
+	if ! grep noatime /etc/fstab >/dev/null 2>&1;then
+		echo "fixing fstab..."
+		sed -i 's/\(.*\)ext4[[:space:]]\+errors=remount-ro[[:space:]]\+\(.*\)/\1ext4 noatime,nodiratime,errors=remount-ro \2/g' /etc/fstab
+		sync
+		mount -o remount /&
+	fi
+	update-grub
+	touch /firstboot
 fi
 
 echo "booting..."
