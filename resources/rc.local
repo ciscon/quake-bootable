@@ -68,6 +68,8 @@ if [ ! -e /firstboot ];then
 		sync
 		mount -o remount /&
 	fi
+	#allow grub to probe for other operating systems
+	sed -i "s/^GRUB_DISABLE_OS_PROBER.*/GRUB_DISABLE_OS_PROBER=false/g" /etc/default/grub
 	update-grub
 	touch /firstboot
 fi

@@ -313,7 +313,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	#configure grub
 	sed -i "s/GRUB_TIMEOUT.*/GRUB_TIMEOUT=1/g" /etc/default/grub
-	sed -i "s/.*GRUB_DISABLE_OS_PROBER.*/GRUB_DISABLE_OS_PROBER=false/g" /etc/default/grub
 
 	#explicitly disable selinux just to get rid of warnings on boot
 	echo "SELINUX=disabled" > /etc/selinux/config
