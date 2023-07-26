@@ -10,17 +10,19 @@ The main use case for quake-bootable is to save the image to a USB flash drive. 
 - Know the most important shortcuts of vim (quit, save and quit, insert...)
 
 ## Available commands in Quake-bootable (printed in terminal on boot)
-$ browser - starts chromium web browser
-$ filebrowser
-$ discord
-$ lxrandr - configure display
-$ shutdown-system
+- General
+  - browser - starts chromium web browse
+  - filebrowser
+  - discord
+  - lxrandr - configure display
+  - shutdown-system
+  - razer commands (if a razer device exists)
 - Quake related commands
-$ quake - runs the game with the selected preset
-$ quakepreset - changes the qw folder
-$ update-quake
-$ quake-afterquake
-$ razer commands (if a razer device exists)
+  - quake - runs the game with the selected preset
+  - quakepreset - changes the qw folder
+  - update-quake
+  - quake-afterquake
+
 
 ## Step 1 - Burn the image
 In Windows, to burn to a HDD or USB - download the software balenaEtcher, and burn the .img to the target drive.  For writing to a normal USB you can also just use win32 disk imager.
@@ -33,9 +35,12 @@ Note: If a red warning is displayed when you select the Quake-bootable disk, abo
 ## Stop 3 - Recommended optional steps
 ### change password from user (quakeuser)
 The Quake-bootable user is quakeuser. The default password is quakeuser (you will need it)
-You can change it: $ passwd
+You can change it with
+
+`$ passwd`
+
 ### update packages
-$ sudo apt update 
+`$ sudo apt update`
 
 ## Step 4 - install a different window manager (optional)
 By default Quake-bootable includes a very basic window manager (Openbox). If you struggle with it, you can install a more familiar one, for example xfce. To install: $ sudo apt install xfce4
@@ -47,7 +52,7 @@ exec xfce4-session
 
 On the next boot, it will boot into xfce. Don't do it now! Continue to next step.
 
-##Step 5 - fix boot options (optional)
+## Step 5 - fix boot options (optional)
 - If you want to keep Windows, you'll need to dual-boot. Let's ensure it will work.
 Upon your first boot an entry should have been added to your grub boot menu if another operating system was detected.
 
