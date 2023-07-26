@@ -13,7 +13,7 @@
 #items to run on first boot
 if [ ! -e /firstboot ];then
 	update-grub&
-	if ! grep noatime /mnt/temp/etc/fstab >/dev/null 2>&1;then
+	if ! grep noatime /etc/fstab >/dev/null 2>&1;then
 		echo "fixing fstab..."
 		sed -i 's/\(.*\)ext4[[:space:]]\+errors=remount-ro[[:space:]]\+\(.*\)/\1ext4 noatime,nodiratime,errors=remount-ro \2/g' /etc/fstab
 		sync
