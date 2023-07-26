@@ -88,6 +88,7 @@ $ quake
 
 
 ## Building your own image:
+```
 create:
  ./create_image.sh
 
@@ -99,3 +100,4 @@ test:
 package (not after truncate):
  quake_bootable=$(ls -t quake_bootable-*.img| head -1)
  pigz --zip -9 $quake_bootable
+```
