@@ -49,14 +49,7 @@ On the next boot, it will boot into xfce. Don't do it now! Continue to next step
 
 ##Step 5 - fix boot options (optional)
 - If you want to keep Windows, you'll need to dual-boot. Let's ensure it will work.
-Uncomment a line in /etc/default/grub
-GRUB_DISABLE_OS_PROBER=false
-(the line must look like that)
-Before saving the file, scroll down and ensure there isn't a similar line at the bottom. If there is, comment it (or delete it).
-- Run the following commands:
-$ sudo apt-get install os-prober
-$ sudo update-grub
-"update-grub" should recognize Windows now.
+Upon your first boot an entry should have been added to your grub boot menu if another operating system was detected.
 
 ## Step 6 - reboot
 $ shutdown-system now -r
