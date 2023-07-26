@@ -1,16 +1,4 @@
-create:
- ./create_image.sh
-
-test:
- quake_bootable=$(ls -t quake_bootable-*.img| head -1)
- truncate -s 4G $quake_bootable `#simulate writing to 4GB media, warning: this will resize the image, zip file will remain unmodified`
- qemu-system-x86_64 -cpu Nehalem-v2 -m 4096 -smp 4 -drive format=raw,file=$quake_bootable -audio driver=pa,model=hda,id=foo -device virtio-vga-gl -display gtk,gl=on -device virtio-tablet-pci -device virtio-keyboard-pci -machine q35,vmport=off$([ -e /dev/kvm ] && echo ",accel=kvm") -device virtio-rng-pci
-
-package (not after truncate):
- quake_bootable=$(ls -t quake_bootable-*.img| head -1)
- pigz --zip -9 $quake_bootable
-
-# Introduction
+﻿# Introduction
 Want to try running Quake in Linux? Curious?
 It's easy! Ciscon prepared this Linux Quake bootable image, which includes Chromium web browser, Discord and mostly everything you need to use when playing Quake, without missing anything. Everything works immediately.
 
@@ -21,7 +9,7 @@ The main use case for quake-bootable is to save the image to a USB flash drive. 
 - Know how to use a linux terminal (console)
 - Know the most important shortcuts of vim (quit, save and quit, insert...)
 
-## Available commands in Quake-bootable
+## Available commands in Quake-bootable (printed in terminal on boot)
 $ browser - starts chromium web browser
 $ filebrowser
 $ discord
@@ -32,10 +20,10 @@ $ quake - runs the game with the selected preset
 $ quakepreset - changes the qw folder
 $ update-quake
 $ quake-afterquake
+$ razer commands (if a razer device exists)
 
 ## Step 1 - Burn the image
-In Windows, to burn to a HDD - download the software balenaEtcher, and burn the .img to the target drive.
-In Windows, to burn to a USB flash drive - download the software Rufus, and burn the .img to the target drive.
+In Windows, to burn to a HDD or USB - download the software balenaEtcher, and burn the .img to the target drive.  For writing to a normal USB you can also just use win32 disk imager.
 
 ## Step 2 - Boot into Quake-bootable
 When booting, press the key to open boot options (usually F8), and choose the disk to boot from.
@@ -104,3 +92,17 @@ $ quake
 - see what runs in the startup $ vim ~/.xinitrc 
 - if your Quake isn't as smooth as it should, go to the ezQuake menu, and change the resolution there. Play around with settings, and apply them. Once its ok, cfg_save
 - if your Quake still isn't smooth, your monitor detailed resolution might need to be updated. You'll use xrandr command for this. Ask for help.
+
+
+## Building your own image:
+create:
+ ./create_image.sh
+
+test:
+ quake_bootable=$(ls -t quake_bootable-*.img| head -1)
+ truncate -s 4G $quake_bootable `#simulate writing to 4GB media, warning: this will resize the image, zip file will remain unmodified`
+ qemu-system-x86_64 -cpu Nehalem-v2 -m 4096 -smp 4 -drive format=raw,file=$quake_bootable -audio driver=pa,model=hda,id=foo -device virtio-vga-gl -display gtk,gl=on -device virtio-tablet-pci -device virtio-keyboard-pci -machine q35,vmport=off$([ -e /dev/kvm ] && echo ",accel=kvm") -device virtio-rng-pci
+
+package (not after truncate):
+ quake_bootable=$(ls -t quake_bootable-*.img| head -1)
+ pigz --zip -9 $quake_bootable
