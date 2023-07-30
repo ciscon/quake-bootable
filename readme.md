@@ -43,12 +43,12 @@ You can change it with
 `$ sudo apt update`
 
 ## Step 4 - install a different window manager (optional)
-By default Quake-bootable includes a very basic window manager (Openbox). If you struggle with it, you can install a more familiar one, for example xfce. To install: $ sudo apt install xfce4
-And then, make it the default in the startup process. edit the file: $ vim ~/.xinitrc 
+By default Quake-bootable includes a very basic window manager (Openbox). If you struggle with it, you can install a more familiar one, for example xfce. To install: `$ sudo apt install xfce4`
+And then, make it the default in the startup process. edit the file: `$ vim ~/.xinitrc`
 And change the very bottom where it says
-exec openbox-session
+`exec openbox-session
 to
-exec xfce4-session
+exec xfce4-session`
 
 On the next boot, it will boot into xfce. Don't do it now! Continue to next step.
 
@@ -65,29 +65,29 @@ All your disks should be visible and accessible.
 
 ## Step 7 - Hardware tests
 - Let's see if everything is right. visit https://devicetests.com/
-- Check your monitor refresh rate: $ lxrandr
+- Check your monitor refresh rate: `$ lxrandr`
 It should be correct. If it isn't, see "Other info" below.
 
 ## Step 8 - run Quake
 $ quake
 It should run smooth as butter!
-You can change the selected "Quake install" to use: $ quakepreset
+You can change the selected "Quake install" to use: `$ quakepreset`
 
 ## Step 9 - use your own Quake! (optional)
 This is the best thing - you can use Quake-bootable with your Quake folder: your config, your graphics, everything.
 - create a folder in quakeuser homedirectory/quake, (where the existing qw.* folders are). something like
-$ mkdir /home/quakeuser/quake/qw.mushi 
+`$ mkdir /home/quakeuser/quake/qw.mushi`
 - copy your Quake's qw/ folder into this qw.mushi folder
 - copy your config file to the /home/quakeuser/quake/ezquake/configs folder
 - copy id1.pak to /home/quakeuser/quake/id1
 change the selected qw folder to use to your own (qw.mushi):
-$ quakepreset
+`$ quakepreset`
 And that's it. You can run the game and have it exactly your way:
-$ quake
+`$ quake`
 
 # Other info:
-- configuration of your gpu can be found in /etc/rc.local 
-- see what runs in the startup $ vim ~/.xinitrc 
+- configuration of your gpu can be found in `/etc/rc.local`
+- see what runs in the startup `$ vim ~/.xinitrc` 
 - if your Quake isn't as smooth as it should, go to the ezQuake menu, and change the resolution there. Play around with settings, and apply them. Once its ok, cfg_save
 - if your Quake still isn't smooth, your monitor detailed resolution might need to be updated. You'll use xrandr command for this. Ask for help.
 
