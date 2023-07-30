@@ -3,29 +3,29 @@
 currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 
 if lsmod|grep nvidia_modeset >/dev/null 2>&1;then
-    echo "loading nvidia preferences"
-    export __GL_YIELD="NOTHING"
-    export __GL_MaxFramesAllowed=2
-    export __GL_THREADED_OPTIMIZATIONS=1
+	echo "loading nvidia preferences"
+	export __GL_YIELD="NOTHING"
+	export __GL_MaxFramesAllowed=2
+	export __GL_THREADED_OPTIMIZATIONS=1
 
-    if [ $__GL_THREADED_OPTIMIZATIONS -ne 0 ];then
-        if [ $(/sbin/ldconfig -Np|grep libpthread.so.0$ -c) -gt 0 ];then
-            LD_PRELOAD+="libpthread.so.0 "
-        fi
-        if [ $(/sbin/ldconfig -Np|grep libGL.so.1$ -c) -gt 0 ];then
-            LD_PRELOAD+="libGL.so.1 "
-        fi
-    fi
+	if [ $__GL_THREADED_OPTIMIZATIONS -ne 0 ];then
+		if [ $(/sbin/ldconfig -Np|grep libpthread.so.0$ -c) -gt 0 ];then
+			LD_PRELOAD+="libpthread.so.0 "
+		fi
+		if [ $(/sbin/ldconfig -Np|grep libGL.so.1$ -c) -gt 0 ];then
+			LD_PRELOAD+="libGL.so.1 "
+		fi
+	fi
 
-    nvidia-settings -a "[gpu:0]/GPUPowerMizerMode=1" >/dev/null 2>&1&
-    nvidia-settings -a OpenGLImageSettings=3 >/dev/null 2>&1&
-    nvidia-settings -a SyncToVBlank=0 >/dev/null 2>&1&
-    nvidia-settings -a AllowFlipping=1 >/dev/null 2>&1&
+	nvidia-settings -a "[gpu:0]/GPUPowerMizerMode=1" >/dev/null 2>&1&
+	nvidia-settings -a OpenGLImageSettings=3 >/dev/null 2>&1&
+	nvidia-settings -a SyncToVBlank=0 >/dev/null 2>&1&
+	nvidia-settings -a AllowFlipping=1 >/dev/null 2>&1&
 else
 	#done in drirc
-    #export mesa_glthread=false
+	#export mesa_glthread=false
 
-    export LIBGL_DRI3_DISABLE=0
+	export LIBGL_DRI3_DISABLE=0
 fi
 #export SDL_AUDIODRIVER=alsa
 
@@ -43,6 +43,10 @@ fi
 olddir=$(pwd)
 cd "$currentdir"
 
-nice -n -5 ./ezquake-linux-x86_64 -no-triple-gl-buffer $extra $*
+#example: set affinity to vcpus 1 and 2
+#nice -n -11 taskset 1,2 ./ezquake-linux-x86_64 -no-triple-gl-buffer $extra $*
+
+#let the scheduler handle it
+nice -n -11 ./ezquake-linux-x86_64 -no-triple-gl-buffer $extra $*
 
 cd "$olddir"
