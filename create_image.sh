@@ -398,7 +398,7 @@ export LVM_SYSTEM_DIR=$lvmdir
 #sudo pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r sudo pvremove -f
 #sudo losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r sudo kpartx -d 
 
-sudo -E ./debootstick/debootstick --config-kernel-bootargs "+pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +nosplash +loglevel=3 +selinux=0 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
+sudo -E ./debootstick/debootstick --config-kernel-bootargs "+amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +nosplash +loglevel=3 +selinux=0 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
 
 if [ $? -eq 0 ];then
 	echo "compressing..." && \
