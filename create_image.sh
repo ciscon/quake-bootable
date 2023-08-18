@@ -251,6 +251,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	if [ "$arch" == "amd64" ];then
 		export CFLAGS="${CFLAGS} -march=nehalem"
 		export LDFLAGS="${CFLAGS}"
+	else
+		export CFLAGS="-O3 -pipe -flto=$(nproc)"
+		export LDFLAGS="${CFLAGS}"
   fi
 	rm -rf /home/quakeuser/build
 	mkdir /home/quakeuser/build
