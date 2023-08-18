@@ -282,22 +282,17 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#openrazer and kernel headers	
 	apt-get -qy install openrazer-driver-dkms linux-headers-generic
 
-  if [ "$arch" == "686" ] || [ "$arch" == "amd64" ];then
-   	if [ "$build_type" != "min" ];then
-   		#install afterquake
-   		mkdir -p /home/quakeuser/quake-afterquake
-   		if [ "$arch" == "686" ];then
-   			wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_x86/afterquake.zip
-			else
-   			wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip
-   		fi
-   		unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
-   		rm /tmp/aq.zip
-   		chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
-   
-   		#install nvidia and openrazer drivers
-   		apt-get -qy install nvidia-driver nvidia-settings
-   	fi
+  if [ "$arch" == "amd64" ] && [ "$build_type" != "min" ];then
+	  #install afterquake
+  	echo "install afterquake..."
+  	mkdir -p /home/quakeuser/quake-afterquake
+  	wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip
+  	unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
+  	rm /tmp/aq.zip
+  	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
+  
+  	#install nvidia and openrazer drivers
+  	apt-get -qy install nvidia-driver nvidia-settings
   fi
 
 	#update nquake resources
