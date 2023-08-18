@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        KMSDRM: [0,1]
+        KMSDRM: [0,1],
+        BUILDARCH: ["i386","amd64"]
 
     steps:
     - uses: actions/checkout@v3
