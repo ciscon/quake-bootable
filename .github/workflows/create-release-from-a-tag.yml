@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         BUILDTYPE: ["full","min"],
-        BUILDARCH: ["i386","amd64"]
+        BUILDARCH: ["686","amd64"]
 
     steps:
     - uses: actions/checkout@v3

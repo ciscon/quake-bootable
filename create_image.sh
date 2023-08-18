@@ -42,12 +42,6 @@ else
 	imagename="${imagebase}${imagesuffix}-${arch}.img"
 fi
 
-if [ "$arch" == "i386" ];then
-	cpuarch="686"
-else
-	cpuarch="$arch"
-fi
-
 lvmdir="$currentdir/lvm"
 xresources="$currentdir/resources/xresources"
 pipewire="$currentdir/resources/pipewire.conf"
@@ -67,7 +61,7 @@ tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
-packages="os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo procps vim-tiny unzip zstd alsa-utils grub2 cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free libarchive-tools linux-image-${cpuarch} ntfs-3g nfs-common "
+packages="os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo procps vim-tiny unzip zstd alsa-utils grub2 cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk intel-microcode amd64-microcode firmware-linux firmware-linux-nonfree firmware-linux-free libarchive-tools linux-image-generic ntfs-3g nfs-common "
 packages_nox11="ifupdown dhcpcd-base"
 packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit "
 
@@ -116,11 +110,16 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		sudo rm -rf "$workdir"
 	fi
 	mkdir -p "$workdir"
-	
-	if [ "$distro" = "devuan" ];then
-		sudo debootstrap --arch=${arch} --include="devuan-keyring gnupg wget ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
+
+	if [ "$arch" = "686" ];then
+		cpuarch="i386"
 	else
-		sudo debootstrap --arch=${arch} --include="debian-keyring gnupg wget ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
+		cpuarch=$arch
+	fi
+	if [ "$distro" = "devuan" ];then
+		sudo debootstrap --arch=${cpuarch} --include="devuan-keyring gnupg wget ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
+	else
+		sudo debootstrap --arch=${cpuarch} --include="debian-keyring gnupg wget ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
 	fi
 	export distro
 	
@@ -140,7 +139,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -fR "$quakedir" "$workdir/quake"
 	sudo cp -f "$background" "$workdir/background.png"
 
-	sudo --preserve-env=nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch,cpuarch chroot "$workdir" bash -e -c '
+	sudo --preserve-env=nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch chroot "$workdir" bash -e -c '
 	
 	#configure hostname
 	echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
@@ -249,6 +248,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	git clone --depth=1 $ezquakegitrepo /home/quakeuser/build/ezquake-source-official
 	cd /home/quakeuser/build/ezquake-source-official
 	eval $(grep --color=never PKGS_DEB build-linux.sh|head -n1)
+	PKGS_DEB=$(echo "$PKGS_DEB"|tr " " "\n"|grep -v "freetype"|tr "\n" " ")
 	apt-get -qy install $PKGS_DEB
 	git submodule update --init --recursive --remote
 	make -j$(nproc)
@@ -271,13 +271,13 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 
 	#openrazer and kernel headers	
-	apt-get -qy install openrazer-driver-dkms linux-headers-${cpuarch}
+	apt-get -qy install openrazer-driver-dkms linux-headers-generic
 
-  if [ "$arch" == "i386" ] || [ "$arch" == "amd64" ];then
+  if [ "$arch" == "686" ] || [ "$arch" == "amd64" ];then
    	if [ "$build_type" != "min" ];then
    		#install afterquake
    		mkdir -p /home/quakeuser/quake-afterquake
-   		if [ "$arch" == "i386" ];then
+   		if [ "$arch" == "686" ];then
    			wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_x86/afterquake.zip
 			else
    			wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip
@@ -346,7 +346,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	rm -rf /var/log/*
 
 	#let debootstick install this
-	apt -y purge linux-image-${cpuarch} || true
+	apt -y purge linux-image-generic || true
 	apt-get -qy autopurge || true
 	
 	#remove temporary resolv.conf
