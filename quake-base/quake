@@ -47,6 +47,6 @@ cd "$currentdir"
 #nice -n -11 taskset 1,2 ./ezquake-linux-x86_64 -no-triple-gl-buffer $extra $*
 
 #let the scheduler handle it
-nice -n -11 ./ezquake-linux-x86_64 -no-triple-gl-buffer $extra $*
+nice -n -11 ./ezquake-linux -no-triple-gl-buffer $extra $*
 
 cd "$olddir"

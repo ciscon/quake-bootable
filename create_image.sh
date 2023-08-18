@@ -261,8 +261,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	apt-get -qy install $PKGS_DEB
 	git submodule update --init --recursive --remote
 	make -j$(nproc)
-	strip ezquake-linux-x86_64
-	cp -f /home/quakeuser/build/ezquake-source-official/ezquake-linux-x86_64 /home/quakeuser/quake/.
+	strip ezquake-linux-*
+	cp -f /home/quakeuser/build/ezquake-source-official/ezquake-linux-* /home/quakeuser/quake/ezquake-linux
 	git clean -qfdx
 	
 	echo "cleaning up packages"
@@ -297,6 +297,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#update nquake resources
 	echo "updating nquake resources..."
+	ls -altr /home/quakeuser/quake|grep "qw\."
 	mkdir -p /home/quakeuser/quake/qw.nquake
 	mkdir -p /tmp/nquakeresources
 	for res in $nquakezips;do
@@ -304,6 +305,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		bsdtar xf /tmp/nquakeresources/$res --strip-components=1 -C /home/quakeuser/quake/qw.nquake || exit 6
   done
   rm -rf /tmp/nquakeresources
+	ls -altr /home/quakeuser/quake|grep "qw\."
+	exit
 	
 	#remove package cache
 	apt-get -qy clean

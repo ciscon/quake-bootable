@@ -1,5 +1,7 @@
 . $HOME/.bashrc >/dev/null 2>&1
 
+export PATH="$PATH:$HOME/quake"
+
 if [ -z "$XDG_RUNTIME_DIR" ];then
   export XDG_RUNTIME_DIR="/tmp/$(id -u)"
   mkdir -p "$XDG_RUNTIME_DIR"
