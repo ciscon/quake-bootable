@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-minimal_kmsdrm=${KMSDRM:-0} #do not install x11 or nvidia driver
+build_type=${BUILDTYPE:-full} #do not install x11 or nvidia driver
 arch=${BUILDARCH:-amd64}
 onlybuild=0 #use existing workdir and only build image
 
@@ -27,7 +27,7 @@ quakedir="quake-base"
 clean=1 #clean up previous environment
 
 imagebase="quake_bootable"
-if [ "$minimal_kmsdrm" = "1" ];then
+if [ "$build_type" = "min" ];then
 	imagesuffix="-min_kmsdrm"
 else
 	imagesuffix="-full"
@@ -71,11 +71,11 @@ packages="os-prober util-linux iputils-ping openssh-client file git sudo build-e
 packages_nox11="ifupdown dhcpcd-base"
 packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit "
 
-if [ "$minimal_kmsdrm" != "1" ];then
+if [ "$build_type" != "min" ];then
 	packages+=$packages_x11
 else
 	packages+=$packages_nox11
-	export minimal_kmsdrm
+	export build_type
 fi
 export packages
 export ezquakegitrepo
@@ -140,7 +140,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -fR "$quakedir" "$workdir/quake"
 	sudo cp -f "$background" "$workdir/background.png"
 
-	sudo --preserve-env=nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,minimal_kmsdrm,arch,cpuarch chroot "$workdir" bash -e -c '
+	sudo --preserve-env=nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch,cpuarch chroot "$workdir" bash -e -c '
 	
 	#configure hostname
 	echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
@@ -190,7 +190,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#replace systemd with openrc, multiple steps required
 	if [ "$distro" = "debian" ];then
-		if [ "$minimal_kmsdrm" != "1" ];then
+		if [ "$build_type" != "min" ];then
 			elogind="elogind libpam-elogind"
 		fi
 		apt-get -qy install openrc sysvinit-core
@@ -218,7 +218,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	(update-rc.d rc.local enable||true)
 	
 	#nodm
-	#if [ "$minimal_kmsdrm" != "1" ];then
+	#if [ "$build_type" != "full" ];then
 	#	echo "configuring nodm"
 	#	(systemctl enable nodm||true)
 	#	(update-rc.d nodm enable||true)
@@ -228,7 +228,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	if grep messagebus /etc/group >/dev/null 2>&1;then messagebus="messagebus,";fi
 	usermod -a -G ${messagebus}tty,video,audio,games,input,sudo,adm,plugdev quakeuser
 	
-	if [ "$minimal_kmsdrm" != "1" ];then
+	if [ "$build_type" != "min" ];then
 		#configure evte path for openbox running terminal applications
 		update-alternatives --install /usr/bin/evte evte /usr/bin/xterm 0
 	fi
@@ -274,7 +274,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	apt-get -qy install openrazer-driver-dkms linux-headers-${cpuarch}
 
   if [ "$arch" == "i386" ] || [ "$arch" == "amd64" ];then
-   	if [ "$minimal_kmsdrm" != "1" ];then
+   	if [ "$build_type" != "min" ];then
    		#install afterquake
    		mkdir -p /home/quakeuser/quake-afterquake
    		if [ "$arch" == "i386" ];then
@@ -322,7 +322,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	echo -e "allowed_users=anybody\nneeds_root_rights=yes" > /etc/X11/Xwrapper.config
 
 	#configure networking for minimal build
-	if [ "$minimal_kmsdrm" = "1" ];then
+	if [ "$build_type" = "min" ];then
 		echo -e "auto /e*=eth\n  iface eth inet dhcp" > /etc/network/interfaces
 	fi
 	
