@@ -30,6 +30,7 @@ jobs:
     - name: Build
       env:
         BUILDTYPE: ${{matrix.BUILDTYPE}}
+        BUILDARCH: ${{matrix.BUILDARCH}}
       run: |
         rm -f ./*.zip
         bash ./create_image.sh
