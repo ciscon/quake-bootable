@@ -61,12 +61,6 @@ tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
-#if [ "$arch" != "amd64" ];then
-#	grub_packages="grub2 grub-pc"
-#else
-#	grub_packages="grub2"
-#fi
-
 packages="os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo procps vim-tiny unzip zstd alsa-utils cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free libarchive-tools linux-image-generic ntfs-3g nfs-common "
 packages_nox11="ifupdown dhcpcd-base"
 packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit "
@@ -75,13 +69,17 @@ if [ "$build_type" != "min" ];then
 	packages+=$packages_x11
 else
 	packages+=$packages_nox11
-	export build_type
 fi
+
+#vars to be used in chroot
+export build_type
 export packages
 export ezquakegitrepo
 export nquakeresourcesurl
 export nquakeresourcesurl_backup
 export nquakezips
+export arch
+export distro
 
 PATH=$PATH:/sbin:/usr/sbin
 required="debootstrap sudo chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan"
@@ -127,7 +125,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	else
 		sudo debootstrap --arch=${cpuarch} --include="debian-keyring gnupg wget ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
 	fi
-	export distro
 	
 	sudo rm -rf "$workdir/etc/modprobe.d"
 	sudo cp -rf "$modprobe" "$workdir/etc/"
