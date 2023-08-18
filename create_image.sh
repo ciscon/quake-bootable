@@ -306,7 +306,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
   done
   rm -rf /tmp/nquakeresources
 	ls -altr /home/quakeuser/quake|grep "qw\."
-	exit
 	
 	#remove package cache
 	apt-get -qy clean
