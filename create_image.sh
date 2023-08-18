@@ -330,7 +330,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#configure networking for minimal build
 	if [ "$build_type" = "min" ];then
-		echo -e "auto /e*=eth\n  iface eth inet dhcp" > /etc/network/interfaces
+		echo -e "auto /e*=eth\n  iface eth inet dhcp" > /etc/network/interfaces.d/99-dhcp
 	fi
 	
 	#configure grub
