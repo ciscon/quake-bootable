@@ -61,11 +61,11 @@ tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
-if [ "$arch" != "amd64" ];then
-	grub_packages="grub2 grub-pc"
-else
-	grub_packages="grub2"
-fi
+#if [ "$arch" != "amd64" ];then
+#	grub_packages="grub2 grub-pc"
+#else
+#	grub_packages="grub2"
+#fi
 
 packages="$grub_packages os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo procps vim-tiny unzip zstd alsa-utils cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free libarchive-tools linux-image-generic ntfs-3g nfs-common "
 packages_nox11="ifupdown dhcpcd-base"
