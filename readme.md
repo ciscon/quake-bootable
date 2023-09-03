@@ -7,7 +7,7 @@ The main use case for quake-bootable is to save the image to a USB flash drive. 
 
 ## Prerequisites
 - Know how to use a linux terminal (console)
-- Know the most important shortcuts of vim (quit, save and quit, insert...)
+- Know how to use the nano text editor (follow instructions within the text editor for saving etc), or better yet, the most important shortcuts of vim (quit, save and quit, insert...).  Replace all vim references with nano if you choose this more user friendly text editor.
 
 ## Available commands in Quake-bootable (printed in terminal on boot)
 - General
