@@ -43,7 +43,7 @@ jobs:
     - name: Compress
       id: compress
       run: |
-        apt-get -qqy update && apt-get -qqy install zip
+        sudo apt-get -qqy update && sudo apt-get -qqy install zip
         cd ./output
         basename=$(basename -s .img *.img)
         zip -r ${basename} *
