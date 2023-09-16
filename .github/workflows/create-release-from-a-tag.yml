@@ -8,6 +8,7 @@ on:
 jobs:
 
   build-x86:
+    permissions: write-all
     name: Publish Image x86
     runs-on: ubuntu-latest
     strategy:
@@ -63,6 +64,7 @@ jobs:
           ${{join(steps.versions.outputs.*, '%0A')}}
 
   build-other:
+    permissions: write-all
     name: Publish Image Other Arch
     runs-on: ubuntu-latest
     strategy:
