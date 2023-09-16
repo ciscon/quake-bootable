@@ -63,8 +63,8 @@ jobs:
         body: |
           ${{join(steps.versions.outputs.*, '%0A')}}
 
-  build-arm:
-    name: Publish Image arm
+  build-other:
+    name: Publish Image Other Arch
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -76,7 +76,7 @@ jobs:
       name: Install deps
       with:
         arch: ${{matrix.BUILDARCH}}
-        distro: ubuntu-latest
+        distro: ubuntu_latest
         run: sudo apt-get -qqy update && sudo apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
     - uses: uraimo/run-on-arch-action@v2
       name: Build
@@ -86,7 +86,7 @@ jobs:
         BUILDARCH: ${{matrix.BUILDARCH}}
       with:
         arch: ${{matrix.BUILDARCH}}
-        distro: ubuntu-latest
+        distro: ubuntu_latest
         run: |
           rm -f ./*.zip
           bash ./create_image.sh
