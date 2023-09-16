@@ -80,12 +80,18 @@ jobs:
       with:
         arch: ${{matrix.BUILDARCH}}
         distro: ubuntu_latest
+        # Create an artifacts directory
+        setup: |
+          mkdir -p "${PWD}/output"
+        # Mount the artifacts directory as /artifacts in the container
+        dockerRunArgs: |
+          --volume "${PWD}/output:/output"
         run: |
           apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git sudo
-          git config --global --add safe.directory $(pwd)
-          pwd 
+          git config --global --add safe.directory ${PWD}
           rm -f ./*.zip
           bash ./create_image.sh
+          cp -f ./output/* /output/.
     - name: Bump version and push tag
       id: bump_version
       uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
