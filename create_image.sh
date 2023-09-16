@@ -26,6 +26,11 @@ workdir="$currentdir/workdir"
 quakedir="quake-base"
 clean=1 #clean up previous environment
 
+#disable sudo for root user
+if [ $(id -u) -eq 0 ];then
+	alias sudo=
+fi
+
 imagebase="quake_bootable"
 if [ "$build_type" = "min" ];then
 	imagesuffix="-min_kmsdrm"
