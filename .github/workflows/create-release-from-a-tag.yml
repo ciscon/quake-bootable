@@ -73,8 +73,8 @@ jobs:
         BUILDARCH: ["aarch64"]
     steps:
     - uses: actions/checkout@v3
-    - uses: uraimo/run-on-arch-action@v2
     - name: Build
+      uses: uraimo/run-on-arch-action@v2
       id: build_bootable
       env:
         BUILDTYPE: ${{matrix.BUILDTYPE}}
