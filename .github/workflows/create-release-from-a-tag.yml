@@ -82,6 +82,8 @@ jobs:
         distro: ubuntu_latest
         run: |
           apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git
+          git config --global --add safe.directory $(pwd)
+          pwd 
           rm -f ./*.zip
           bash ./create_image.sh
     - name: Bump version and push tag

@@ -87,7 +87,7 @@ export arch
 export distro
 
 PATH=$PATH:/sbin:/usr/sbin
-required="debootstrap sudo chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan"
+required="debootstrap chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan"
 for require in $required;do
 	if ! hash $require >/dev/null 2>&1;then
 		echo "required program $require not found, bailing out."
