@@ -40,6 +40,13 @@ jobs:
         v="${v//$'\n'/'%0A'}"
         v="${v//$'\r'/'%0D'}"
         echo "VERSIONS=$v" >> $GITHUB_OUTPUT
+    - name: Compress
+      id: compress
+      run: |
+        apt-get -qqy update && apt-get -qqy install zip
+        cd ./output
+        basename=$(basename -s .img *.img)
+        zip -r ${basename} *
     - name: Bump version and push tag
       id: bump_version
       uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
@@ -57,7 +64,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file_glob: true
-        file: ./output/*
+        file: ./output/*.zip
         tag: ${{ steps.bump_version.outputs.new_tag }}
         overwrite: true
         body: |
@@ -92,9 +99,15 @@ jobs:
           uname -a
           apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git sudo
           git config --global --add safe.directory ${PWD}
-          rm -f ./*.zip
           bash ./create_image.sh
           cp -f ./output/* /output/.
+    - name: Compress
+      id: compress
+      run: |
+        apt-get -qqy update && apt-get -qqy install zip
+        cd ./output
+        basename=$(basename -s .img *.img)
+        zip -r ${basename} *
     - name: Bump version and push tag
       id: bump_version
       uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
@@ -107,6 +120,6 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file_glob: true
-        file: ./output/*
+        file: ./output/*.zip
         tag: ${{ steps.bump_version.outputs.new_tag }}
         overwrite: true

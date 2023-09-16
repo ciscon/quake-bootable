@@ -433,23 +433,26 @@ export LVM_SYSTEM_DIR=$lvmdir
 sudo -E ./debootstick/debootstick --config-kernel-bootargs "+amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +nosplash +loglevel=3 +selinux=0 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
 
 if [ $? -eq 0 ];then
-	echo "compressing..." && \
-	mkdir -p ./output
-	pigz --zip "$imagename" -c > "./output/${imagename}.zip" && \
-	md5sum "./output/${imagename}.zip" > "./output/${imagename}.zip.md5sum"
-	if [ ! -z "$imagelatestname" ];then
-		ln -sf "${imagename}.zip" "./output/${imagelatestname}.zip" && \
-		ln -sf "${imagename}.zip.md5sum" "./output/${imagelatestname}.zip.md5sum"
+	if [ -d "$targetdir" ];then
+		echo -e "\ncopying to $targetdir"
+		rsync -av ./output/* "$targetdir/."
+		echo "compressing..." && \
+			mkdir -p ./output
+		pigz --zip "$imagename" -c > "./output/${imagename}.zip" && \
+			md5sum "./output/${imagename}.zip" > "./output/${imagename}.zip.md5sum"
+		if [ ! -z "$imagelatestname" ];then
+			ln -sf "${imagename}.zip" "./output/${imagelatestname}.zip" && \
+				ln -sf "${imagename}.zip.md5sum" "./output/${imagelatestname}.zip.md5sum"
+		fi
+	else #this is an automated build we do compression later
+		mv -f "$imagename" ./output/.
+		md5sum "./output/${imagename}" > "./output/${imagename}.md5sum"
 	fi
 else
 	echo "errors in process:"
 	cat /tmp/quake_bootable.err
 fi
 
-if [ -d "$targetdir" ];then
-	echo -e "\ncopying to $targetdir"
-	rsync -av ./output/* "$targetdir/."
-fi
 
 #package versions
 versions=$(sudo chroot workdir dpkg -l)
