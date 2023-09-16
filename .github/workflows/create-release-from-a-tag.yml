@@ -6,14 +6,14 @@ on:
       - 'main'
 
 jobs:
-  build:
-    name: Publish Image
+
+  build-x86:
+    name: Publish Image x86
     runs-on: ubuntu-latest
     strategy:
       matrix:
         BUILDTYPE: ["full","min"]
         BUILDARCH: ["686","amd64"]
-
     steps:
     - uses: actions/checkout@v3
     - name: Read release.md and use it as a body of new release
@@ -62,3 +62,46 @@ jobs:
         overwrite: true
         body: |
           ${{join(steps.versions.outputs.*, '%0A')}}
+
+  build-arm:
+    name: Publish Image arm
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        BUILDTYPE: ["full","min"]
+        BUILDARCH: ["aarch64"]
+    steps:
+    - uses: actions/checkout@v3
+    - uses: uraimo/run-on-arch-action@v2
+      name: Install deps
+      with:
+        arch: ${{matrix.BUILDARCH}}
+        distro: ubuntu-latest
+        run: sudo apt-get -qqy update && sudo apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
+    - uses: uraimo/run-on-arch-action@v2
+      name: Build
+      id: build_bootable
+      env:
+        BUILDTYPE: ${{matrix.BUILDTYPE}}
+        BUILDARCH: ${{matrix.BUILDARCH}}
+      with:
+        arch: ${{matrix.BUILDARCH}}
+        distro: ubuntu-latest
+        run: |
+          rm -f ./*.zip
+          bash ./create_image.sh
+    - name: Bump version and push tag
+      id: bump_version
+      uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
+        WITH_V: true
+    - name: Upload binaries to release
+      id: release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file_glob: true
+        file: ./output/*
+        tag: ${{ steps.bump_version.outputs.new_tag }}
+        overwrite: true
