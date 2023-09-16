@@ -258,7 +258,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	cd /home/quakeuser/build/ezquake-source-official
 	#version
 	ezquake_ver=$(grep VERSION_NUMBER src/version.h |tr -d \"|awk "{print \$3}")
-	ezquake_ver+=-$(./version.sh |head -n1)
+	ezquake_ver+=-$(git rev-parse --short HEAD)
 	echo -n "$ezquake_ver" > /ezquake_ver
 	eval $(grep --color=never PKGS_DEB build-linux.sh|head -n1)
 	PKGS_DEB=$(echo "$PKGS_DEB"|tr " " "\n"|grep -v "freetype"|tr "\n" " ")
