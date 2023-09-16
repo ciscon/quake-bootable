@@ -85,7 +85,7 @@ jobs:
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
           --volume "${PWD}/output:/output"
-        env:
+        env: |
           BUILDTYPE: ${{matrix.BUILDTYPE}}
           BUILDARCH: ${{matrix.BUILDARCH}}
         run: |
