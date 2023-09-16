@@ -77,7 +77,7 @@ jobs:
       with:
         arch: ${{matrix.BUILDARCH}}
         distro: ubuntu_latest
-        run: sudo apt-get -qqy update && sudo apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
+        run: apt-get -qqy update && sudo apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
     - uses: uraimo/run-on-arch-action@v2
       name: Build
       id: build_bootable
