@@ -89,6 +89,7 @@ jobs:
         dockerRunArgs: |
           --volume "${PWD}/output:/output"
         run: |
+          uname -a
           apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git sudo
           git config --global --add safe.directory ${PWD}
           rm -f ./*.zip
