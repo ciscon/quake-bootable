@@ -26,11 +26,6 @@ workdir="$currentdir/workdir"
 quakedir="quake-base"
 clean=1 #clean up previous environment
 
-#disable sudo for root user
-if [ $(id -u) -eq 0 ];then
-	alias sudo=
-fi
-
 imagebase="quake_bootable"
 if [ "$build_type" = "min" ];then
 	imagesuffix="-min_kmsdrm"
@@ -87,7 +82,7 @@ export arch
 export distro
 
 PATH=$PATH:/sbin:/usr/sbin
-required="debootstrap chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan"
+required="debootstrap chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan sudo"
 for require in $required;do
 	if ! hash $require >/dev/null 2>&1;then
 		echo "required program $require not found, bailing out."
