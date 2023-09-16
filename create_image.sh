@@ -117,11 +117,13 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	if [ "$arch" = "686" ];then
 		cpuarch="i386"
+	elif [ "$arch" = "aarch64" ];then
+		cpuarch="arm64"
 	else
 		cpuarch=$arch
 	fi
 
-	echo "building chroot for arch $cpuarch"
+	echo "building chroot for arch $cpuarch, passed $arch"
 
 	if [ "$distro" = "devuan" ];then
 		sudo debootstrap --arch=${cpuarch} --include="devuan-keyring gnupg wget ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
