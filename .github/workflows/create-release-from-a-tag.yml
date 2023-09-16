@@ -95,13 +95,13 @@ jobs:
           rm -f ./*.zip
           bash ./create_image.sh
           cp -f ./output/* /output/.
-    - name: Bump version and push tag
+      name: Bump version and push tag
       id: bump_version
       uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
         WITH_V: true
-    - name: Upload binaries to release
+      name: Upload binaries to release
       id: release
       uses: svenstaro/upload-release-action@v2
       with:
