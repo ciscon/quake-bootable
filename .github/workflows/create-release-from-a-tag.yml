@@ -44,9 +44,6 @@ jobs:
       id: compress
       run: |
         sudo apt-get -qqy update && sudo apt-get -qqy install zip
-        pwd
-        ls -altr
-        find .|grep img
         cd ./output
         basename=$(basename -s .img *.img)
         zip -r ${basename} *

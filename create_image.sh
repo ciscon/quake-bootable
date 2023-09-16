@@ -433,6 +433,7 @@ export LVM_SYSTEM_DIR=$lvmdir
 sudo -E ./debootstick/debootstick --config-kernel-bootargs "+amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +nosplash +loglevel=3 +selinux=0 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
 
 if [ $? -eq 0 ];then
+	mkdir -p ./output
 	if [ -d "$targetdir" ];then
 		echo -e "\ncopying to $targetdir"
 		rsync -av ./output/* "$targetdir/."
