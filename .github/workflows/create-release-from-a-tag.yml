@@ -76,9 +76,6 @@ jobs:
     - name: Build
       uses: uraimo/run-on-arch-action@v2
       id: build_bootable
-      env:
-        BUILDTYPE: ${{matrix.BUILDTYPE}}
-        BUILDARCH: ${{matrix.BUILDARCH}}
       with:
         arch: ${{matrix.BUILDARCH}}
         distro: ubuntu_latest
@@ -88,6 +85,9 @@ jobs:
         # Mount the artifacts directory as /artifacts in the container
         dockerRunArgs: |
           --volume "${PWD}/output:/output"
+        env:
+          BUILDTYPE: ${{matrix.BUILDTYPE}}
+          BUILDARCH: ${{matrix.BUILDARCH}}
         run: |
           uname -a
           apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git sudo
