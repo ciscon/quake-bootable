@@ -256,6 +256,10 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	mkdir /home/quakeuser/build
 	git clone --depth=1 $ezquakegitrepo /home/quakeuser/build/ezquake-source-official
 	cd /home/quakeuser/build/ezquake-source-official
+	#version
+	ezquake_ver=$(grep VERSION_NUMBER src/version.h |tr -d \"|awk "{print \$3}")
+	ezquake_ver+=-$(./version.sh |head -n1)
+	echo -n "$ezquake_ver" > /ezquake_ver
 	eval $(grep --color=never PKGS_DEB build-linux.sh|head -n1)
 	PKGS_DEB=$(echo "$PKGS_DEB"|tr " " "\n"|grep -v "freetype"|tr "\n" " ")
 	apt-get -qy install $PKGS_DEB
@@ -426,7 +430,7 @@ sudo -E ./debootstick/debootstick --config-kernel-bootargs "+amdgpu.ppfeaturemas
 if [ $? -eq 0 ];then
 	echo "compressing..." && \
 	mkdir -p ./output
-	pigz --zip -9 "$imagename" -c > "./output/${imagename}.zip" && \
+	pigz --zip "$imagename" -c > "./output/${imagename}.zip" && \
 	md5sum "./output/${imagename}.zip" > "./output/${imagename}.zip.md5sum"
 	if [ ! -z "$imagelatestname" ];then
 		ln -sf "${imagename}.zip" "./output/${imagelatestname}.zip" && \
@@ -440,6 +444,27 @@ fi
 if [ -d "$targetdir" ];then
 	echo -e "\ncopying to $targetdir"
 	rsync -av ./output/* "$targetdir/."
+fi
+
+#package versions
+versions=$(sudo chroot workdir dpkg -l)
+mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|head -1|awk '{print $3}')
+kernel_version=$(echo "$versions"|grep linux-image|head -1|awk '{print $3}')
+nvidia_version=$(echo "$versions"|grep nvidia-driver|head -1|awk '{print $3}')
+ezquake_version=$(cat "$workdir/ezquake_ver")
+
+echo -e "\n\nversions:" > versions.txt
+if [ ! -z "$mesa_version" ];then
+	echo "- mesa: $mesa_version" >> versions.txt
+fi
+if [ ! -z "$kernel_version" ];then
+	echo "- kernel: $kernel_version" >> versions.txt
+fi
+if [ ! -z "$nvidia_version" ];then
+	echo "- nvidia: $nvidia_version" >> versions.txt
+fi
+if [ ! -z "$ezquake_version" ];then
+	echo "- ezquake: $ezquake_version" >> versions.txt
 fi
 
 echo -e "\ncomplete."

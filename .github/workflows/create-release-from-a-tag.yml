@@ -28,19 +28,31 @@ jobs:
     - name: Install deps
       run: sudo apt-get -qqy update && sudo apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
     - name: Build
+      id: build_bootable
       env:
         BUILDTYPE: ${{matrix.BUILDTYPE}}
         BUILDARCH: ${{matrix.BUILDARCH}}
       run: |
         rm -f ./*.zip
         bash ./create_image.sh
+        v=$(cat ./versions.txt)
+        v="${v//'%'/'%25'}"
+        v="${v//$'\n'/'%0A'}"
+        v="${v//$'\r'/'%0D'}"
+        echo "VERSIONS=$v" >> $GITHUB_OUTPUT
     - name: Bump version and push tag
       id: bump_version
       uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
         WITH_V: true
+    - name: Generate versions
+      id: versions
+      run: |
+        echo "release=${{ steps.read_release.outputs.RELEASE_BODY }}" >> $GITHUB_OUTPUT
+        echo "versions=${{ steps.build_bootable.outputs.VERSIONS }}" >> $GITHUB_OUTPUT
     - name: Upload binaries to release
+      id: release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -49,4 +61,4 @@ jobs:
         tag: ${{ steps.bump_version.outputs.new_tag }}
         overwrite: true
         body: |
-          ${{ steps.read_release.outputs.RELEASE_BODY }}
+          ${{join(steps.versions.outputs.*, '%0A')}}
