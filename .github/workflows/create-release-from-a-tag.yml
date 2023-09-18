@@ -70,56 +70,56 @@ jobs:
         body: |
           ${{join(steps.versions.outputs.*, '%0A')}}
 
-  build-other:
-    permissions: write-all
-    name: Publish Image Other Arch
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        BUILDTYPE: ["full","min"]
-        BUILDARCH: ["aarch64"]
-    steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      uses: uraimo/run-on-arch-action@v2
-      id: build_bootable
-      with:
-        arch: ${{matrix.BUILDARCH}}
-        distro: ubuntu_latest
-        # Create an artifacts directory
-        setup: |
-          mkdir -p "${PWD}/output"
-        # Mount the artifacts directory as /artifacts in the container
-        dockerRunArgs: |
-          --volume "${PWD}/output:/output"
-        env: |
-          BUILDTYPE: ${{matrix.BUILDTYPE}}
-          BUILDARCH: ${{matrix.BUILDARCH}}
-        run: |
-          uname -a
-          apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git sudo
-          git config --global --add safe.directory ${PWD}
-          bash ./create_image.sh
-          cp -f ./output/* /output/.
-    - name: Compress
-      id: compress
-      run: |
-        apt-get -qqy update && apt-get -qqy install zip
-        cd ./output
-        basename=$(basename -s .img *.img)
-        zip -r ${basename} *
-    - name: Bump version and push tag
-      id: bump_version
-      uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
-        WITH_V: true
-    - name: Upload binaries to release
-      id: release
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file_glob: true
-        file: ./output/*.zip
-        tag: ${{ steps.bump_version.outputs.new_tag }}
-        overwrite: true
+  #build-other:
+  #  permissions: write-all
+  #  name: Publish Image Other Arch
+  #  runs-on: ubuntu-latest
+  #  strategy:
+  #    matrix:
+  #      BUILDTYPE: ["full","min"]
+  #      BUILDARCH: ["aarch64"]
+  #  steps:
+  #  - uses: actions/checkout@v3
+  #  - name: Build
+  #    uses: uraimo/run-on-arch-action@v2
+  #    id: build_bootable
+  #    with:
+  #      arch: ${{matrix.BUILDARCH}}
+  #      distro: ubuntu_latest
+  #      # Create an artifacts directory
+  #      setup: |
+  #        mkdir -p "${PWD}/output"
+  #      # Mount the artifacts directory as /artifacts in the container
+  #      dockerRunArgs: |
+  #        --volume "${PWD}/output:/output"
+  #      env: |
+  #        BUILDTYPE: ${{matrix.BUILDTYPE}}
+  #        BUILDARCH: ${{matrix.BUILDARCH}}
+  #      run: |
+  #        uname -a
+  #        apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git sudo
+  #        git config --global --add safe.directory ${PWD}
+  #        bash ./create_image.sh
+  #        cp -f ./output/* /output/.
+  #  - name: Compress
+  #    id: compress
+  #    run: |
+  #      apt-get -qqy update && apt-get -qqy install zip
+  #      cd ./output
+  #      basename=$(basename -s .img *.img)
+  #      zip -r ${basename} *
+  #  - name: Bump version and push tag
+  #    id: bump_version
+  #    uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
+  #    env:
+  #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
+  #      WITH_V: true
+  #  - name: Upload binaries to release
+  #    id: release
+  #    uses: svenstaro/upload-release-action@v2
+  #    with:
+  #      repo_token: ${{ secrets.GITHUB_TOKEN }}
+  #      file_glob: true
+  #      file: ./output/*.zip
+  #      tag: ${{ steps.bump_version.outputs.new_tag }}
+  #      overwrite: true
