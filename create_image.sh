@@ -289,7 +289,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 
 	#openrazer and kernel headers	
-	apt-get -qy install openrazer-driver-dkms linux-headers-generic
+	if [ "$arch" == "amd64" ] || [ "$arch" == "686" ];then
+	  apt-get -qy install openrazer-driver-dkms linux-headers-generic
+  fi
 
   if [ "$arch" == "amd64" ] && [ "$build_type" != "min" ];then
 	  #install afterquake
