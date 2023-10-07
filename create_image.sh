@@ -54,6 +54,7 @@ profile="$currentdir/resources/profile"
 profilemessages="$currentdir/resources/profile_messages"
 hwclock="$currentdir/resources/hwclock"
 compositeconf="$currentdir/resources/01-composite.conf"
+viddriverprefconf="$currentdir/resources/02-video-driver-pref.conf"
 sudoers="$currentdir/resources/sudoers"
 limitsconf="$currentdir/resources/limits.conf"
 background="$currentdir/resources/background.png"
@@ -406,6 +407,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	sudo mkdir -p "$workdir/etc/X11/xorg.conf.d"
 	sudo cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
+	sudo cp -f "$viddriverprefconf" "$workdir/etc/X11/xorg.conf.d/02-video-driver-pref.conf"
 	
 	sudo cp -f "$sudoers" "$workdir/etc/sudoers"
 	
