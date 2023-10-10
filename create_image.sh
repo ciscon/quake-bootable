@@ -50,6 +50,7 @@ drirc="$currentdir/resources/drirc"
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
 xinitrc="$currentdir/resources/xinitrc"
+xinitrcreal="$currentdir/resources/xinitrc.real"
 bashrc="$currentdir/resources/bashrc"
 profile="$currentdir/resources/profile"
 profilemessages="$currentdir/resources/profile_messages"
@@ -65,7 +66,7 @@ issueappend="$currentdir/resources/issue.append"
 
 packages="procps os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi libarchive-tools linux-image-generic ntfs-3g nfs-common "
 packages_nox11="ifupdown dhcpcd-base"
-packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit rtkit nodm "
+packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit rtkit "
 
 if [ "$build_type" != "min" ];then
 	packages+=$packages_x11
@@ -364,6 +365,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	if [ -f /etc/default/rcS ];then
 		sed -i "s/#*\(.*\)VERBOSE=.*/\1VERBOSE=\"no\"/g" /etc/default/rcS
 	fi
+
+	#disable user pipewire service, we do this manually in xinitrc
+	(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask wireplumber"||true)
 	
 	rm -rf /tmp/*
 	rm -rf /var/log/*
@@ -389,6 +393,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$drirc" "$workdir/home/quakeuser/.drirc"
 	sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc"
+	sudo cp -f "$xinitrcreal" "$workdir/home/quakeuser/.xinitrc.real"
+	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
 	if [ -d "$workdir/usr/share/pipewire" ];then
 		sudo mkdir -p "$workdir/home/quakeuser/.config"
 		sudo rm -rf "$workdir/home/quakeuser/.config/pipewire"
@@ -418,7 +424,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
 
 	#nodm config	
-	sudo cp -f "$nodm" "$workdir/etc/defaults/nodm"
+	#sudo cp -f "$nodm" "$workdir/etc/defaults/nodm"
 
 	#fix ownership for quakeuser
 	sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
