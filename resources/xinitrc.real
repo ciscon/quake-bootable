@@ -1,0 +1,71 @@
+#!/bin/bash
+
+##stop nodm if we're in the middle of a shutdown
+#if [[ "$(systemctl is-system-running || true)" == "stopping" ]]; then
+#	sudo /etc/init.d/nodm stop
+#fi
+
+xrdb -load $HOME/.Xresources
+
+if [ -z "$XDG_RUNTIME_DIR" ];then
+  export XDG_RUNTIME_DIR="/tmp/$(id -u)"
+  mkdir -p "$XDG_RUNTIME_DIR"
+fi
+[ -z "$DBUS_SESSION_BUS_ADDRESS" ] && eval $(/usr/bin/dbus-launch --exit-with-session --sh-syntax)
+
+dbus-cleanup-sockets
+dbus-update-activation-environment --all
+export NO_AT_BRIDGE=1
+
+#disable tearfree
+for device in $(xrandr |awk '{print $1}'|grep --color=never -v '^Screen'|grep --color=never -v '^[0-9]');do xrandr --output "$device" --set TearFree off >/dev/null 2>&1;done&
+
+#start tint first
+nice tint2&
+
+#pipewire
+#pgrep -f pipewire >/dev/null 2>&1 || pipewire&
+
+#connman
+(
+	pkill -f connman-gtk >/dev/null 2>&1
+	while :; do
+	nice connman-gtk --tray
+	sleep 1
+	done
+)&
+
+#pasystray
+(
+	pkill -f pasystray >/dev/null 2>&1
+	while :; do
+	nice pasystray
+	sleep 1
+	done
+)&
+
+(
+#overlay background
+if [ ! -f "$HOME/background.png" ];then
+	while :;do
+		convert /background.png -fill grey -pointsize 14 -gravity northwest -annotate +10+10 "$(. /home/quakeuser/.profile_messages)" \
+			-fill grey30 -pointsize 14 -gravity north -annotate +0+5 "build: $(cat /version)" "$HOME/background.png" && break
+		sleep 1
+	done
+fi
+#set background
+feh --bg-max "$HOME/background.png"
+)&
+
+#make sure ezquake is registered
+xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
+
+lxpolkit&
+fbautostart&
+xterm -ls&
+
+for app in $HOME/.config/autostart/*.desktop;do
+	dex "$app"&
+done
+
+exec openbox-session
