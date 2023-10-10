@@ -216,18 +216,17 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	apt -qy install "*-microcode" || true
 	
 	##log2ram on debian, devuan does not have systemd so the installation will fail
-	#if [ "$distro" = "debian" ];then
-	#	echo "configuring log2ram..."
-	#	echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
-	#	wget -qO - https://azlux.fr/repo.gpg.key | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
-	#	apt-get -qy update
-	#	apt-get -qy install log2ram
-	#fi
+	if [ "$distro" = "debian" ];then
+		echo "configuring log2ram..."
+		echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
+		wget -qO - https://azlux.fr/repo.gpg.key | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
+		apt-get -qy update
+		apt-get -qy install log2ram
+	fi
 
 	#configure rc.local
 	echo "configuring rc.local"
-	chmod +x /etc/rc.local
-	#(systemctl enable rc-local||true)
+	(systemctl enable rc-local||true)
 	(update-rc.d rc.local enable||true)
 	
 	#nodm
@@ -383,6 +382,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	cat "$issueappend" |sudo tee -a "$workdir/etc/issue" >/dev/null 2>&1
 	sudo cp -f "$rclocal" "$workdir/etc/rc.local"
+	sudo chmod +x "$workdir/etc/rc.local"
 	sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
 	sudo cp -f "$drirc" "$workdir/home/quakeuser/.drirc"
 	sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
