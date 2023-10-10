@@ -62,9 +62,9 @@ tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 
-packages="os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi libarchive-tools linux-image-generic ntfs-3g nfs-common procps "
+packages="procps os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi libarchive-tools linux-image-generic ntfs-3g nfs-common "
 packages_nox11="ifupdown dhcpcd-base"
-packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber rtkit dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit "
+packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit rtkit "
 
 if [ "$build_type" != "min" ];then
 	packages+=$packages_x11
@@ -195,16 +195,22 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	echo -n "'${release_ver}'" > /version
 
 	#replace systemd with openrc, multiple steps required
-	if [ "$distro" = "debian" ];then
-		apt-get -qy install openrc sysvinit-core || true
-		apt-get -qy install orphan-sysvinit-scripts systemctl || true
-		apt-get -qy purge systemd || true
-		apt-get -qy purge systemctl || true
-		apt-get -qy -f install || true
-	fi
+	#if [ "$distro" = "debian" ];then
+	#	apt-get -qy install openrc sysvinit-core
+	#	apt-get -qy install orphan-sysvinit-scripts systemctl systemd-standalone-sysusers
+	#	apt-mark hold systemd
+	#	apt-get -qy purge systemd libsystemd0
+	#	apt-get -qy purge systemctl
+	#	apt-get -qy autopurge
+	#fi
+	#apt-get -qy install rtkit
 
 	#install packages
 	apt -qy install $packages
+	#for package in $packages;do
+	#	apt -qy install $package
+	#	echo "completed $package"
+	#done
 
 	#install firmware packages
 	apt -qy install "*-microcode" || true
