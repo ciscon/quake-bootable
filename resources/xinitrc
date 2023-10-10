@@ -20,7 +20,7 @@ for device in $(xrandr |awk '{print $1}'|grep --color=never -v '^Screen'|grep --
 nice tint2&
 
 #pipewire
-pgrep -f pipewire >/dev/null 2>&1 || pipewire&
+#pgrep -f pipewire >/dev/null 2>&1 || pipewire&
 
 #connman
 (

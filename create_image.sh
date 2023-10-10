@@ -43,6 +43,7 @@ else
 fi
 
 lvmdir="$currentdir/lvm"
+nodm="$currentdir/resources/nodm"
 xresources="$currentdir/resources/xresources"
 pipewire="$currentdir/resources/pipewire.conf"
 drirc="$currentdir/resources/drirc"
@@ -64,7 +65,7 @@ issueappend="$currentdir/resources/issue.append"
 
 packages="procps os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi libarchive-tools linux-image-generic ntfs-3g nfs-common "
 packages_nox11="ifupdown dhcpcd-base"
-packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit rtkit "
+packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit rtkit nodm "
 
 if [ "$build_type" != "min" ];then
 	packages+=$packages_x11
@@ -230,11 +231,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	(update-rc.d rc.local enable||true)
 	
 	#nodm
-	#if [ "$build_type" != "full" ];then
-	#	echo "configuring nodm"
-	#	(systemctl enable nodm||true)
-	#	(update-rc.d nodm enable||true)
-	#fi
+	if [ "$build_type" != "min" ];then
+		echo "configuring nodm"
+		(systemctl enable nodm||true)
+		(update-rc.d nodm enable||true)
+	fi
 	
 	#add our user to some groups
 	if grep messagebus /etc/group >/dev/null 2>&1;then messagebus="messagebus,";fi
@@ -350,8 +351,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	  sed -i "s/GRUB_TIMEOUT.*/GRUB_TIMEOUT=1/g" /etc/default/grub
   fi
 
+	#no longer supports runtime disable, gives even more warnings
 	#explicitly disable selinux just to get rid of warnings on boot
-	echo "SELINUX=disabled" > /etc/selinux/config
+	#echo "SELINUX=disabled" > /etc/selinux/config
 
 	#configure openrc to run jobs in parallel
 	if [ -f /etc/rc.conf ];then
@@ -414,7 +416,10 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$sudoers" "$workdir/etc/sudoers"
 	
 	sudo cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
-	
+
+	#nodm config	
+	sudo cp -f "$nodm" "$workdir/etc/defaults/nodm"
+
 	#fix ownership for quakeuser
 	sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
 	
@@ -436,7 +441,7 @@ export LVM_SYSTEM_DIR=$lvmdir
 #sudo pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r sudo pvremove -f
 #sudo losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r sudo kpartx -d 
 
-sudo -E ./debootstick/debootstick --config-kernel-bootargs "+amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +nosplash +loglevel=3 +selinux=0 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
+sudo -E ./debootstick/debootstick --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +loglevel=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
 
 if [ $? -eq 0 ];then
 	mkdir -p ./output
