@@ -352,9 +352,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	  sed -i "s/GRUB_TIMEOUT.*/GRUB_TIMEOUT=1/g" /etc/default/grub
   fi
 
-	#no longer supports runtime disable, gives even more warnings
 	#explicitly disable selinux just to get rid of warnings on boot
-	#echo "SELINUX=disabled" > /etc/selinux/config
+	echo "SELINUX=disabled" > /etc/selinux/config
 
 	#configure openrc to run jobs in parallel
 	if [ -f /etc/rc.conf ];then
