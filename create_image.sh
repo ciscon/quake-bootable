@@ -232,11 +232,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	(update-rc.d rc.local enable||true)
 	
 	#nodm
-	if [ "$build_type" != "min" ];then
-		echo "configuring nodm"
-		(systemctl enable nodm||true)
-		(update-rc.d nodm enable||true)
-	fi
+	#if [ "$build_type" != "min" ];then
+	#	echo "configuring nodm"
+	#	(systemctl enable nodm||true)
+	#	(update-rc.d nodm enable||true)
+	#fi
 	
 	#add our user to some groups
 	if grep messagebus /etc/group >/dev/null 2>&1;then messagebus="messagebus,";fi
