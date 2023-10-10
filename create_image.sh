@@ -366,7 +366,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 
 	#disable user pipewire service, we do this manually in xinitrc
-	(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask wireplumber"||true)
+	(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask pipewire-pulse;systemctl --user mask wireplumber"||true)
 	
 	rm -rf /tmp/*
 	rm -rf /var/log/*
