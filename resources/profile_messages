@@ -12,7 +12,7 @@ echo ""
 if ls /sys/module/razermouse/drivers/hid:razermouse/*/device_mode > /dev/null 2>&1;then
   echo "razer mouse :"
   echo "set dpi: razer-dpi XXX"
-  echo "set polling rate: razer-poll XXX"
+  echo "set polling rate: razer-rate XXX"
   echo ""
 fi
 echo "other :"
