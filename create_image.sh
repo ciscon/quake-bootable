@@ -371,6 +371,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	rm -rf /tmp/*
 	rm -rf /var/log/*
 
+
+	#tmpfs on /tmp
+	cp -f /usr/share/systemd/tmp.mount /etc/systemd/system/.
+	(systemctl enable tmp.mount || true)
+
 	#let debootstick install this
 	apt -y purge linux-image-generic || true
 	apt-get -qy autopurge || true
