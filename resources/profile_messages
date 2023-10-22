@@ -22,6 +22,7 @@ if [ ! -z "$DISPLAY" ];then
   echo "run discord: discord"
   echo "configure display(s): lxrandr"
   echo "configure networking: connman-gtk (systray icon)"
+  echo "logitech mouse configuration (solaar): logitech-enable"
   if lsmod|grep -cE 'nvidia_modeset|nouveau' >/dev/null 2>&1;then
     echo "disable nvidia driver (use opensource driver nouveau): nvidia-disable"
     echo "enable nvidia driver: nvidia-enable"
