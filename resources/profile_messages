@@ -29,4 +29,4 @@ if [ ! -z "$DISPLAY" ];then
 fi
 echo "update system: update-system"
 echo "shutdown system: shutdown-system"
-echo "shutdown system: reboot-system"
+echo "reboot system: reboot-system"
