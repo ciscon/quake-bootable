@@ -142,6 +142,10 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	sudo mkdir -p "$workdir/root"
 	sudo cp -f "$bashrc" "$workdir/root/.bashrc"
+	sudo cp -f "$profile" "$workdir/root/.profile"
+	sudo cp -f "$bashrc" "$workdir/root/.bashrc"
+	sudo cp -f "$profilemessages" "$workdir/root/.profile_messages"
+
 
 	if [ -d "$workdir/quake" ];then
 		sudo rm -rf "$workdir/quake"
@@ -159,8 +163,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	useradd -m -p quake -s /bin/bash quakeuser
 	mv -f /quake /home/quakeuser/.
-	cp -f /root/.profile /home/quakeuser/.
-	cp -f /root/.profile_messages /home/quakeuser/.
+	mv -f /root/.profile /home/quakeuser/.
+	mv -f /root/.profile_messages /home/quakeuser/.
 	cp -f /root/.bashrc /home/quakeuser/.
 	echo -e "quakeuser\nquakeuser" | passwd quakeuser
 	
