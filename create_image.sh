@@ -60,13 +60,14 @@ viddriverprefconf="$currentdir/resources/02-video-driver-pref.conf"
 sudoers="$currentdir/resources/sudoers"
 limitsconf="$currentdir/resources/limits.conf"
 background="$currentdir/resources/background.png"
-tintrc="$currentdir/resources/tint2rc"
+#tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
+autostart="$currentdir/resources/autostart"
 
 packages="procps os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi libarchive-tools linux-image-generic ntfs-3g nfs-common "
 packages_nox11="ifupdown dhcpcd-base"
-packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm obconf openbox tint2 fbautostart menu python3-xdg xdg-utils lxrandr dex chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber dex x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit rtkit gnome-icon-theme "
+packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus-x11 dbus-bin imagemagick pcmanfm gvfs-backends lxpolkit rtkit gnome-icon-theme xfce4 "
 
 if [ "$build_type" != "min" ];then
 	packages+=$packages_x11
@@ -140,9 +141,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$rclocalservice" "$workdir/etc/systemd/system/rc-local.service"
 
 	sudo mkdir -p "$workdir/root"
-	sudo cp -f "$profile" "$workdir/root/.profile"
 	sudo cp -f "$bashrc" "$workdir/root/.bashrc"
-	sudo cp -f "$profilemessages" "$workdir/root/.profile_messages"
 
 	if [ -d "$workdir/quake" ];then
 		sudo rm -rf "$workdir/quake"
@@ -373,11 +372,16 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 
 	#disable user pipewire service, we do this manually in xinitrc
-	(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask pipewire-pulse;systemctl --user mask wireplumber"||true)
+	#(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask pipewire-pulse;systemctl --user mask wireplumber"||true)
+
+	#disable xfce compositor, set background
+	if hash xfconf-query >/dev/null 2>&1;then
+		su - quakeuser bash -c "xfconf-query -c xfwm4 -p /general/use_compositing -t bool -s false"
+		su - quakeuser bash -c "xfconf-qery -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep \"workspace0/last-image\") -s /home/quakeuser/background.png"
+	fi
 	
 	rm -rf /tmp/*
 	rm -rf /var/log/*
-
 
 	#tmpfs on /tmp
 	cp -f /usr/share/systemd/tmp.mount /etc/systemd/system/.
@@ -411,8 +415,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc"
 	sudo cp -f "$xinitrcreal" "$workdir/home/quakeuser/.xinitrc.real"
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
+  sudo mkdir -p "$workdir/home/quakeuser/.config"
+	sudo cp -af "$autostart" "$workdir/home/quakeuser/.config/"
 	if [ -d "$workdir/usr/share/pipewire" ];then
-		sudo mkdir -p "$workdir/home/quakeuser/.config"
 		sudo rm -rf "$workdir/home/quakeuser/.config/pipewire"
 		sudo cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
 		sudo cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"

@@ -21,10 +21,10 @@ export NO_AT_BRIDGE=1
 for device in $(xrandr |awk '{print $1}'|grep --color=never -v '^Screen'|grep --color=never -v '^[0-9]');do xrandr --output "$device" --set TearFree off >/dev/null 2>&1;done&
 
 #start tint first
-nice tint2&
+#nice tint2&
 
 #pipewire
-pgrep -f pipewire >/dev/null 2>&1 || pipewire&
+#pgrep -f pipewire >/dev/null 2>&1 || pipewire&
 
 #connman
 (
@@ -34,15 +34,15 @@ pgrep -f pipewire >/dev/null 2>&1 || pipewire&
 	sleep 1
 	done
 )&
-
-#pasystray
-(
-	pkill -f pasystray >/dev/null 2>&1
-	while :; do
-	nice pasystray
-	sleep 1
-	done
-)&
+#
+##pasystray
+#(
+#	pkill -f pasystray >/dev/null 2>&1
+#	while :; do
+#	nice pasystray
+#	sleep 1
+#	done
+#)&
 
 (
 #overlay background
@@ -54,18 +54,18 @@ if [ ! -f "$HOME/background.png" ];then
 	done
 fi
 #set background
-feh --bg-max "$HOME/background.png"
+#feh --bg-max "$HOME/background.png"
 )&
 
 #make sure ezquake is registered
 xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
 
-lxpolkit&
-fbautostart&
-xterm -ls&
+#lxpolkit&
+#fbautostart&
+#xterm -ls&
 
-for app in $HOME/.config/autostart/*.desktop;do
-	dex "$app"&
-done
+#for app in $HOME/.config/autostart/*.desktop;do
+#	dex "$app"&
+#done
 
-exec openbox-session
+exec xfce4-session
