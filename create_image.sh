@@ -330,7 +330,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		dpkg --add-architecture i386
 		apt-get -qy update
 		apt-get -qy install libc6:i386
-		dpkg --remove-architecture i386
 	fi
 	
 	#remove package cache
