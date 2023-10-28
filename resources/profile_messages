@@ -20,7 +20,7 @@ if [ ! -z "$DISPLAY" ];then
   echo "run a web browser: browser"
   echo "run a file browser: filebrowser"
   echo "run discord: discord"
-  echo "configure display(s): lxrandr"
+  echo "configure display(s): xfce4-display-settings"
   echo "configure networking: connman-gtk (systray icon)"
   echo "logitech mouse configuration (solaar): logitech-enable"
   if lsmod|grep -cE 'nvidia_modeset|nouveau' >/dev/null 2>&1;then
