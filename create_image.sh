@@ -344,7 +344,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 
 	#remove pasystray autostart, we do this ourselves so we do not end up with multiple instances
-	#rm -f /etc/xdg/autostart/pasystray.desktop
+	rm -f /etc/xdg/autostart/pasystray.desktop
 
 	#configure cpufreq
 	echo "GOVERNOR=performance" > /etc/default/cpufrequtils
@@ -376,7 +376,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 
 	#disable user pipewire service, we do this manually in xinitrc
-	#(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask pipewire-pulse;systemctl --user mask wireplumber"||true)
+	(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask pipewire-pulse;systemctl --user mask wireplumber"||true)
 	
 	rm -rf /tmp/*
 	rm -rf /var/log/*
@@ -423,11 +423,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
   sudo mkdir -p "$workdir/home/quakeuser/.config"
 	sudo cp -af "$autostart" "$workdir/home/quakeuser/.config/"
-	#if [ -d "$workdir/usr/share/pipewire" ];then
-	#	sudo rm -rf "$workdir/home/quakeuser/.config/pipewire"
-	#	sudo cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
-	#	sudo cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"
-	#fi
+	if [ -d "$workdir/usr/share/pipewire" ];then
+		sudo rm -rf "$workdir/home/quakeuser/.config/pipewire"
+		sudo cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
+		sudo cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"
+	fi
 	sudo cp -f "$xresources" "$workdir/home/quakeuser/.Xresources"
 	sudo mkdir -p "$workdir/home/quakeuser/.local/share/applications"
 
