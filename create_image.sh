@@ -2,7 +2,7 @@
 
 build_type=${BUILDTYPE:-full} #do not install x11 or nvidia driver
 arch=${BUILDARCH:-amd64}
-onlybuild=1 #use existing workdir and only build image
+onlybuild=0 #use existing workdir and only build image
 
 distro="debian" #devuan or debian
 release="unstable"
