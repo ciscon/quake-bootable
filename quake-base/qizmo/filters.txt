@@ -1,0 +1,49 @@
+Deathmatch
+10   if gamedir = "ctf" remove
+20   if gamedir = "fortress" remove
+30   if gamedir = "*arena" remove
+
+Capture the Flag
+10   if gamedir != "ctf" remove
+
+Team Fortress
+10   if gamedir != "fortress" remove
+
+Rocket Arena
+10   if gamedir != "*arena" remove
+
+not empty
+10   if players = "0" remove
+
+empty
+10   if players != "0" remove
+
+not full
+10   if players = maxplayers remove
+
+iD maps
+10   if map = "dm?" keep
+20   if map = "e?m?" keep
+30   if map = "death32*" keep
+40   if map = "base32*" keep
+50   remove
+
+FFA
+10   if maxplayers < "8" remove
+
+1 on 1
+10   if maxplayers != "2" remove
+
+2 on 2
+20   if maxplayers != "4" remove
+
+team competition
+10   if maxplayers < "8" remove
+20   if hostname ~= "*claim*" keep
+30   if hostname ~= "*comp*" keep
+40   if hostname ~!= "*team*" remove
+50   if hostname ~= "*fort*" remove
+
+ping less than 200
+10   if ping >= "200" remove
+

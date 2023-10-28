@@ -321,6 +321,13 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
   done
   rm -rf /tmp/nquakeresources
 	ls -altr /home/quakeuser/quake|grep "qw\."
+
+	#qizmo deps
+	if [ "$arch" == "amd64" ];then
+		dpkg --add-architecture i386
+		apt-get -qy update
+		apt-get -qy install libc6:i386
+	fi
 	
 	#remove package cache
 	apt-get -qy clean

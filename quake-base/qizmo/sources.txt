@@ -1,0 +1,17 @@
+master "public Qizmos" 195.74.0.67:27000 2 
+master "id limbo" 192.246.40.37:27000 2 
+master "id dm" 192.246.40.37:27006 2 
+master "id ctf" 192.246.40.37:27002 2 
+master "id tf" 192.246.40.37:27003 2 
+master "id misc" 192.246.40.37:27004 2 
+master "Barrysworld UK" 194.88.93.12:27000 2 
+master "PlanetQuake" 204.182.161.2:27000 2 
+master "Australia" 203.55.240.100:27000 2 
+master "Brazil" 200.255.244.2:27000 2 
+master "Russia" 195.42.160.69:27000 2 
+master "FortressFest TF" 207.88.6.18:27000 2 
+master "Germany" 195.63.7.60:27000 2 
+master "iNET Finland" 194.251.249.32:27000 2 
+master "SciFi Finland" 195.74.0.8:27000 2 
+master "The GIB Italy" 194.20.232.121:27000 2 
+master "Mondial Aussie" 203.142.228.132:27000 2 
