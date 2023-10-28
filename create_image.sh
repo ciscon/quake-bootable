@@ -377,6 +377,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#disable xfce compositor, set background
 	if hash xfconf-query >/dev/null 2>&1;then
 		su - quakeuser bash -c "xfconf-query -c xfwm4 -p /general/use_compositing -t bool -s false"
+		su - quakeuser bash -c "xfconf-qery -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep \"workspace0/image-style\") -s 4"
+		su - quakeuser bash -c "xfconf-qery -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep \"workspace0/rgba1\") -s 0 -s 0 -s 0 -s 0"
 		su - quakeuser bash -c "xfconf-qery -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep \"workspace0/last-image\") -s /home/quakeuser/background.png"
 	fi
 	
