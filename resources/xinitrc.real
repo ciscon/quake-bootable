@@ -54,10 +54,16 @@ if [ ! -f "$HOME/background.png" ];then
 	done
 fi
 if hash xfconf-query >/dev/null 2>&1;then
-	xfconf-query -c xfwm4 -p /general/use_compositing -t bool -s false --create
-	xfconf-query -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep "workspace0/image-style") -s 4 --create
-	xfconf-query -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep "workspace0/rgba1") -s 0 -s 0 -s 0 -s 0 --create
-	xfconf-qery -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep "workspace0/last-image") -s /home/quakeuser/background.png --create
+	while :;do
+		if pgrep -f xfconfd$ > /dev/null 2>&1;then
+			xfconf-query -c xfwm4 -p /general/use_compositing -t bool -s false --create
+			xfconf-query -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep "workspace0/image-style") -s 4 --create
+			xfconf-query -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep "workspace0/rgba1") -t double -t double -t double -t double -s 0 -s 0 -s 0 -s 0 --create
+			xfconf-query -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep "workspace0/last-image") -s /home/quakeuser/background.png --create
+		else
+			sleep 1
+		fi
+	done
 fi
 )&
 
