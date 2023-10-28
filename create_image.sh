@@ -67,7 +67,7 @@ autostart="$currentdir/resources/autostart"
 
 packages="procps os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi libarchive-tools linux-image-generic ntfs-3g nfs-common "
 packages_nox11="ifupdown dhcpcd-base"
-packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus-x11 dbus-bin imagemagick gvfs-backends rtkit gnome-icon-theme xfce4 "
+packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus-x11 dbus-bin imagemagick gvfs-backends rtkit gnome-icon-theme xfce4 nodm "
 
 if [ "$build_type" != "min" ];then
 	packages+=$packages_x11
@@ -234,12 +234,12 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	(systemctl enable rc-local||true)
 	(update-rc.d rc.local enable||true)
 	
-	#nodm
-	#if [ "$build_type" != "min" ];then
-	#	echo "configuring nodm"
-	#	(systemctl enable nodm||true)
-	#	(update-rc.d nodm enable||true)
-	#fi
+	nodm
+	if [ "$build_type" != "min" ];then
+		echo "configuring nodm"
+		(systemctl enable nodm||true)
+		(update-rc.d nodm enable||true)
+	fi
 	
 	#add our user to some groups
 	if grep messagebus /etc/group >/dev/null 2>&1;then messagebus="messagebus,";fi
@@ -397,6 +397,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		sed -i "s|.*RuntimeMaxUse=.*|RuntimeMaxUse=64M|g" /etc/systemd/journald.conf
 	fi
 
+	ln -sf /home/quakeuser/.xinitrc /home/quakeuser/.xsession
+	chmod -h quakeuser:quakeuser /home/quakeuser/.xsession
+
 	#let debootstick install this
 	#apt -y purge linux-image-generic || true
 
@@ -451,7 +454,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
 
 	#nodm config	
-	#sudo cp -f "$nodm" "$workdir/etc/defaults/nodm"
+	sudo cp -f "$nodm" "$workdir/etc/defaults/nodm"
 
 	#fix ownership for quakeuser
 	sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser

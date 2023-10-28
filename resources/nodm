@@ -7,10 +7,10 @@ NODM_ENABLED=true
 NODM_USER=quakeuser
 
 # First vt to try when looking for free VTs
-NODM_FIRST_VT='7'
+NODM_FIRST_VT=7
 
 # X session
-NODM_XSESSION=/home/quakeuser/.xinitrc
+NODM_XSESSION=/etc/X11/Xsession
 
 # Options for nodm itself
 NODM_OPTIONS=
