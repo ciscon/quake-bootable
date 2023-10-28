@@ -377,7 +377,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	(systemctl enable tmp.mount || true)
 
 	#disable silken mouse
-	sed -i "s|/usr/bin/X|/usr/bin/X -nosilk|g" /etc/X11/xinit/xserverrc
+	if [ -f /etc/X11/xinit/xserverrc ];then
+		sed -i "s|/usr/bin/X|/usr/bin/X -nosilk|g" /etc/X11/xinit/xserverrc
+	fi
 
 	#let debootstick install this
 	apt -y purge linux-image-generic || true
