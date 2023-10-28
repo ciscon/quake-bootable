@@ -64,6 +64,7 @@ background="$currentdir/resources/background.png"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 autostart="$currentdir/resources/autostart"
+xfce="$currentdir/resources/xfce"
 
 packages="procps os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi libarchive-tools linux-image-generic ntfs-3g nfs-common "
 packages_nox11="ifupdown dhcpcd-base"
@@ -423,6 +424,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
   sudo mkdir -p "$workdir/home/quakeuser/.config"
 	sudo cp -af "$autostart" "$workdir/home/quakeuser/.config/"
+	sudo rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
+	sudo cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
 	if [ -d "$workdir/usr/share/pipewire" ];then
 		sudo rm -rf "$workdir/home/quakeuser/.config/pipewire"
 		sudo cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
