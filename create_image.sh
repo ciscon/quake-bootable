@@ -255,7 +255,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	#build ezquake
 	echo "building ezquake"
-	. /home/quakeuser/.profile
+	HOME=/home/quakeuser . /home/quakeuser/.profile
 	#drop march to nehalem instead of native
 	if [ "$arch" == "amd64" ];then
 		export CFLAGS="${CFLAGS} -march=nehalem"
