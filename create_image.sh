@@ -344,7 +344,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 
 	#remove pasystray autostart, we do this ourselves so we do not end up with multiple instances
-	rm -f /etc/xdg/autostart/pasystray.desktop
+	#rm -f /etc/xdg/autostart/pasystray.desktop
 
 	#configure cpufreq
 	echo "GOVERNOR=performance" > /etc/default/cpufrequtils
@@ -431,11 +431,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
   sudo mkdir -p "$workdir/home/quakeuser/.config"
 	sudo cp -af "$autostart" "$workdir/home/quakeuser/.config/"
-	if [ -d "$workdir/usr/share/pipewire" ];then
-		sudo rm -rf "$workdir/home/quakeuser/.config/pipewire"
-		sudo cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
-		sudo cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"
-	fi
+	#if [ -d "$workdir/usr/share/pipewire" ];then
+	#	sudo rm -rf "$workdir/home/quakeuser/.config/pipewire"
+	#	sudo cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
+	#	sudo cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"
+	#fi
 	sudo cp -f "$xresources" "$workdir/home/quakeuser/.Xresources"
 	sudo mkdir -p "$workdir/home/quakeuser/.local/share/applications"
 
@@ -447,8 +447,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#/usr/local/bin
 	sudo cp -f "$currentdir/resources/bin/"* "$workdir/usr/local/bin/."
 
-	sudo mkdir -p "$workdir/home/quakeuser/.config/tint2"
-	sudo cp -f "$tintrc" "$workdir/home/quakeuser/.config/tint2/tint2rc"
+	#sudo mkdir -p "$workdir/home/quakeuser/.config/tint2"
+	#sudo cp -f "$tintrc" "$workdir/home/quakeuser/.config/tint2/tint2rc"
 	
 	sudo mkdir -p "$workdir/etc/X11/xorg.conf.d"
 	sudo cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
