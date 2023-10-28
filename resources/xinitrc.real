@@ -57,6 +57,7 @@ if hash xfconf-query >/dev/null 2>&1;then
 	while :;do
 		if pgrep -f xfconfd$ > /dev/null 2>&1;then
 			xfconf-query -c xfwm4 -p /general/use_compositing -t bool -s false --create
+			break
 		else
 			sleep 1
 		fi
