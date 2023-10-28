@@ -2,7 +2,7 @@
 
 build_type=${BUILDTYPE:-full} #do not install x11 or nvidia driver
 arch=${BUILDARCH:-amd64}
-onlybuild=0 #use existing workdir and only build image
+onlybuild=1 #use existing workdir and only build image
 
 distro="debian" #devuan or debian
 release="unstable"
@@ -330,6 +330,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		dpkg --add-architecture i386
 		apt-get -qy update
 		apt-get -qy install libc6:i386
+		dpkg --remove-architecture i386
 	fi
 	
 	#remove package cache
@@ -474,7 +475,7 @@ export LVM_SYSTEM_DIR=$lvmdir
 #sudo pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r sudo pvremove -f
 #sudo losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r sudo kpartx -d 
 
-sudo -E ./debootstick/debootstick --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +loglevel=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
+sudo -E ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +loglevel=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
 
 if [ $? -eq 0 ];then
 	mkdir -p ./output
