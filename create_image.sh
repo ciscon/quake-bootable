@@ -398,6 +398,13 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		sed -i "s|/usr/bin/X|/usr/bin/X -nosilk|g" /etc/X11/xinit/xserverrc
 	fi
 
+	#set journald to log to memory
+	if [ -f /etc/systemd/journald.conf ];then
+		sed -i "s|.*Storage=.*|Storage=volatile|g" /etc/systemd/journald.conf
+		sed -i "s|.*SystemMaxUse=.*|SystemMaxUse=64M|g" /etc/systemd/journald.conf
+		sed -i "s|.*RuntimeMaxUse=.*|RuntimeMaxUse=64M|g" /etc/systemd/journald.conf
+	fi
+
 	#let debootstick install this
 	#apt -y purge linux-image-generic || true
 
