@@ -377,14 +377,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#disable user pipewire service, we do this manually in xinitrc
 	#(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask pipewire-pulse;systemctl --user mask wireplumber"||true)
-
-	#disable xfce compositor, set background
-	if hash xfconf-query >/dev/null 2>&1;then
-		su - quakeuser bash -c "xfconf-query -c xfwm4 -p /general/use_compositing -t bool -s false"
-		su - quakeuser bash -c "xfconf-qery -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep \"workspace0/image-style\") -s 4"
-		su - quakeuser bash -c "xfconf-qery -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep \"workspace0/rgba1\") -s 0 -s 0 -s 0 -s 0"
-		su - quakeuser bash -c "xfconf-qery -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep \"workspace0/last-image\") -s /home/quakeuser/background.png"
-	fi
 	
 	rm -rf /tmp/*
 	rm -rf /var/log/*
