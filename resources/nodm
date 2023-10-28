@@ -21,7 +21,7 @@ NODM_OPTIONS=
 #
 # The Xserver executable and the display name can be omitted, but should
 # be placed in front, if nodm's defaults shall be overridden.
-NODM_X_OPTIONS='-nolisten tcp'
+NODM_X_OPTIONS='-nolisten tcp -nosilk'
 
 # If an X session will run for less than this time in seconds, nodm will wait an
 # increasing bit of time before restarting the session.

@@ -376,6 +376,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	cp -f /usr/share/systemd/tmp.mount /etc/systemd/system/.
 	(systemctl enable tmp.mount || true)
 
+	#disable silken mouse
+	sed -i "s|/usr/bin/X|/usr/bin/X -nosilk|g" /etc/X11/xinit/xserverrc
+
 	#let debootstick install this
 	apt -y purge linux-image-generic || true
 	apt-get -qy autopurge || true
