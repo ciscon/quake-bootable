@@ -83,6 +83,6 @@ fi
 
 echo "booting..."
 
-#if hash X 2>/dev/null;then
-#	su - quakeuser -l -c /usr/bin/startx >/tmp/startx.log 2>&1&
-#fi
+if hash X 2>/dev/null;then
+	su - quakeuser -l -c /usr/bin/startx >/tmp/startx.log 2>&1&
+fi

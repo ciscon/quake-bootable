@@ -56,8 +56,8 @@ fi
 if hash xfconf-query >/dev/null 2>&1;then
 	xfconf-query -c xfwm4 -p /general/use_compositing -t bool -s false --create
 	xfconf-query -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep "workspace0/image-style") -s 4 --create
-	#xfconf-query -c xfce4-desktop -p  -s 0 -s 0 -s 0 -s 0 --create
-	xfconf-query -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep "workspace0/last-image") -s /home/quakeuser/background.png --create
+	xfconf-query -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep "workspace0/rgba1") -s 0 -s 0 -s 0 -s 0 --create
+	xfconf-qery -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep "workspace0/last-image") -s /home/quakeuser/background.png --create
 fi
 )&
 
