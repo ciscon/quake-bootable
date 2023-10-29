@@ -43,6 +43,7 @@ You can change it with
 `$ sudo apt update`
 
 ## Step 4 - install a different window manager (optional)
+NOTE: switched to xfce by default - still relevant for switching to another wm though
 By default Quake-bootable includes a very basic window manager (Openbox). If you struggle with it, you can install a more familiar one, for example xfce. To install: `$ sudo apt install xfce4`
 And then, make it the default in the startup process. edit the file: `$ vim ~/.xinitrc`
 And change the very bottom where it says
