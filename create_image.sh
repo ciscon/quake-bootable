@@ -65,10 +65,11 @@ modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 autostart="$currentdir/resources/autostart"
 xfce="$currentdir/resources/xfce"
+slimconf="$currentdir/resources/slim.conf"
 
 packages="nano procps os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse "
 packages_nox11="ifupdown dhcpcd-base"
-packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus-x11 dbus-bin imagemagick gvfs-backends rtkit gnome-icon-theme xfce4 "
+packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit iw connman connman-gtk feh xterm menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus-x11 dbus-bin imagemagick gvfs-backends rtkit gnome-icon-theme xfce4 slim "
 
 if [ "$build_type" != "min" ];then
 	packages+=$packages_x11
@@ -386,6 +387,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	cp -f /usr/share/systemd/tmp.mount /etc/systemd/system/.
 	(systemctl enable tmp.mount || true)
 
+	#enable slim
+	(systemctl enable slim || true)
+
 	#disable silken mouse
 	if [ -f /etc/X11/xinit/xserverrc ];then
 		sed -i "s|/usr/bin/X|/usr/bin/X -nosilk|g" /etc/X11/xinit/xserverrc
@@ -424,6 +428,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
   sudo mkdir -p "$workdir/home/quakeuser/.config"
 	sudo cp -af "$autostart" "$workdir/home/quakeuser/.config/"
+	sudo cp -af "$slimconf" "$workdir/etc/slim.conf"
 	sudo rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
 	sudo cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
 	if [ -d "$workdir/usr/share/pipewire" ];then
