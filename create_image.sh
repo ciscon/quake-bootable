@@ -5,7 +5,7 @@ arch=${BUILDARCH:-amd64}
 onlybuild=0 #use existing workdir and only build image
 
 distro="debian" #devuan or debian
-release="unstable"
+release="testing"
 mediahostname="quakeboot"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git" #repository to use for ezquake build
@@ -181,6 +181,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	echo "path-exclude=/usr/share/locale/*" > /etc/dpkg/dpkg.cfg.d/01_nolocale
 	rm -rf /usr/share/locale
 	sed -i "s/main$/main contrib non-free non-free-firmware/g" /etc/apt/sources.list
+
+	cp -a /etc/apt/sources.list /etc/apt/sources.list.d/stable.list
+	sed -i "s/testing/stable/g" /etc/apt/sources.list.d/stable.list
 
 	##xanmod
 	#echo "deb http://deb.xanmod.org releases main" > /etc/apt/sources.list.d/xanmod.list
