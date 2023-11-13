@@ -86,6 +86,7 @@ export nquakeresourcesurl_backup
 export nquakezips
 export arch
 export distro
+export release
 
 PATH=$PATH:/sbin:/usr/sbin
 required="debootstrap chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan sudo"
