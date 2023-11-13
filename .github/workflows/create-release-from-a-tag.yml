@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         BUILDTYPE: ["full","min"]
-        BUILDARCH: ["amd64"]
+        BUILDARCH: ["686","amd64"]
     steps:
     - uses: actions/checkout@v3
     - name: Read release.md and use it as a body of new release
