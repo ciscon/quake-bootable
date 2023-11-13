@@ -155,7 +155,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -fR "$quakedir" "$workdir/quake"
 	sudo cp -f "$background" "$workdir/background.png"
 
-	sudo --preserve-env=nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch chroot "$workdir" bash -e -c '
+	sudo --preserve-env=release,nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch chroot "$workdir" bash -e -c '
 	
 	#configure hostname
 	echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
@@ -180,8 +180,18 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	rm -rf /usr/share/man
 	echo "path-exclude=/usr/share/locale/*" > /etc/dpkg/dpkg.cfg.d/01_nolocale
 	rm -rf /usr/share/locale
+
+	if [ "$release" != "unstable" ];then
+		echo "
+		deb http://security.debian.org/debian-security ${release}-security main
+		deb http://deb.debian.org/debian ${release}-updates main
+		" >> /etc/apt/sources.list
+	fi
+
+	#enable contrib/non-free
 	sed -i "s/main$/main contrib non-free non-free-firmware/g" /etc/apt/sources.list
 
+	#enable stable repo
 	cp -a /etc/apt/sources.list /etc/apt/sources.list.d/stable.list
 	sed -i "s/testing/stable/g" /etc/apt/sources.list.d/stable.list
 
