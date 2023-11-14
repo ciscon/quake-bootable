@@ -157,7 +157,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -fR "$quakedir" "$workdir/quake"
 	sudo cp -f "$background" "$workdir/background.png"
 	sudo mkdir -p "$workdir/usr/share/plymouth/themes"
-	sudo cp -f "$plymouththeme" "$workdir/usr/share/plymouth/themes"
+	sudo cp -rf "$plymouththeme" "$workdir/usr/share/plymouth/themes"
 
 	sudo --preserve-env=release,nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch chroot "$workdir" bash -e -c '
 	
