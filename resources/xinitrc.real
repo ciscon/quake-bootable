@@ -76,4 +76,4 @@ xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
 #	dex "$app"&
 #done
 
-exec xfce4-session
+exec startxfce4
