@@ -42,6 +42,7 @@ else
 	imagename="${imagebase}${imagesuffix}-${arch}.img"
 fi
 
+plymouththeme="$currentdir/resources/plymouth/quake-theme"
 lvmdir="$currentdir/lvm"
 nodm="$currentdir/resources/nodm"
 xresources="$currentdir/resources/xresources"
@@ -155,6 +156,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 	sudo cp -fR "$quakedir" "$workdir/quake"
 	sudo cp -f "$background" "$workdir/background.png"
+	sudo mkdir -p "$workdir/usr/share/plymouth/themes"
+	sudo cp -f "$plymouththeme" "$workdir/usr/share/plymouth/themes"
 
 	sudo --preserve-env=release,nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch chroot "$workdir" bash -e -c '
 	
@@ -244,6 +247,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		apt-get -qy update
 		apt-get -qy install log2ram
 	fi
+
+	#plymouth theme
+	plymouth-set-default-theme quake-theme
 
 	#configure rc.local
 	echo "configuring rc.local"
@@ -496,7 +502,7 @@ export LVM_SYSTEM_DIR=$lvmdir
 #sudo pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r sudo pvremove -f
 #sudo losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r sudo kpartx -d 
 
-sudo -E ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +splash +loglevel=1 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
+sudo -E ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +splash +loglevel=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
 
 if [ $? -eq 0 ];then
 	mkdir -p ./output

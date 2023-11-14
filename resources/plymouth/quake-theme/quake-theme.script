@@ -1,0 +1,15 @@
+image = Image("img.png");
+
+pos_x = Window.GetWidth()/2 - image.GetWidth()/2;
+pos_y = Window.GetHeight()/2 - image.GetHeight()/2;
+
+sprite = Sprite(image);
+sprite.SetOpacity(0);
+sprite.SetX(pos_x);
+sprite.SetY(pos_y);
+
+fun set_opacity (time, progress) {
+  sprite.SetOpacity(0.0+progress);
+}
+
+Plymouth.SetBootProgressFunction (set_opacity);

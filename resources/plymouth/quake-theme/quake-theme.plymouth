@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Arch Linux Simple Image
+Description=This is a plymouth theme which simply displays an image
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/quake-theme
+ScriptFile=/usr/share/plymouth/themes/quake-theme/quake-theme.script
