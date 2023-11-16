@@ -23,9 +23,6 @@ export NO_AT_BRIDGE=1
 #disable tearfree
 for device in $(xrandr |awk '{print $1}'|grep --color=never -v '^Screen'|grep --color=never -v '^[0-9]');do xrandr --output "$device" --set TearFree off >/dev/null 2>&1;done&
 
-#start tint first
-#nice tint2&
-
 #pipewire
 pgrep -f pipewire >/dev/null 2>&1 || pipewire&
 
@@ -71,12 +68,14 @@ fi
 #make sure ezquake is registered
 xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
 
-#lxpolkit&
-#fbautostart&
-#xterm -ls&
-
 #for app in $HOME/.config/autostart/*.desktop;do
 #	dex "$app"&
 #done
+
+if [ ! -e $HOME/.firstboot ];then
+	xfce4-terminal -e "bash -l"
+	touch $HOME/.firstboot
+fi
+
 
 exec startxfce4

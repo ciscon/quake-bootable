@@ -61,16 +61,14 @@ viddriverprefconf="$currentdir/resources/02-video-driver-pref.conf"
 sudoers="$currentdir/resources/sudoers"
 limitsconf="$currentdir/resources/limits.conf"
 background="$currentdir/resources/background.png"
-#tintrc="$currentdir/resources/tint2rc"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
-autostart="$currentdir/resources/autostart"
 xfce="$currentdir/resources/xfce"
 slimconf="$currentdir/resources/slim.conf"
 
 packages="nano procps os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils cpufrequtils fbset chrony cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant "
 packages_nox11="ifupdown dhcpcd-base"
-packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh xterm menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus-x11 dbus-bin imagemagick gvfs-backends rtkit gnome-icon-theme xfce4 mousepad slim xkbset policykit-1-gnome "
+packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-input-all xinit connman-gtk feh menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus-x11 dbus-bin imagemagick gvfs-backends rtkit gnome-icon-theme xfce4-terminal xfce4 mousepad slim xkbset policykit-1-gnome "
 
 if [ "$build_type" != "min" ];then
 	packages+=$packages_x11
@@ -447,7 +445,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$xinitrcreal" "$workdir/home/quakeuser/.xinitrc.real"
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
   sudo mkdir -p "$workdir/home/quakeuser/.config"
-	sudo cp -af "$autostart" "$workdir/home/quakeuser/.config/"
 	sudo cp -af "$slimconf" "$workdir/etc/slim.conf"
 	sudo rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
 	sudo cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
