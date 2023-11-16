@@ -7,6 +7,9 @@
 
 xrdb -load $HOME/.Xresources
 
+#disable accessibility features (sticky keys)
+xkbset -a
+
 if [ -z "$XDG_RUNTIME_DIR" ];then
   export XDG_RUNTIME_DIR="/tmp/$(id -u)"
   mkdir -p "$XDG_RUNTIME_DIR"
