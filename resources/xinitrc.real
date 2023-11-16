@@ -73,7 +73,7 @@ xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
 #done
 
 if [ ! -e $HOME/.firstboot ];then
-	xfce4-terminal -e "bash -l"
+	xfce4-terminal -e "bash -l"&
 	touch $HOME/.firstboot
 fi
 
