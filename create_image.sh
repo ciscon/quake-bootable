@@ -265,11 +265,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	if grep messagebus /etc/group >/dev/null 2>&1;then messagebus="messagebus,";fi
 	usermod -a -G ${messagebus}tty,video,audio,games,input,sudo,adm,plugdev quakeuser
 	
-	if [ "$build_type" != "min" ];then
-		#configure evte path for openbox running terminal applications
-		update-alternatives --install /usr/bin/evte evte /usr/bin/xterm 0
-	fi
-	
 	#configure vim symlink for vim
 	update-alternatives --install /usr/bin/vim vim /usr/bin/vi 0
 	
