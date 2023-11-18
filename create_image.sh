@@ -400,6 +400,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	cp -f /usr/share/systemd/tmp.mount /etc/systemd/system/.
 	(systemctl enable tmp.mount || true)
 
+	#disable connman-wait-online in case user has no networking
+	systemctl disable connman-wait-online
+
 	#enable slim
 	(systemctl enable slim || true)
 
