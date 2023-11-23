@@ -7,6 +7,6 @@ Keywords=qtv,qw://;
 Categories=quakeworld;qtv;Game;
 Exec=/home/quakeuser/quake/quake +qwurl %u
 Path=/home/quakeuser/quake
-MimeType=x-scheme-handler/qw
+MimeType=x-scheme-handler/qw;
 Terminal=false
 StartupNotify=false
