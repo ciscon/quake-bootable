@@ -1,6 +1,7 @@
 ﻿# Introduction
 Want to try running Quake in Linux? Curious?
 It's easy! Ciscon prepared this Linux Quake bootable image, which includes Chromium web browser, Discord and mostly everything you need to use when playing Quake, without missing anything. Everything works immediately.
+Readme credited to mushi.
 
 # Instructions on how to "burn" this img file to a disk
 The main use case for quake-bootable is to save the image to a USB flash drive. But you can also "burn" it to an empty disk on your system, and have dual boot (with Windows too). In this chapter, we will describe how to do it.
