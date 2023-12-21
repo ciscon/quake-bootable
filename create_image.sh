@@ -66,7 +66,7 @@ issueappend="$currentdir/resources/issue.append"
 xfce="$currentdir/resources/xfce"
 slimconf="$currentdir/resources/slim.conf"
 
-packages="nano procps os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils cpufrequtils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant "
+packages="nano procps os-prober util-linux iputils-ping openssh-client file git sudo build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant "
 packages_nox11="ifupdown dhcpcd-base"
 packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-video-radeon xserver-xorg-input-all xinit connman-gtk feh menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus-x11 dbus-bin imagemagick gvfs-backends rtkit gnome-icon-theme xfce4-terminal xfce4 mousepad slim xkbset policykit-1-gnome fonts-recommended "
 
@@ -361,9 +361,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#remove pasystray autostart, we do this ourselves so we do not end up with multiple instances
 	rm -f /etc/xdg/autostart/pasystray.desktop
 
-	#configure cpufreq
-	echo "GOVERNOR=performance" > /etc/default/cpufrequtils
-
 	#allow any user to start x
 	echo -e "allowed_users=anybody\nneeds_root_rights=yes" > /etc/X11/Xwrapper.config
 
@@ -497,7 +494,7 @@ export LVM_SYSTEM_DIR=$lvmdir
 #sudo pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r sudo pvremove -f
 #sudo losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r sudo kpartx -d 
 
-sudo -E ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +splash +loglevel=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
+sudo -E ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +cpufreq.default_governor=performance +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +rootwait +tsc=reliable +quiet +splash +loglevel=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
 
 if [ $? -eq 0 ];then
 	mkdir -p ./output
