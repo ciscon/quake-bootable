@@ -42,6 +42,7 @@ else
 	imagename="${imagebase}${imagesuffix}-${arch}.img"
 fi
 
+policykitrules="$currentdir/resources/policykit-rules"
 plymouththeme="$currentdir/resources/plymouth/quake-theme"
 lvmdir="$currentdir/lvm"
 nodm="$currentdir/resources/nodm"
@@ -433,13 +434,15 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	cat "$issueappend" |sudo tee -a "$workdir/etc/issue" >/dev/null 2>&1
 	sudo cp -f "$rclocal" "$workdir/etc/rc.local"
 	sudo chmod +x "$workdir/etc/rc.local"
+	sudo mkdir -p "$workdir/etc/polkit-1/rules.d"
+	sudo cp -f "$policykitrules" "$workdir/etc/polkit-1/rules.d"
 	sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
 	sudo cp -f "$drirc" "$workdir/home/quakeuser/.drirc"
 	sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc"
 	sudo cp -f "$xinitrcreal" "$workdir/home/quakeuser/.xinitrc.real"
 	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
-  sudo mkdir -p "$workdir/home/quakeuser/.config"
+	sudo mkdir -p "$workdir/home/quakeuser/.config"
 	sudo cp -af "$slimconf" "$workdir/etc/slim.conf"
 	sudo rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
 	sudo cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
