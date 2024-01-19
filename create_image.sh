@@ -435,7 +435,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$rclocal" "$workdir/etc/rc.local"
 	sudo chmod +x "$workdir/etc/rc.local"
 	sudo mkdir -p "$workdir/etc/polkit-1/rules.d"
-	sudo cp -f "$policykitrules" "$workdir/etc/polkit-1/rules.d"
+	sudo cp -f "$policykitrules/"* "$workdir/etc/polkit-1/rules.d/."
 	sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
 	sudo cp -f "$drirc" "$workdir/home/quakeuser/.drirc"
 	sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
