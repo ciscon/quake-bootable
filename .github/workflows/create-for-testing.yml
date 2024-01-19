@@ -16,6 +16,7 @@ jobs:
         BUILDTYPE: ["full"]
         BUILDARCH: ["amd64"]
     steps:
+    - uses: actions/checkout@v3
     - name: Build
       id: build_bootable
       env:
