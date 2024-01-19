@@ -27,6 +27,6 @@ jobs:
         mv *.img bootable.img
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
-        with:
-          name: bootable.img
-          path: bootable.img
+      with:
+        name: bootable.img
+        path: bootable.img
