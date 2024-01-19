@@ -42,7 +42,7 @@ else
 	imagename="${imagebase}${imagesuffix}-${arch}.img"
 fi
 
-policykitrules="$currentdir/resources/policykit-rules"
+policykitrules="$currentdir/resources/polkit-rules"
 plymouththeme="$currentdir/resources/plymouth/quake-theme"
 lvmdir="$currentdir/lvm"
 nodm="$currentdir/resources/nodm"
