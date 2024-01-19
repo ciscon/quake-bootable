@@ -1,0 +1,32 @@
+name: Create
+
+on:
+  push:
+    branches:
+      - 'testing'
+
+jobs:
+
+  build-x86:
+    permissions: write-all
+    name: Create image amd64
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        BUILDTYPE: ["full"]
+        BUILDARCH: ["amd64"]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      id: build_bootable
+      env:
+        BUILDTYPE: ${{matrix.BUILDTYPE}}
+        BUILDARCH: ${{matrix.BUILDARCH}}
+      run: |
+        sudo apt-get -qqy update && sudo apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
+        bash ./create_image.sh
+				mv *.img bootable.img
+    - uses: actions/upload-artifact@v3
+      with:
+        name: bootable.img
+        path: bootable.img
