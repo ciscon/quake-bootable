@@ -24,7 +24,7 @@ jobs:
       run: |
         sudo apt-get -qqy update && sudo apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
         bash ./create_image.sh
-				mv *.img bootable.img
+        mv *.img bootable.img
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
         with:
