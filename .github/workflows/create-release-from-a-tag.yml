@@ -16,7 +16,7 @@ jobs:
         BUILDTYPE: ["full","min"]
         BUILDARCH: ["686","amd64"]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Read release.md and use it as a body of new release
       id: read_release
       shell: bash
@@ -80,7 +80,7 @@ jobs:
   #      BUILDTYPE: ["full","min"]
   #      BUILDARCH: ["aarch64"]
   #  steps:
-  #  - uses: actions/checkout@v3
+  #  - uses: actions/checkout@v4
   #  - name: Build
   #    uses: uraimo/run-on-arch-action@v2
   #    id: build_bootable
