@@ -186,8 +186,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	if [ "$release" != "unstable" ];then
 		echo "
-		deb http://security.debian.org/debian-security ${release}-security main
-		deb http://deb.debian.org/debian ${release}-updates main
+		deb http://security.debian.org/debian-security ${release}-security main contrib non-free non-free-firmware
+		deb http://deb.debian.org/debian ${release}-updates main contrib non-free non-free-firmware
 		" >> /etc/apt/sources.list
 	fi
 
