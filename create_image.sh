@@ -395,7 +395,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	rm -rf /var/log/*
 
 	#tmpfs on /tmp
-	cp -f /usr/share/systemd/tmp.mount /etc/systemd/system/.
+	(cp -f /usr/share/systemd/tmp.mount /etc/systemd/system/.||true)
 	(systemctl enable tmp.mount || true)
 
 	#disable connman-wait-online in case user has no networking
