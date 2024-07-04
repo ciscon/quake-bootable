@@ -64,7 +64,7 @@ if [ ! -e /firstboot ];then
 	sync
 	if ! grep noatime /etc/fstab >/dev/null 2>&1;then
 		echo "fixing fstab..."
-		sed -i 's/\(.*\)ext4[[:space:]]\+errors=remount-ro[[:space:]]\+\(.*\)/\1ext4 noatime,nodiratime,errors=remount-ro \2/g' /etc/fstab
+		sed -i 's/\(.*\)ext4[[:space:]]\+errors=remount-ro[[:space:]]\+\(.*\)/\1ext4 nobarrier,noatime,nodiratime,errors=remount-ro \2/g' /etc/fstab
 		sync
 		mount -o remount /&
 	fi
