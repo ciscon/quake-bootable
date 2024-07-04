@@ -132,22 +132,21 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	echo "building chroot for arch $cpuarch, passed $arch"
 
-	export workdir
-	export cpuarch
-	export release
-
 	if [ "$distro" = "devuan" ];then
 		sudo debootstrap --arch=${cpuarch} --include="devuan-keyring gnupg wget ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
 	else
 		sudo debootstrap --arch=${cpuarch} --include="debian-keyring gnupg wget ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
 	fi
 
-	echo "chroot files:"
-	sudo find "$workdir" -type f
-
-	if [ -f "$workdir/debootstrap/debootstrap.log" ];then
-		echo "debootstrap log:"
-		cat "$workdir/debootstrap/debootstrap.log"
+	if [ $? -ne 0 ];then
+		echo "chroot files:"
+		sudo find "$workdir" -type f
+		if [ -f "$workdir/debootstrap/debootstrap.log" ];then
+			echo "debootstrap log:"
+			cat "$workdir/debootstrap/debootstrap.log"
+		fi
+		echo "debootstrap failed, bailing out"
+		exit 1
 	fi
 
 	echo "debootstrap complete"
