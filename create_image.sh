@@ -132,6 +132,10 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	echo "building chroot for arch $cpuarch, passed $arch"
 
+	export workdir
+	export cpuarch
+	export release
+
 	if [ "$distro" = "devuan" ];then
 		sudo debootstrap --arch=${cpuarch} --include="devuan-keyring gnupg wget ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
 	else
