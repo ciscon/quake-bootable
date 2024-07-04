@@ -477,6 +477,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	$SUDO mkdir -p "$workdir/home/quakeuser/.config"
 	$SUDO cp -af "$slimconf" "$workdir/etc/slim.conf"
 	$SUDO rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
+	ls -altr $workdir/etc
+	ls -altr $workdir/etc/xfce4
+	ls -altr $workdir/etc/xfce4/xfconf
 	$SUDO cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
 	if [ -d "$workdir/usr/share/pipewire" ];then
 		$SUDO rm -rf "$workdir/home/quakeuser/.config/pipewire"
@@ -506,7 +509,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	$SUDO cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
 	$SUDO cp -f "$viddriverprefconf" "$workdir/etc/X11/xorg.conf.d/02-video-driver-pref.conf"
 	
-	$SUDO cp -f "$sudoers" "$workdir/etc/$sudoers"
+	$SUDO cp -f "$sudoers" "$workdir/etc/sudoers"
 	
 	$SUDO cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
 
