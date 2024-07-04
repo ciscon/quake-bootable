@@ -18,6 +18,8 @@ jobs:
     container:
       image: debian:stable
       options: --privileged
+      volumes:
+        - /dev:/dev
     steps:
     - name: Install Packages
       shell: bash
