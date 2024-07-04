@@ -160,7 +160,10 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo mkdir -p "$workdir/usr/share/plymouth/themes"
 	sudo cp -rf "$plymouththeme" "$workdir/usr/share/plymouth/themes"
 
-	sudo --preserve-env=release,nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch chroot "$workdir" bash -e -c '
+	echo "chroot files:"
+	sudo find "$workdir" -type f -executable
+
+	sudo --preserve-env=release,nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch chroot "$workdir" /bin/bash -e -c '
 	
 	#configure hostname
 	echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
