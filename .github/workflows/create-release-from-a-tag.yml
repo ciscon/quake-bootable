@@ -58,6 +58,7 @@ jobs:
       run: |
         apt-get -qqy update && apt-get -qqy install pigz
         cd ./output
+        ls -altrh
         basename=$(basename -s .img *.img)
         pigz -r ${basename}.zip ${basename}.*
     - name: Bump version and push tag
