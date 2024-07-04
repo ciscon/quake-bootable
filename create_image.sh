@@ -195,8 +195,10 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sed -i "s/main$/main contrib non-free non-free-firmware/g" /etc/apt/sources.list
 
 	#enable stable repo
-	cp -a /etc/apt/sources.list /etc/apt/sources.list.d/stable.list
-	sed -i "s/testing/stable/g" /etc/apt/sources.list.d/stable.list
+	if [ "$release" != "stable" ];then
+		cp -a /etc/apt/sources.list /etc/apt/sources.list.d/stable.list
+		sed -i "s/$release/stable/g" /etc/apt/sources.list.d/stable.list
+	fi
 
 	##xanmod
 	#echo "deb http://deb.xanmod.org releases main" > /etc/apt/sources.list.d/xanmod.list

@@ -44,7 +44,7 @@ alias update-quake="export DEBIAN_FRONTEND=noninteractive;cd $HOME/build/ezquake
 alias nvidia-disable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy purge '*nvidia*';sudo apt -qqy autopurge"
 alias nvidia-enable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy install libnvidia-glvkspirv libnvidia-glvkspirv nvidia-driver nvidia-smi nvidia-settings nvidia-vulkan-icd nvidia-driver-libs libgles-nvidia1 libgles-nvidia2 nvidia-vulkan-icd;sudo apt -qqy -f install"
 alias logitech-enable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy install piper && piper"
-alias update-system="sudo apt -qqy update && sudo apt -qqy dist-upgrade"
+alias update-system="sudo apt -qqy update && sudo apt -qqy upgrade"
 alias shutdown-system="sudo shutdown -h now"
 alias reboot-system="sudo shutdown -r now"
 alias leavemealone="touch $HOME/.leavemealone"
