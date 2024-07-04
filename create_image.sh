@@ -559,10 +559,10 @@ fi
 
 
 #package versions
-versions=$($SUDO chroot workdir dpkg -l)
-mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|head -1|awk '{print $3}')
-kernel_version=$(echo "$versions"|grep linux-image|head -1|awk '{print $3}')
-nvidia_version=$(echo "$versions"|grep nvidia-driver|head -1|awk '{print $3}')
+versions=$($SUDO chroot workdir apt list 2>/dev/null)
+mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|head -1|awk '{print $2}')
+kernel_version=$(echo "$versions"|grep linux-image|head -1|awk '{print $2}')
+nvidia_version=$(echo "$versions"|grep nvidia-driver|head -1|awk '{print $2}')
 ezquake_version=$(cat "$workdir/ezquake_ver")
 
 echo -e "\n\nversions:" > versions.txt
