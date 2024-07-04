@@ -223,7 +223,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#enable stable repo
 	if [ "$release" != "stable" ];then
 		echo "
-		deb http://security.debian.org/debian-security stable main contrib non-free non-free-firmware
+		deb http://deb.debian.org/debian stable main contrib non-free non-free-firmware
 		deb http://security.debian.org/debian-security stable-security main contrib non-free non-free-firmware
 		deb http://deb.debian.org/debian stable-updates main contrib non-free non-free-firmware
 		" > /etc/apt/sources.list.d/stable.list
