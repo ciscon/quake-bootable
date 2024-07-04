@@ -100,7 +100,7 @@ if [ $(id -u) -eq 0 ];then
 fi
 
 PATH=$PATH:/sbin:/usr/sbin
-required+="debootstrap chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan"
+required+="debootstrap chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan mkfs.vfat mkfs.ext4"
 for require in $required;do
 	if ! hash $require >/dev/null 2>&1;then
 		echo "required program $require not found, bailing out."
@@ -561,6 +561,7 @@ if [ $? -eq 0 ];then
 	fi
 else
 	echo "errors in process"
+	exit 1
 fi
 
 

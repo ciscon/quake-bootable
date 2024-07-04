@@ -24,7 +24,7 @@ jobs:
     - name: Install Packages
       shell: bash
       run: |
-        apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*'
+        apt-get -qqy update && apt-get -qqy install debootstrap coreutils dosfstools pigz fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*'
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -46,7 +46,7 @@ jobs:
       shell: bash
       run: |
         rm -f ./*.zip
-        bash ./create_image.sh || exit 1
+        bash ./create_image.sh
         v=$(cat ./versions.txt)
         v="${v//'%'/'%25'}"
         v="${v//$'\n'/'%0A'}"
@@ -56,10 +56,10 @@ jobs:
       id: compress
       shell: bash
       run: |
-        apt-get -qqy update && apt-get -qqy install zip
+        apt-get -qqy update && apt-get -qqy install pigz
         cd ./output
         basename=$(basename -s .img *.img)
-        zip -r ${basename} *
+        pigz -r ${basename} *
     - name: Bump version and push tag
       id: bump_version
       uses: anothrNick/github-tag-action@1.67.0
