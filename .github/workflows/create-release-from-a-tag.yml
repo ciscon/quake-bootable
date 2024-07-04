@@ -10,11 +10,14 @@ jobs:
   build-x86:
     permissions: write-all
     name: Publish Image x86
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         BUILDTYPE: ["full","min"]
         BUILDARCH: ["686","amd64"]
+    container:
+      image: debian:unstable
+      options: --privileged
     steps:
     - uses: actions/checkout@v4
     - name: Read release.md and use it as a body of new release
