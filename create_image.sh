@@ -170,7 +170,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	$SUDO cp -f "$bashrc" "$workdir/root/.bashrc"
 	$SUDO cp -f "$profilemessages" "$workdir/root/.profile_messages"
 
-
 	if [ -d "$workdir/quake" ];then
 		$SUDO rm -rf "$workdir/quake"
 	fi
@@ -179,7 +178,12 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	$SUDO mkdir -p "$workdir/usr/share/plymouth/themes"
 	$SUDO cp -rf "$plymouththeme" "$workdir/usr/share/plymouth/themes"
 
-	$SUDO --preserve-env=release,nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch chroot "$workdir" /bin/bash -e -c '
+	SCRIPTCMD=""
+	if [ ! -z "$SUDO" ];then
+		SCRIPTCMD="$SUDO --preserve-env=release,nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch"
+	fi
+
+	$SCRIPTCMD chroot "$workdir" /bin/bash -e -c '
 	
 	#configure hostname
 	echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
