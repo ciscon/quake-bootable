@@ -381,6 +381,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		apt-get -qy update
 		apt-get -qy install libc6:i386
 	fi
+
+	#list all available packages and versions into file
+	apt list > /versions.txt 2>/dev/null
 	
 	#remove package cache
 	apt-get -qy clean
@@ -566,7 +569,7 @@ fi
 
 
 #package versions
-versions=$($SUDO chroot workdir apt list 2>/dev/null)
+versions=$(cat workdir/versions.txt ; rm -f workdir/versions.txt)
 mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|head -1|awk '{print $2}')
 kernel_version=$(echo "$versions"|grep linux-image|head -1|awk '{print $2}')
 nvidia_version=$(echo "$versions"|grep nvidia-driver|head -1|awk '{print $2}')
