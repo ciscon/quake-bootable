@@ -111,6 +111,7 @@ if [ -z "$workdir" ] || [ -z "$currentdir" ];then
 fi
 
 #init debootstick submodule
+git config --global --add safe.directory '*' >/dev/null 2>&1
 git submodule update --init --recursive >/dev/null 2>&1
 git submodule update --recursive --remote >/dev/null 2>&1
 

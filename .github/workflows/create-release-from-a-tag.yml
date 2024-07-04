@@ -22,7 +22,7 @@ jobs:
     - name: Install Packages
       shell: bash
       run: |
-        apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git
+        apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*'
     - name: Checkout
       uses: actions/checkout@v4
       with:
