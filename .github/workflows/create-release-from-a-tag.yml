@@ -35,7 +35,7 @@ jobs:
         BUILDTYPE: ${{matrix.BUILDTYPE}}
         BUILDARCH: ${{matrix.BUILDARCH}}
       run: |
-        sudo apt-get -qqy update && sudo apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 && sudo apt-get -qqy upgrade
+        apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
         rm -f ./*.zip
         bash ./create_image.sh
         v=$(cat ./versions.txt)
@@ -46,7 +46,7 @@ jobs:
     - name: Compress
       id: compress
       run: |
-        sudo apt-get -qqy update && sudo apt-get -qqy install zip
+        apt-get -qqy update && apt-get -qqy install zip
         cd ./output
         basename=$(basename -s .img *.img)
         zip -r ${basename} *

@@ -33,6 +33,7 @@ else
 	imagesuffix="-full"
 fi
 
+
 #for releases - without a target dir this means we're doing the build on github
 targetdir="/mnt/nas-quake/quake_bootable"
 if [ -d "$targetdir" ];then
@@ -88,8 +89,15 @@ export arch
 export distro
 export release
 
+SUDO="sudo -n"
+required="sudo "
+if [ $(id -u) -eq 0 ];then
+	SUDO=""
+	required=""
+fi
+
 PATH=$PATH:/sbin:/usr/sbin
-required="debootstrap chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan sudo"
+required+="debootstrap chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan"
 for require in $required;do
 	if ! hash $require >/dev/null 2>&1;then
 		echo "required program $require not found, bailing out."
@@ -107,18 +115,18 @@ git submodule update --init --recursive >/dev/null 2>&1
 git submodule update --recursive --remote >/dev/null 2>&1
 
 if [ ! -e /dev/loop0 ];then
-    sudo mknod /dev/loop0 b 7 0
+    $SUDO mknod /dev/loop0 b 7 0
 fi
 
 if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#clean up previous build
 	if [ -e "$workdir/dev/pts/ptmx" ];then
-		sudo umount -qlf "$workdir/dev/pts"||true >/dev/null 2>&1
-		sudo umount -qlf "$workdir/proc"||true >/dev/null 2>&1
+		$SUDO umount -qlf "$workdir/dev/pts"||true >/dev/null 2>&1
+		$SUDO umount -qlf "$workdir/proc"||true >/dev/null 2>&1
 	fi
 	if [ $clean -eq 1 ] && [ ! -z "$workdir" ];then
-		sudo rm -rf "$workdir"
+		$SUDO rm -rf "$workdir"
 	fi
 	mkdir -p "$workdir"
 
@@ -133,14 +141,14 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	echo "building chroot for arch $cpuarch, passed $arch"
 
 	if [ "$distro" = "devuan" ];then
-		sudo debootstrap --arch=${cpuarch} --include="devuan-keyring gnupg wget ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
+		$SUDO debootstrap --arch=${cpuarch} --include="devuan-keyring gnupg wget ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
 	else
-		sudo debootstrap --arch=${cpuarch} --include="debian-keyring gnupg wget ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
+		$SUDO debootstrap --arch=${cpuarch} --include="debian-keyring gnupg wget ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
 	fi
 
 	if [ $? -ne 0 ];then
 		echo "chroot files:"
-		sudo find "$workdir" -type f
+		$SUDO find "$workdir" -type f
 		if [ -f "$workdir/debootstrap/debootstrap.log" ];then
 			echo "debootstrap log:"
 			cat "$workdir/debootstrap/debootstrap.log"
@@ -151,27 +159,27 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	echo "debootstrap complete"
 	
-	sudo rm -rf "$workdir/etc/modprobe.d"
-	sudo cp -rf "$modprobe" "$workdir/etc/"
-	sudo mkdir -p "$workdir/etc/systemd/system"
-	sudo cp -f "$rclocalservice" "$workdir/etc/systemd/system/rc-local.service"
+	$SUDO rm -rf "$workdir/etc/modprobe.d"
+	$SUDO cp -rf "$modprobe" "$workdir/etc/"
+	$SUDO mkdir -p "$workdir/etc/systemd/system"
+	$SUDO cp -f "$rclocalservice" "$workdir/etc/systemd/system/rc-local.service"
 
-	sudo mkdir -p "$workdir/root"
-	sudo cp -f "$bashrc" "$workdir/root/.bashrc"
-	sudo cp -f "$profile" "$workdir/root/.profile"
-	sudo cp -f "$bashrc" "$workdir/root/.bashrc"
-	sudo cp -f "$profilemessages" "$workdir/root/.profile_messages"
+	$SUDO mkdir -p "$workdir/root"
+	$SUDO cp -f "$bashrc" "$workdir/root/.bashrc"
+	$SUDO cp -f "$profile" "$workdir/root/.profile"
+	$SUDO cp -f "$bashrc" "$workdir/root/.bashrc"
+	$SUDO cp -f "$profilemessages" "$workdir/root/.profile_messages"
 
 
 	if [ -d "$workdir/quake" ];then
-		sudo rm -rf "$workdir/quake"
+		$SUDO rm -rf "$workdir/quake"
 	fi
-	sudo cp -fR "$quakedir" "$workdir/quake"
-	sudo cp -f "$background" "$workdir/background.png"
-	sudo mkdir -p "$workdir/usr/share/plymouth/themes"
-	sudo cp -rf "$plymouththeme" "$workdir/usr/share/plymouth/themes"
+	$SUDO cp -fR "$quakedir" "$workdir/quake"
+	$SUDO cp -f "$background" "$workdir/background.png"
+	$SUDO mkdir -p "$workdir/usr/share/plymouth/themes"
+	$SUDO cp -rf "$plymouththeme" "$workdir/usr/share/plymouth/themes"
 
-	sudo --preserve-env=release,nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch chroot "$workdir" /bin/bash -e -c '
+	$SUDO --preserve-env=release,nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch chroot "$workdir" /bin/bash -e -c '
 	
 	#configure hostname
 	echo "127.0.1.1 '$mediahostname'" >> /etc/hosts
@@ -257,7 +265,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	if [ "$distro" = "debian" ];then
 		echo "configuring log2ram..."
 		echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
-		wget -qO - https://azlux.fr/repo.gpg.key | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
+		wget -qO - https://azlux.fr/repo.gpg.key | $SUDO gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
 		apt-get -qy update
 		apt-get -qy install log2ram
 	fi
@@ -446,77 +454,77 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	echo "finished commands within chroot"
 
-	cat "$issueappend" |sudo tee -a "$workdir/etc/issue" >/dev/null 2>&1
-	sudo cp -f "$rclocal" "$workdir/etc/rc.local"
-	sudo chmod +x "$workdir/etc/rc.local"
-	sudo mkdir -p "$workdir/etc/polkit-1/rules.d"
-	sudo cp -f "$hwclock" "$workdir/etc/default/hwclock"
-	sudo cp -f "$drirc" "$workdir/home/quakeuser/.drirc"
-	sudo cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
-	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc"
-	sudo cp -f "$xinitrcreal" "$workdir/home/quakeuser/.xinitrc.real"
-	sudo chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
-	sudo mkdir -p "$workdir/home/quakeuser/.config"
-	sudo cp -af "$slimconf" "$workdir/etc/slim.conf"
-	sudo rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
-	sudo cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
+	cat "$issueappend" |$SUDO tee -a "$workdir/etc/issue" >/dev/null 2>&1
+	$SUDO cp -f "$rclocal" "$workdir/etc/rc.local"
+	$SUDO chmod +x "$workdir/etc/rc.local"
+	$SUDO mkdir -p "$workdir/etc/polkit-1/rules.d"
+	$SUDO cp -f "$hwclock" "$workdir/etc/default/hwclock"
+	$SUDO cp -f "$drirc" "$workdir/home/quakeuser/.drirc"
+	$SUDO cp -f "$xinitrc" "$workdir/home/quakeuser/.xinitrc"
+	$SUDO chmod -f +x "$workdir/home/quakeuser/.xinitrc"
+	$SUDO cp -f "$xinitrcreal" "$workdir/home/quakeuser/.xinitrc.real"
+	$SUDO chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
+	$SUDO mkdir -p "$workdir/home/quakeuser/.config"
+	$SUDO cp -af "$slimconf" "$workdir/etc/slim.conf"
+	$SUDO rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
+	$SUDO cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
 	if [ -d "$workdir/usr/share/pipewire" ];then
-		sudo rm -rf "$workdir/home/quakeuser/.config/pipewire"
-		sudo cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
-		sudo cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"
+		$SUDO rm -rf "$workdir/home/quakeuser/.config/pipewire"
+		$SUDO cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
+		$SUDO cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"
 	fi
-	sudo cp -f "$xresources" "$workdir/home/quakeuser/.Xresources"
-	sudo mkdir -p "$workdir/home/quakeuser/.local/share/applications"
+	$SUDO cp -f "$xresources" "$workdir/home/quakeuser/.Xresources"
+	$SUDO mkdir -p "$workdir/home/quakeuser/.local/share/applications"
 
 	#policy kit rules
 	for dfile in "$policykitrules/"*;do
-		sudo cp -f "$dfile" "$workdir/etc/polkit-1/rules.d/."
+		$SUDO cp -f "$dfile" "$workdir/etc/polkit-1/rules.d/."
 	done
 
 	#desktop files
 	for dfile in "$currentdir/resources/applications/"*;do
-		sudo cp -f "$dfile" "$workdir/usr/share/applications/."
+		$SUDO cp -f "$dfile" "$workdir/usr/share/applications/."
 	done
 
 	#/usr/local/bin
-	sudo cp -f "$currentdir/resources/bin/"* "$workdir/usr/local/bin/."
+	$SUDO cp -f "$currentdir/resources/bin/"* "$workdir/usr/local/bin/."
 
-	#sudo mkdir -p "$workdir/home/quakeuser/.config/tint2"
-	#sudo cp -f "$tintrc" "$workdir/home/quakeuser/.config/tint2/tint2rc"
+	#$SUDO mkdir -p "$workdir/home/quakeuser/.config/tint2"
+	#$SUDO cp -f "$tintrc" "$workdir/home/quakeuser/.config/tint2/tint2rc"
 	
-	sudo mkdir -p "$workdir/etc/X11/xorg.conf.d"
-	sudo cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
-	sudo cp -f "$viddriverprefconf" "$workdir/etc/X11/xorg.conf.d/02-video-driver-pref.conf"
+	$SUDO mkdir -p "$workdir/etc/X11/xorg.conf.d"
+	$SUDO cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
+	$SUDO cp -f "$viddriverprefconf" "$workdir/etc/X11/xorg.conf.d/02-video-driver-pref.conf"
 	
-	sudo cp -f "$sudoers" "$workdir/etc/sudoers"
+	$SUDO cp -f "$$SUDOers" "$workdir/etc/$SUDOers"
 	
-	sudo cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
+	$SUDO cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
 
 	#nodm config	
-	#sudo cp -f "$nodm" "$workdir/etc/defaults/nodm"
+	#$SUDO cp -f "$nodm" "$workdir/etc/defaults/nodm"
 
 	#fix ownership for quakeuser
-	sudo chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
+	$SUDO chroot "$workdir" chown quakeuser:quakeuser -Rf /home/quakeuser
 	
 	echo "configured chroot"
 
 fi
 
 if [ -e "$workdir/dev/pts/ptmx" ];then
-	sudo umount -lf "$workdir/dev/pts" >/dev/null 2>&1
-	sudo umount -lf "$workdir/proc" >/dev/null 2>&1
+	$SUDO umount -lf "$workdir/dev/pts" >/dev/null 2>&1
+	$SUDO umount -lf "$workdir/proc" >/dev/null 2>&1
 fi
 
 export LVM_SYSTEM_DIR=$lvmdir
 
 #clean up old lvs/pvs
-#mount 2>/dev/null|grep --color=never DRAFT_|awk '{print $1}'|xargs -r sudo umount -lf
-#sudo -E lvs 2>/dev/null|grep --color=never DRAFT_|awk '{print $2"/"$1}'|xargs -r sudo -E lvremove -f
-#sudo -E vgs 2>/dev/null|grep --color=never DRAFT_|awk '{print $1}'|xargs -r sudo vgremove -f
-#sudo pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r sudo pvremove -f
-#sudo losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r sudo kpartx -d 
+#mount 2>/dev/null|grep --color=never DRAFT_|awk '{print $1}'|xargs -r $SUDO umount -lf
+#$SUDO -E lvs 2>/dev/null|grep --color=never DRAFT_|awk '{print $2"/"$1}'|xargs -r $SUDO -E lvremove -f
+#$SUDO -E vgs 2>/dev/null|grep --color=never DRAFT_|awk '{print $1}'|xargs -r $SUDO vgremove -f
+#$SUDO pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r $SUDO pvremove -f
+#$SUDO losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r $SUDO kpartx -d 
 
-sudo -E ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +cpufreq.default_governor=performance +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +nvidia-drm.modeset=1 +ibt=off +rootwait +tsc=reliable +quiet +splash +loglevel=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
+$SUDO -E ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +cpufreq.default_governor=performance +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +nvidia-drm.modeset=1 +ibt=off +rootwait +tsc=reliable +quiet +splash +loglevel=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename" 2>/tmp/quake_bootable.err
 
 if [ $? -eq 0 ];then
 	mkdir -p ./output
@@ -542,7 +550,7 @@ fi
 
 
 #package versions
-versions=$(sudo chroot workdir dpkg -l)
+versions=$($SUDO chroot workdir dpkg -l)
 mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|head -1|awk '{print $3}')
 kernel_version=$(echo "$versions"|grep linux-image|head -1|awk '{print $3}')
 nvidia_version=$(echo "$versions"|grep nvidia-driver|head -1|awk '{print $3}')
