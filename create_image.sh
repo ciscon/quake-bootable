@@ -222,8 +222,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#enable stable repo
 	if [ "$release" != "stable" ];then
-		cp -a /etc/apt/sources.list /etc/apt/sources.list.d/stable.list
-		sed -i "s/$release/stable/g" /etc/apt/sources.list.d/stable.list
+		echo "
+		deb http://security.debian.org/debian-security stable main contrib non-free non-free-firmware
+		deb http://security.debian.org/debian-security stable-security main contrib non-free non-free-firmware
+		deb http://deb.debian.org/debian stable-updates main contrib non-free non-free-firmware
+		" > /etc/apt/sources.list.d/stable.list
 	fi
 
 	##xanmod
