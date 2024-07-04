@@ -137,6 +137,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	else
 		sudo debootstrap --arch=${cpuarch} --include="debian-keyring gnupg wget ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
 	fi
+
+	echo "debootstrap complete"
 	
 	sudo rm -rf "$workdir/etc/modprobe.d"
 	sudo cp -rf "$modprobe" "$workdir/etc/"
