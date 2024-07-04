@@ -32,7 +32,7 @@ jobs:
         BUILDTYPE: ${{matrix.BUILDTYPE}}
         BUILDARCH: ${{matrix.BUILDARCH}}
       run: |
-        sudo apt-get -qqy update && sudo apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
+        sudo apt-get -qqy update && sudo apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 && sudo apt-get -qqy upgrade
         rm -f ./*.zip
         bash ./create_image.sh
         v=$(cat ./versions.txt)
