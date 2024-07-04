@@ -142,6 +142,14 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		sudo debootstrap --arch=${cpuarch} --include="debian-keyring gnupg wget ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
 	fi
 
+	echo "chroot files:"
+	sudo find "$workdir" -type f
+
+	if [ -f "$workdir/debootstrap/debootstrap.log" ];then
+		echo "debootstrap log:"
+		cat "$workdir/debootstrap/debootstrap.log"
+	fi
+
 	echo "debootstrap complete"
 	
 	sudo rm -rf "$workdir/etc/modprobe.d"
@@ -163,9 +171,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	sudo cp -f "$background" "$workdir/background.png"
 	sudo mkdir -p "$workdir/usr/share/plymouth/themes"
 	sudo cp -rf "$plymouththeme" "$workdir/usr/share/plymouth/themes"
-
-	echo "chroot files:"
-	sudo find "$workdir" -type f -executable
 
 	sudo --preserve-env=release,nquakeresourcesurl,nquakeresourcesurl_backup,nquakezips,ezquakegitrepo,packages,distro,build_type,arch chroot "$workdir" /bin/bash -e -c '
 	
