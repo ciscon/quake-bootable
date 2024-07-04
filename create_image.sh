@@ -570,9 +570,9 @@ fi
 
 #package versions
 versions=$(cat workdir/versions.txt ; rm -f workdir/versions.txt)
-mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|head -1|awk '{print $2}')
-kernel_version=$(echo "$versions"|grep linux-image|head -1|awk '{print $2}')
-nvidia_version=$(echo "$versions"|grep nvidia-driver|head -1|awk '{print $2}')
+mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|tail -1|awk '{print $2}')
+kernel_version=$(echo "$versions"|grep linux-image-${arch}|tail -1|awk '{print $2}')
+nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
 ezquake_version=$(cat "$workdir/ezquake_ver")
 
 echo -e "\n\nversions:" > versions.txt
