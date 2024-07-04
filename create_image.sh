@@ -89,6 +89,9 @@ export arch
 export distro
 export release
 
+#limit file descriptors or certain programs can get into a spin attempting to close all of them
+ulimit -n 1000
+
 SUDO="sudo -n"
 required="sudo "
 if [ $(id -u) -eq 0 ];then
