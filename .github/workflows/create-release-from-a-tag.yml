@@ -35,7 +35,7 @@ jobs:
         BUILDTYPE: ${{matrix.BUILDTYPE}}
         BUILDARCH: ${{matrix.BUILDARCH}}
       run: |
-        apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2
+        apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git
         rm -f ./*.zip
         bash ./create_image.sh
         v=$(cat ./versions.txt)
