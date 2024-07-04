@@ -458,12 +458,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	echo "finished commands within chroot"
 
-	echo "cwd"
-	ls -altr
-	echo "workdir"
-	ls -altr "$workdir"
-	echo "continuing configuration..."
-
 	cat "$issueappend" |$SUDO tee -a "$workdir/etc/issue" >/dev/null 2>&1
 	$SUDO cp -f "$rclocal" "$workdir/etc/rc.local"
 	$SUDO chmod +x "$workdir/etc/rc.local"
@@ -477,10 +471,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	$SUDO mkdir -p "$workdir/home/quakeuser/.config"
 	$SUDO cp -af "$slimconf" "$workdir/etc/slim.conf"
 	$SUDO rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
-	ls -altr $workdir/etc
-	ls -altr $workdir/etc/xdg
-	ls -altr $workdir/etc/xdg/xfce4
-	ls -altr $workdir/etc/xdg/xfce4/xfconf
 	$SUDO cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
 	if [ -d "$workdir/usr/share/pipewire" ];then
 		$SUDO rm -rf "$workdir/home/quakeuser/.config/pipewire"
