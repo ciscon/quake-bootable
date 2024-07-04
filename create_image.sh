@@ -269,7 +269,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	if [ "$distro" = "debian" ];then
 		echo "configuring log2ram..."
 		echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
-		wget -qO - https://azlux.fr/repo.gpg.key | $SUDO gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
+		wget -qO - https://azlux.fr/repo.gpg.key | gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
 		apt-get -qy update
 		apt-get -qy install log2ram
 	fi
@@ -458,6 +458,12 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	echo "finished commands within chroot"
 
+	echo "cwd"
+	ls -altr
+	echo "workdir"
+	ls -altr "$workdir"
+	echo "continuing configuration..."
+
 	cat "$issueappend" |$SUDO tee -a "$workdir/etc/issue" >/dev/null 2>&1
 	$SUDO cp -f "$rclocal" "$workdir/etc/rc.local"
 	$SUDO chmod +x "$workdir/etc/rc.local"
@@ -500,7 +506,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	$SUDO cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
 	$SUDO cp -f "$viddriverprefconf" "$workdir/etc/X11/xorg.conf.d/02-video-driver-pref.conf"
 	
-	$SUDO cp -f "$$SUDOers" "$workdir/etc/$SUDOers"
+	$SUDO cp -f "$sudoers" "$workdir/etc/$sudoers"
 	
 	$SUDO cp -f "$limitsconf" "$workdir/etc/security/limits.conf"
 
