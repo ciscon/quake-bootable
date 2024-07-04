@@ -19,7 +19,12 @@ jobs:
       image: debian:unstable
       options: --privileged
     steps:
-    - uses: actions/checkout@v4
+    - name: Install Packages
+      shell: bash
+      run: |
+        apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git
+    - name: Checkout
+      uses: actions/checkout@v4
       with:
         submodules: true
     - name: Read release.md and use it as a body of new release
@@ -38,9 +43,8 @@ jobs:
         BUILDARCH: ${{matrix.BUILDARCH}}
       shell: bash
       run: |
-        apt-get -qqy update && apt-get -qqy install debootstrap coreutils pigz fdisk kpartx mount uuid-runtime lvm2 git
         rm -f ./*.zip
-        bash ./create_image.sh
+        bash ./create_image.sh || exit 1
         v=$(cat ./versions.txt)
         v="${v//'%'/'%25'}"
         v="${v//$'\n'/'%0A'}"
