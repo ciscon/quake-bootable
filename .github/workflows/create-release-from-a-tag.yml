@@ -20,6 +20,8 @@ jobs:
       options: --privileged
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: true
     - name: Read release.md and use it as a body of new release
       id: read_release
       shell: bash
