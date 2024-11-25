@@ -544,7 +544,7 @@ fi
 #$SUDO pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r $SUDO pvremove -f
 #$SUDO losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r $SUDO kpartx -d 
 
-$SUDO ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +amd_pstate=active +usbcore.autosuspend=-1 +cpufreq.default_governor=performance +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +nvidia-drm.modeset=1 +ibt=off +rootwait +tsc=reliable +quiet +splash +loglevel=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename"
+$SUDO ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +usbcore.autosuspend=-1 +cpufreq.default_governor=performance +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +nvidia-drm.modeset=1 +ibt=off +rootwait +tsc=reliable +quiet +splash +loglevel=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename"
 
 if [ $? -eq 0 ];then
 	mkdir -p ./output
