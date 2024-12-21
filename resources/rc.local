@@ -13,7 +13,7 @@
 
 #set local time for windows users
 if hash timedatectl >/dev/null 2>&1;then
-	timedatectl set-local-rtc 1
+	timedatectl set-local-rtc 1 --adjust-system-clock
 fi
 
 #disable wifi power management
