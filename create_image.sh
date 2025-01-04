@@ -361,7 +361,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
   	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
   
   	#install nvidia and openrazer drivers
-  	apt-get -qy install nvidia-driver nvidia-settings
+  	apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
   fi
 
 	#update nquake resources
