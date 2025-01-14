@@ -10,15 +10,14 @@ xrdb -load $HOME/.Xresources
 #disable accessibility features (sticky keys)
 xkbset -a
 
-if [ -z "$XDG_RUNTIME_DIR" ];then
-  export XDG_RUNTIME_DIR="/tmp/$(id -u)"
-  mkdir -p "$XDG_RUNTIME_DIR"
-fi
-[ -z "$DBUS_SESSION_BUS_ADDRESS" ] && eval $(/usr/bin/dbus-launch --exit-with-session --sh-syntax)
-
-dbus-cleanup-sockets
-dbus-update-activation-environment --all
-export NO_AT_BRIDGE=1
+#if [ -z "$XDG_RUNTIME_DIR" ];then
+#  export XDG_RUNTIME_DIR="/tmp/$(id -u)"
+#  mkdir -p "$XDG_RUNTIME_DIR"
+#fi
+#[ -z "$DBUS_SESSION_BUS_ADDRESS" ] && eval $(/usr/bin/dbus-launch --exit-with-session --sh-syntax)
+#dbus-cleanup-sockets
+#dbus-update-activation-environment --all
+#export NO_AT_BRIDGE=1
 
 #disable tearfree
 for device in $(xrandr |awk '{print $1}'|grep --color=never -v '^Screen'|grep --color=never -v '^[0-9]');do xrandr --output "$device" --set TearFree off >/dev/null 2>&1;done&
