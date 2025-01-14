@@ -86,3 +86,13 @@ echo "booting..."
 #if hash X 2>/dev/null;then
 #	su - quakeuser -l -c /usr/bin/startx >/tmp/startx.log 2>&1&
 #fi
+
+if (hash nvidia-xconfig >/dev/null 2>&1) && (lsmod|grep -cE 'nvidia_modeset' >/dev/null 2>&1);then
+  echo "nvidia gpu detected, checking if x11 has started correctly..."
+  sleep 15
+  systemctl status slim >/dev/null 2>&1 || (
+    echo "x11 hasn't started properly, running nvidia-xconfig..."
+    nvidia-xconfig
+    systemctl restart slim
+  )
+fi
