@@ -13,7 +13,7 @@
 
 #set local time for windows users
 if hash timedatectl >/dev/null 2>&1;then
-	timedatectl set-local-rtc 1 --adjust-system-clock
+	timedatectl set-local-rtc 1 --adjust-system-clock&
 fi
 
 #disable wifi power management
@@ -23,9 +23,10 @@ fi
 
 
 #fix resolv.conf to point to connman's
-/etc/init.d/connman >/dev/null 2>&1
+/etc/init.d/connman >/dev/null 2>&1 &
 
 #configure gpus
+(
 if [ -e /sys/class/drm/card*/device/power_dpm_force_performance_level ];then
 	#amdgpu
 	echo "setting gpu performance options..."
@@ -57,8 +58,10 @@ elif [ -e /sys/class/drm/card*/gt_max_freq_mhz ];then
 		echo "$maxfreq" > /sys/class/drm/card*/gt_min_freq_mhz
 	fi
 fi
+)&
 
 #items to run on first boot
+(
 if [ ! -e /firstboot ];then
 	echo "first boot"
 	sync
@@ -80,6 +83,7 @@ if [ ! -e /firstboot ];then
 	fi
 	touch /firstboot
 fi
+)&
 
 echo "booting..."
 
@@ -87,6 +91,7 @@ echo "booting..."
 #	su - quakeuser -l -c /usr/bin/startx >/tmp/startx.log 2>&1&
 #fi
 
+(
 if (hash nvidia-xconfig >/dev/null 2>&1) && (lsmod|grep -cE 'nvidia_modeset' >/dev/null 2>&1);then
   echo "nvidia gpu detected, checking if x11 has started correctly..."
   sleep 15
@@ -96,3 +101,4 @@ if (hash nvidia-xconfig >/dev/null 2>&1) && (lsmod|grep -cE 'nvidia_modeset' >/d
     systemctl restart slim
   )
 fi
+)&
