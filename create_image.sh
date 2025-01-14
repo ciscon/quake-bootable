@@ -48,7 +48,7 @@ plymouththeme="$currentdir/resources/plymouth/quake-theme"
 lvmdir="$currentdir/lvm"
 nodm="$currentdir/resources/nodm"
 xresources="$currentdir/resources/xresources"
-pipewire="$currentdir/resources/pipewire.conf"
+#pipewire="$currentdir/resources/pipewire.conf"
 drirc="$currentdir/resources/drirc"
 rclocal="$currentdir/resources/rc.local"
 rclocalservice="$currentdir/resources/rc-local.service"
@@ -426,8 +426,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		sed -i "s/#*\(.*\)VERBOSE=.*/\1VERBOSE=\"no\"/g" /etc/default/rcS
 	fi
 
+  ###let the system take care of this
 	#disable user pipewire service, we do this manually in xinitrc
-	(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask pipewire-pulse;systemctl --user mask wireplumber"||true)
+	#(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask pipewire-pulse;systemctl --user mask wireplumber"||true)
 	
 	rm -rf /tmp/*
 	rm -rf /var/log/*
@@ -483,11 +484,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	$SUDO cp -af "$slimconf" "$workdir/etc/slim.conf"
 	$SUDO rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
 	$SUDO cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
-	if [ -d "$workdir/usr/share/pipewire" ];then
-		$SUDO rm -rf "$workdir/home/quakeuser/.config/pipewire"
-		$SUDO cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
-		$SUDO cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"
-	fi
+	#if [ -d "$workdir/usr/share/pipewire" ];then
+	#	$SUDO rm -rf "$workdir/home/quakeuser/.config/pipewire"
+	#	$SUDO cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
+	#	$SUDO cp -f "$pipewire" "$workdir/home/quakeuser/.config/pipewire/pipewire.conf"
+	#fi
 	$SUDO cp -f "$xresources" "$workdir/home/quakeuser/.Xresources"
 	$SUDO mkdir -p "$workdir/home/quakeuser/.local/share/applications"
 
