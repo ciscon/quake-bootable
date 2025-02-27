@@ -348,7 +348,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	#openrazer and kernel headers	
 	if [ "$arch" == "amd64" ] || [ "$arch" == "686" ];then
-	  apt-get -qy install openrazer-driver-dkms linux-headers-generic
+	  apt-get -qy install openrazer-driver-dkms linux-headers-generic pahole
   fi
 
   if [ "$arch" == "amd64" ] && [ "$build_type" != "min" ];then
