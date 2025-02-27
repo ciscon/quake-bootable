@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         BUILDTYPE: ["full","min"]
-        BUILDARCH: ["686","amd64"]
+        BUILDARCH: ["amd64"]
     container:
       image: debian:stable
       options: --privileged
