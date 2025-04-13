@@ -46,7 +46,9 @@ fi
 policykitrules="$currentdir/resources/polkit-rules"
 plymouththeme="$currentdir/resources/plymouth/quake-theme"
 lvmdir="$currentdir/lvm"
-nodm="$currentdir/resources/nodm"
+greetd="$currentdir/resources/greetd"
+#nodm="$currentdir/resources/nodm"
+#slimconf="$currentdir/resources/slim.conf"
 xresources="$currentdir/resources/xresources"
 #pipewire="$currentdir/resources/pipewire.conf"
 drirc="$currentdir/resources/drirc"
@@ -66,11 +68,10 @@ background="$currentdir/resources/background.png"
 modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 xfce="$currentdir/resources/xfce"
-slimconf="$currentdir/resources/slim.conf"
 
 packages="nano procps os-prober util-linux iputils-ping openssh-client file git sudo cmake ninja-build build-essential libgl1-mesa-dri libpcre3-dev terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant zip grub2 "
 packages_nox11="ifupdown dhcpcd-base"
-packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-video-radeon xserver-xorg-input-all xinit connman-gtk feh menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus dbus-user-session dbus-x11 dbus-bin imagemagick gvfs-backends rtkit gnome-icon-theme xfce4-terminal xfce4 mousepad slim xkbset policykit-1-gnome fonts-recommended thunar-archive-plugin file-roller zip "
+packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-video-radeon xserver-xorg-input-all xinit connman-gtk feh menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus dbus-user-session dbus-x11 dbus-bin imagemagick gvfs-backends rtkit gnome-icon-theme xfce4-terminal xfce4 mousepad greetd xkbset policykit-1-gnome fonts-recommended thunar-archive-plugin file-roller zip "
 
 if [ "$build_type" != "min" ];then
 	packages+=$packages_x11
@@ -440,8 +441,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#disable connman-wait-online in case user has no networking
 	systemctl disable connman-wait-online
 
-	#enable slim
-	(systemctl enable slim || true)
+	#enable greetd
+	(systemctl enable greetd || true)
 
 	#disable silken mouse
 	if [ -f /etc/X11/xinit/xserverrc ];then
@@ -481,7 +482,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	$SUDO cp -f "$xinitrcreal" "$workdir/home/quakeuser/.xinitrc.real"
 	$SUDO chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
 	$SUDO mkdir -p "$workdir/home/quakeuser/.config"
-	$SUDO cp -af "$slimconf" "$workdir/etc/slim.conf"
+	#$SUDO cp -af "$slimconf" "$workdir/etc/slim.conf"
+	$SUDO cp -af "$greetd/"* "$workdir/etc/greetd/."
 	$SUDO rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
 	$SUDO cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
 	#if [ -d "$workdir/usr/share/pipewire" ];then
