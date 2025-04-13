@@ -26,7 +26,11 @@ The main use case for quake-bootable is to save the image to a USB flash drive. 
 
 
 ## Step 1 - Burn the image
-In Windows, to burn to a HDD or USB - download the software balenaEtcher, and burn the .img to the target drive.  For writing to a normal USB you can also just use win32 disk imager.
+In Windows, to write image to a USB drive use win32 disk imager.  To write to an HDD (or USB) you may also use balenaEtcher to write the .img file to the target drive.
+
+In Linux just use dd to write the image file:
+`dd if=quake_bootable.img of=/dev/sdX bs=8M`
+Replace sdX with your usb or harddrive.  For a usb drive this can be obtained by plugging in the drive and look at the tail end of the output from running dmesg.
 
 ## Step 2 - Boot into Quake-bootable
 When booting, press the key to open boot options (usually F8), and choose the disk to boot from.
