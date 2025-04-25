@@ -2,6 +2,9 @@
 
 currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 
+#set to 0 to disable opengl triple buffering
+TRIPLEBUFFER=1
+
 if lsmod|grep nvidia_modeset >/dev/null 2>&1;then
 	echo "loading nvidia preferences"
 	export __GL_YIELD="NOTHING"
@@ -40,6 +43,10 @@ if [ -z "$DISPLAY" ];then
 	echo ""
 fi
 
+if [ $TRIPLEBUFFER -eq 0 ];then
+	extra+="-no-triple-gl-buffer"
+fi
+
 olddir=$(pwd)
 cd "$currentdir"
 
@@ -47,6 +54,6 @@ cd "$currentdir"
 #nice -n -11 taskset 1,2 ./ezquake-linux-x86_64 -no-triple-gl-buffer $extra $*
 
 #let the scheduler handle it
-nice -n -11 ./ezquake-linux -no-triple-gl-buffer -democache 32000 $extra $*
+nice -n -11 ./ezquake-linux $append -democache 32000 $extra $*
 
 cd "$olddir"
