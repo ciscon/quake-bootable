@@ -40,7 +40,7 @@ fi
 alias quakepreset="currentdir=$(pwd);cd $HOME/quake;./choose-qw.sh;cd \"$currentdir\""
 alias browser="chromium"
 alias filebrowser="thunar"
-alias update-quake="export DEBIAN_FRONTEND=noninteractive;cd $HOME/build/ezquake-source-official && git reset --hard && git clean -qfdx && git pull && git submodule update --remote --init && eval \$(grep --color=never PKGS_DEB build-linux.sh|head -n1) && echo 'installing deps...' && (sudo apt -qqy update;sudo apt -qqy install \$PKGS_DEB||true) ; make -j$(nproc);strip ezquake-linux-*;cp ezquake-linux-* $HOME/quake/ezquake-linux && echo 'copied, update complete.'"
+alias update-quake="wget -qO /tmp/ezquake-linux https://builds.quakeworld.nu/ezquake/snapshots/latest/linux/x86_64/ezQuake-x86_64.AppImage && mv /tmp/ezquake-linux ${HOME}/quake/ezquake-linux && chmod +x /home/quakeuser/quake/ezquake-linux"
 alias nvidia-disable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy purge '*nvidia*';sudo apt -qqy autopurge"
 alias nvidia-enable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy install libnvidia-glvkspirv libnvidia-glvkspirv nvidia-driver nvidia-smi nvidia-settings nvidia-vulkan-icd nvidia-driver-libs libgles-nvidia1 libgles-nvidia2 nvidia-vulkan-icd;sudo apt -qqy -f install"
 alias logitech-enable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy install piper && piper"

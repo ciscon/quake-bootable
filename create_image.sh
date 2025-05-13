@@ -303,49 +303,57 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	
 	#configure vim symlink for vim
 	update-alternatives --install /usr/bin/vim vim /usr/bin/vi 0
-	
-	#build ezquake
-	echo "building ezquake"
-	HOME=/home/quakeuser . /home/quakeuser/.profile
-	#drop march to nehalem instead of native
-	if [ "$arch" == "amd64" ];then
-		export CFLAGS="${CFLAGS} -march=nehalem"
-		export LDFLAGS="${CFLAGS}"
-	else
-		export CFLAGS="-O3 -pipe -flto=$(nproc)"
-		export LDFLAGS="${CFLAGS}"
-  fi
-	rm -rf /home/quakeuser/build
-	mkdir /home/quakeuser/build
-	git clone --depth=1 $ezquakegitrepo /home/quakeuser/build/ezquake-source-official
-	cd /home/quakeuser/build/ezquake-source-official
-	#version
-	ezquake_ver=$(grep VERSION_NUMBER src/version.h |tr -d \"|awk "{print \$3}")
-	ezquake_ver+=-$(git rev-parse --short HEAD)
-	echo -n "$ezquake_ver" > /ezquake_ver
-	eval $(grep --color=never PKGS_DEB build-linux.sh|head -n1)
-	PKGS_DEB=$(echo "$PKGS_DEB"|tr " " "\n"|grep -v "freetype"|tr "\n" " ")
-	apt-get -qy install $PKGS_DEB
-	git submodule update --init --recursive --remote
-	cmake .
-	make -j$(nproc)
-	strip ezquake-linux-*
-	cp -f /home/quakeuser/build/ezquake-source-official/ezquake-linux-* /home/quakeuser/quake/ezquake-linux
-	git clean -qfdx
-	
-	echo "cleaning up packages"
-	#clean up dev packages
-	apt-get -qy purge build-essential || true
-	#apt-get -qy purge "*-dev"
-	#clean up packages
-	apt-get -qy autopurge
-	
-	#reinstall ezquake deps
-	echo "reinstalling ezquake deps"
-	ezquakedeps=$(apt-get --simulate install $(echo "$PKGS_DEB"|sed "s/build-essential//g") 2>/dev/null|grep --color=never "^Inst"|awk "{print \$2}"|grep --color=never -v "\-dev$"|tr "\n" " ")
-	if [ ! -z "$ezquakedeps" ];then
-	  apt-get -qy install $ezquakedeps
-	fi
+
+
+	#pull in appimage
+	wget -qO /tmp/ezquake-linux https://builds.quakeworld.nu/ezquake/snapshots/latest/linux/x86_64/ezQuake-x86_64.AppImage
+	[ ! -s /tmp/ezquake-linux ] && exit 12
+	mv /tmp/ezquake-linux /home/quakeuser/quake/ezquake-linux
+	chmod +x /home/quakeuser/quake/ezquake-linux
+  chown quakeuser:quakeuser -Rf /home/quakeuser/quake
+
+	##build ezquake
+	#echo "building ezquake"
+	#HOME=/home/quakeuser . /home/quakeuser/.profile
+	##drop march to nehalem instead of native
+	#if [ "$arch" == "amd64" ];then
+	#	export CFLAGS="${CFLAGS} -march=nehalem"
+	#	export LDFLAGS="${CFLAGS}"
+	#else
+	#	export CFLAGS="-O3 -pipe"
+	#	export LDFLAGS="${CFLAGS}"
+  #fi
+	#rm -rf /home/quakeuser/build
+	#mkdir /home/quakeuser/build
+	#git clone --depth=1 $ezquakegitrepo /home/quakeuser/build/ezquake-source-official
+	#cd /home/quakeuser/build/ezquake-source-official
+	##version
+	#ezquake_ver=$(grep VERSION_NUMBER src/version.h |tr -d \"|awk "{print \$3}")
+	#ezquake_ver+=-$(git rev-parse --short HEAD)
+	#echo -n "$ezquake_ver" > /ezquake_ver
+	#eval $(grep --color=never PKGS_DEB build-linux.sh|head -n1)
+	#PKGS_DEB=$(echo "$PKGS_DEB"|tr " " "\n"|grep -v "freetype"|tr "\n" " ")
+	#apt-get -qy install $PKGS_DEB
+	#git submodule update --init --recursive --remote
+	#cmake .
+	#make -j$(nproc)
+	#strip ezquake-linux-*
+	#cp -f /home/quakeuser/build/ezquake-source-official/ezquake-linux-* /home/quakeuser/quake/ezquake-linux
+	#git clean -qfdx
+	#
+	#echo "cleaning up packages"
+	##clean up dev packages
+	#apt-get -qy purge build-essential || true
+	##apt-get -qy purge "*-dev"
+	##clean up packages
+	#apt-get -qy autopurge
+	#
+	##reinstall ezquake deps
+	#echo "reinstalling ezquake deps"
+	#ezquakedeps=$(apt-get --simulate install $(echo "$PKGS_DEB"|sed "s/build-essential//g") 2>/dev/null|grep --color=never "^Inst"|awk "{print \$2}"|grep --color=never -v "\-dev$"|tr "\n" " ")
+	#if [ ! -z "$ezquakedeps" ];then
+	#  apt-get -qy install $ezquakedeps
+	#fi
 
 	#openrazer and kernel headers	
 	if [ "$arch" == "amd64" ] || [ "$arch" == "686" ];then

@@ -25,6 +25,6 @@ if [ ! -f $HOME/.leavemealone ];then
 fi
 
 #if we build again inside bootable environment, use current hardware for optimizations
-export CFLAGS="-pipe -march=native -O3 -flto=$(nproc) -flto-partition=balanced -ftree-slp-vectorize -ffp-contract=fast -fno-defer-pop -finline-limit=64 -fmerge-all-constants"
+export CFLAGS="-pipe -march=native -O3"
 export CXXFLAGS="$CFLAGS"
 export LDFLAGS="$CFLAGS"
