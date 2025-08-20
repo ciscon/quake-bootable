@@ -12,10 +12,9 @@ The main use case for quake-bootable is to save the image to a USB flash drive. 
 
 ## Available commands in Quake-bootable (printed in terminal on boot)
 - General
-  - browser - starts chromium web browse
+  - browser - starts chromium web browser
   - filebrowser
   - discord
-  - lxrandr - configure display
   - shutdown-system
   - razer commands (if a razer device exists)
 - Quake related commands
