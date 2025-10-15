@@ -48,7 +48,7 @@ if [ $TRIPLEBUFFER -eq 0 ];then
 fi
 
 olddir=$(pwd)
-cd "$currentdir"
+cd "$HOME/quake"
 
 #example: set affinity to vcpus 1 and 2
 #nice -n -11 taskset 1,2 ./ezquake-linux-x86_64 -no-triple-gl-buffer $extra $*

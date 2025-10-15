@@ -38,6 +38,7 @@ if [ -e "$HOME/quake-afterquake" ];then
 	alias quake-afterquake="currentdir=$(pwd);cd $HOME/quake-afterquake;nice -n -5 ./fteqw64;cd \"$currentdir\""
 fi
 alias quakepreset="currentdir=$(pwd);cd $HOME/quake;./choose-qw.sh;cd \"$currentdir\""
+alias quake-fix="cd $HOME/quake && for f in $(find .); do mv -f "$f" "$(echo $f | tr '[A-Z]' '[a-z]')" 2>/dev/null; done && update-quake && echo 'all set'"
 alias browser="chromium"
 alias filebrowser="thunar"
 alias update-quake="wget -qO /tmp/ezquake-linux https://builds.quakeworld.nu/ezquake/snapshots/latest/linux/x86_64/ezQuake-x86_64.AppImage && mv /tmp/ezquake-linux ${HOME}/quake/ezquake-linux && chmod +x /home/quakeuser/quake/ezquake-linux"
