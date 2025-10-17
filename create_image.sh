@@ -552,6 +552,28 @@ if [ ! -z "$SUDO" ];then
 	SUDO+=" -E "
 fi
 
+#package versions
+versions=$(cat workdir/versions.txt ; rm -f workdir/versions.txt)
+mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|tail -1|awk '{print $2}')
+kernel_version=$(echo "$versions"|grep linux-image-${arch}|tail -1|awk '{print $2}')
+nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
+ezquake_version=$(cat "$workdir/ezquake_ver")
+
+echo -e "\n\nversions:" > versions.txt
+if [ ! -z "$mesa_version" ];then
+	echo "- mesa: $mesa_version" >> versions.txt
+fi
+if [ ! -z "$kernel_version" ];then
+	echo "- kernel: $kernel_version" >> versions.txt
+fi
+if [ ! -z "$nvidia_version" ];then
+	echo "- nvidia: $nvidia_version" >> versions.txt
+fi
+if [ ! -z "$ezquake_version" ];then
+	echo "- ezquake: $ezquake_version" >> versions.txt
+fi
+
+
 #clean up old lvs/pvs
 #mount 2>/dev/null|grep --color=never DRAFT_|awk '{print $1}'|xargs -r $SUDO umount -lf
 #$SUDO -E lvs 2>/dev/null|grep --color=never DRAFT_|awk '{print $2"/"$1}'|xargs -r $SUDO -E lvremove -f
@@ -584,25 +606,5 @@ else
 fi
 
 
-#package versions
-versions=$(cat workdir/versions.txt ; rm -f workdir/versions.txt)
-mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|tail -1|awk '{print $2}')
-kernel_version=$(echo "$versions"|grep linux-image-${arch}|tail -1|awk '{print $2}')
-nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
-ezquake_version=$(cat "$workdir/ezquake_ver")
-
-echo -e "\n\nversions:" > versions.txt
-if [ ! -z "$mesa_version" ];then
-	echo "- mesa: $mesa_version" >> versions.txt
-fi
-if [ ! -z "$kernel_version" ];then
-	echo "- kernel: $kernel_version" >> versions.txt
-fi
-if [ ! -z "$nvidia_version" ];then
-	echo "- nvidia: $nvidia_version" >> versions.txt
-fi
-if [ ! -z "$ezquake_version" ];then
-	echo "- ezquake: $ezquake_version" >> versions.txt
-fi
 
 echo -e "\ncomplete."
