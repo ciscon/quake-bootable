@@ -370,8 +370,12 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
   	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
   
   	#install nvidia and openrazer drivers
-  	apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
-  fi
+		wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian12/x86_64/cuda-keyring_1.1-1_all.deb
+		dpkg -i /tmp/cuda.deb
+		apt-get update
+		apt-get -qy install cuda-drivers
+		#apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
+	fi
 
 	#update nquake resources
 	echo "updating nquake resources..."
@@ -555,7 +559,7 @@ fi
 #$SUDO pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r $SUDO pvremove -f
 #$SUDO losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r $SUDO kpartx -d 
 
-$SUDO ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +usbcore.autosuspend=-1 +cpufreq.default_governor=performance +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +ibt=off +rootwait +tsc=reliable +quiet +splash +loglevel=3 -rootdelay +nvidia_drm.fbdev=0 +nvidia_drm.modeset=0" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename"
+$SUDO ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +usbcore.autosuspend=-1 +cpufreq.default_governor=performance +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +ibt=off +rootwait +tsc=reliable +quiet +splash +loglevel=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename"
 
 if [ $? -eq 0 ];then
 	mkdir -p ./output
@@ -584,7 +588,8 @@ fi
 versions=$(cat workdir/versions.txt ; rm -f workdir/versions.txt)
 mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|tail -1|awk '{print $2}')
 kernel_version=$(echo "$versions"|grep linux-image-${arch}|tail -1|awk '{print $2}')
-nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
+nvidia_version=$(echo "$versions"|grep cuda-drivers|tail -1|awk '{print $2}')
+#nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
 ezquake_version=$(cat "$workdir/ezquake_ver")
 
 echo -e "\n\nversions:" > versions.txt
