@@ -471,6 +471,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#let debootstick install this
 	#apt -y purge linux-image-generic || true
 
+
+	apt-get -qy purge g++*
 	apt-get -qy autopurge || true
 	
 	#remove temporary resolv.conf
