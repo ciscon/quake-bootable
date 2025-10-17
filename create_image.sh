@@ -373,8 +373,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian12/x86_64/cuda-keyring_1.1-1_all.deb
 		dpkg -i /tmp/cuda.deb
 		apt-get update
-		apt-get -qy install cuda-drivers
-		#apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
+		#apt-get -qy install cuda-drivers
+		apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
 	fi
 
 	#update nquake resources
@@ -588,8 +588,7 @@ fi
 versions=$(cat workdir/versions.txt ; rm -f workdir/versions.txt)
 mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|tail -1|awk '{print $2}')
 kernel_version=$(echo "$versions"|grep linux-image-${arch}|tail -1|awk '{print $2}')
-nvidia_version=$(echo "$versions"|grep cuda-drivers|tail -1|awk '{print $2}')
-#nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
+nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
 ezquake_version=$(cat "$workdir/ezquake_ver")
 
 echo -e "\n\nversions:" > versions.txt
