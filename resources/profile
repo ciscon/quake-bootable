@@ -1,4 +1,4 @@
-source $HOME/.bashrc >/dev/null 2>&1
+. $HOME/.bashrc >/dev/null 2>&1
 
 export PATH="$PATH:$HOME/bin"
 
@@ -18,7 +18,7 @@ if [ -f ${HOME}/.razer_mode ];then
 fi
 
 if [ ! -f $HOME/.leavemealone ];then
-  source $HOME/.profile_messages
+  . $HOME/.profile_messages
   echo ""
   echo "to disable these messages: leavemealone"
   echo ""
