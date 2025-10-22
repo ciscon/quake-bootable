@@ -1,30 +1,34 @@
-. $HOME/.bashrc >/dev/null 2>&1
+if [ -n "$BASH_VERSION" ]; then
 
-export PATH="$PATH:$HOME/bin"
+  source $HOME/.bashrc >/dev/null 2>&1
+  
+  export PATH="$PATH:$HOME/bin"
+  
+  if [ -z "$XDG_RUNTIME_DIR" ];then
+    export XDG_RUNTIME_DIR="/tmp/$(id -u)"
+    mkdir -p "$XDG_RUNTIME_DIR"
+  fi
+  
+  if [ -f ${HOME}/.razer_dpi ];then
+  	razer-dpi $(cat ${HOME}/.razer_dpi) >/dev/null 2>&1
+  fi
+  if [ -f ${HOME}/.razer_rate ];then
+  	razer-rate $(cat ${HOME}/.razer_rate) >/dev/null 2>&1
+  fi
+  if [ -f ${HOME}/.razer_mode ];then
+  	razer-mode $(cat ${HOME}/.razer_mode) >/dev/null 2>&1
+  fi
+  
+  if [ ! -f $HOME/.leavemealone ];then
+    source $HOME/.profile_messages
+    echo ""
+    echo "to disable these messages: leavemealone"
+    echo ""
+  fi
+  
+  #if we build again inside bootable environment, use current hardware for optimizations
+  export CFLAGS="-pipe -march=native -O3"
+  export CXXFLAGS="$CFLAGS"
+  export LDFLAGS="$CFLAGS"
 
-if [ -z "$XDG_RUNTIME_DIR" ];then
-  export XDG_RUNTIME_DIR="/tmp/$(id -u)"
-  mkdir -p "$XDG_RUNTIME_DIR"
 fi
-
-if [ -f ${HOME}/.razer_dpi ];then
-	razer-dpi $(cat ${HOME}/.razer_dpi) >/dev/null 2>&1
-fi
-if [ -f ${HOME}/.razer_rate ];then
-	razer-rate $(cat ${HOME}/.razer_rate) >/dev/null 2>&1
-fi
-if [ -f ${HOME}/.razer_mode ];then
-	razer-mode $(cat ${HOME}/.razer_mode) >/dev/null 2>&1
-fi
-
-if [ ! -f $HOME/.leavemealone ];then
-  . $HOME/.profile_messages
-  echo ""
-  echo "to disable these messages: leavemealone"
-  echo ""
-fi
-
-#if we build again inside bootable environment, use current hardware for optimizations
-export CFLAGS="-pipe -march=native -O3"
-export CXXFLAGS="$CFLAGS"
-export LDFLAGS="$CFLAGS"
