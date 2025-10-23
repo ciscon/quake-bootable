@@ -10,12 +10,6 @@ mediahostname="quakeboot"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git" #repository to use for ezquake build
 
-#nquake resources
-nquakeresourcesurl="https://github.com/nQuake/distfiles/releases/download/snapshot"
-nquakeresourcesurl_backup="https://github.com/ciscon/distfiles/releases/download/snapshot"
-nquakezips="gpl.zip non-gpl.zip"
-
-
 builddate=$(date +%s)
 gitcommit=$(git log -n 1|head -1|awk '{print $2}'|cut -c1-6)
 githubref=${GITHUB_REF_NAME:-v0}
@@ -69,7 +63,7 @@ modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 xfce="$currentdir/resources/xfce"
 
-packages="nano procps os-prober util-linux iputils-ping openssh-client file git sudo cmake ninja-build build-essential libgl1-mesa-dri terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant zip grub2 libfuse2 rename "
+packages="nano procps os-prober util-linux iputils-ping openssh-client file git sudo cmake ninja-build build-essential libgl1-mesa-dri terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant zip grub2 libfuse2 rename libarchive-tools "
 packages_nox11="ifupdown dhcpcd-base"
 packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-video-radeon xserver-xorg-input-all xinit connman-gtk feh menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus dbus-user-session dbus-x11 dbus-bin imagemagick gvfs-backends rtkit gnome-icon-theme xfce4-terminal xfce4 xfce-polkit mousepad greetd xkbset fonts-recommended thunar-archive-plugin file-roller zip "
 
@@ -376,18 +370,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		#apt-get -qy install cuda-drivers
 		apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
 	fi
-
-	#update nquake resources
-	echo "updating nquake resources..."
-	ls -altr /home/quakeuser/quake|grep "qw\."
-	mkdir -p /home/quakeuser/quake/qw.nquake
-	mkdir -p /tmp/nquakeresources
-	for res in $nquakezips;do
-	  wget "$nquakeresourcesurl/$res" -O /tmp/nquakeresources/$res || wget "$nquakeresourcesurl_backup/$res" -O /tmp/nquakeresources/$res || exit 5
-		bsdtar xf /tmp/nquakeresources/$res --strip-components=1 -C /home/quakeuser/quake/qw.nquake || exit 6
-  done
-  rm -rf /tmp/nquakeresources
-	ls -altr /home/quakeuser/quake|grep "qw\."
 
 	#qizmo deps
 	if [ "$arch" == "amd64" ];then

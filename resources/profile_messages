@@ -2,12 +2,13 @@
 echo ""
 echo "quake :"
 echo "run quake (using ezquake, qw compatible): quake"
-echo "change quake (ezquake) assets preset: quakepreset"
+echo "change quake (ezquake) assets preset: quake-preset"
 echo "update quake (ezquake) from git: update-quake"
 echo "fix quake (convert files to lowercase and update client): quake-fix"
 if [ ! -z "$DISPLAY" ];then
   echo "run afterquake (using fte, qw and netquake compatible): quake-afterquake"
 fi
+echo "get nquake assets and switch to this preset: get-nquake"
 echo ""
 #razer mouse functions
 if ls /sys/module/razermouse/drivers/hid:razermouse/*/device_mode > /dev/null 2>&1;then
