@@ -58,7 +58,7 @@ fi
 )&
 
 #make sure something is registered for qw links
-if ! xdg-mime query default x-scheme-handler/qw|grep desktop >/dev/null 2>&1; then
+if ! grep 'qw=' "$HOME/.config/mimeapps.list" >/dev/null 2>&1; then
 	if [ -e "$HOME/.local/share/applications/qw-url-handler.desktop" ];then
 		xdg-mime default qw-url-handler.desktop x-scheme-handler/qw >/dev/null 2>&1
 	fi
