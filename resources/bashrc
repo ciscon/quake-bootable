@@ -35,9 +35,8 @@ fi
 
 #custom aliases
 if [ -e "$HOME/quake-afterquake" ];then
-	alias quake-afterquake="currentdir=$(pwd);cd $HOME/quake-afterquake;nice -n -5 ./fteqw64;cd \"$currentdir\""
+	alias quake-afterquake='currentdir=$PWD;cd $HOME/quake-afterquake;nice -n -5 ./fteqw64;cd "$currentdir"'
 fi
-alias quake-preset="currentdir=$(pwd);cd $HOME/quake;./choose-qw.sh;cd \"$currentdir\""
 alias quake-fix="cd $HOME/quake && echo 'lowercasing files and directories...' && find . -depth -exec rename 's/(.*)\/([^\/]*)/$1\/\L$2/' {} \; 2>/dev/null && cd - >/dev/null && echo 'updating quake...' && update-quake && echo 'all done'"
 alias browser="chromium"
 alias filebrowser="thunar"
@@ -50,6 +49,14 @@ alias shutdown-system="sudo shutdown -h now"
 alias reboot-system="sudo shutdown -r now"
 alias leavemealone="touch $HOME/.leavemealone"
 
+
+function quake-preset() {
+	currentdir=$PWD
+	cd "$HOME/quake"
+	./choose-qw.sh $1
+	cd "$currentdir"
+}
+
 function get-nquake() {
 	nquakeresourcesurl="https://github.com/nQuake/distfiles/releases/download/snapshot"
 	nquakeresourcesurl_backup="https://github.com/ciscon/distfiles/releases/download/snapshot"
@@ -59,7 +66,7 @@ function get-nquake() {
 	mkdir -p $HOME/quake/qw.nquake
 	mkdir -p /tmp/nquakeresources
 	for res in $nquakezips;do
-		wget "$nquakeresourcesurl/$res" -O /tmp/nquakeresources/$res || wget "$nquakeresourcesurl_backup/$res" -O /tmp/nquakeresources/$res || echo "failed to download resources" 
+		wget -q "$nquakeresourcesurl/$res" -O /tmp/nquakeresources/$res || wget "$nquakeresourcesurl_backup/$res" -O /tmp/nquakeresources/$res || echo "failed to download resources" 
 		bsdtar xf /tmp/nquakeresources/$res --strip-components=1 -C $HOME/quake/qw.nquake || echo "failed to extract resources"
 	done
 	rm -rf /tmp/nquakeresources
