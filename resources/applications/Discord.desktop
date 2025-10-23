@@ -5,6 +5,6 @@ GenericName=discord
 Comment=Discord Chat
 Keywords=discord,chat
 Categories=Game;Chat;InstantMessaging;Network
-Exec=/usr/local/bin/discord
+Exec=/home/quakeuser/bin/discord
 Terminal=false
 StartupNotify=true

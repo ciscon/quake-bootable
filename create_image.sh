@@ -500,8 +500,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		$SUDO cp -f "$dfile" "$workdir/home/quakeuser/.local/share/applications"
 	done
 
-	#/usr/local/bin
-	$SUDO cp -f "$currentdir/resources/bin/"* "$workdir/usr/local/bin/."
+	#home bin
+	$SUDO mkdir -p "$workdir/home/quakeuser/bin"
+	$SUDO cp -f "$currentdir/resources/bin/"* "$workdir/home/quakeuser/bin/."
 
 	#$SUDO mkdir -p "$workdir/home/quakeuser/.config/tint2"
 	#$SUDO cp -f "$tintrc" "$workdir/home/quakeuser/.config/tint2/tint2rc"
