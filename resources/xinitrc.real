@@ -1,6 +1,6 @@
 #!/bin/bash
 
-##stop nodm if we're in the middle of a shutdown
+#if using nodm - stop nodm if we're in the middle of a shutdown
 #if [[ "$(systemctl is-system-running || true)" == "stopping" ]]; then
 #	sudo /etc/init.d/nodm stop
 #fi
@@ -10,6 +10,7 @@ xrdb -load $HOME/.Xresources
 #disable accessibility features (sticky keys)
 xkbset -a
 
+#if not using dm that does this for us
 #if [ -z "$XDG_RUNTIME_DIR" ];then
 #  export XDG_RUNTIME_DIR="/tmp/$(id -u)"
 #  mkdir -p "$XDG_RUNTIME_DIR"
@@ -32,17 +33,7 @@ for device in $(xrandr |awk '{print $1}'|grep --color=never -v '^Screen'|grep --
 	sleep 1
 	done
 )&
-#
-##pasystray
-#(
-#	pkill -f pasystray >/dev/null 2>&1
-#	while :; do
-#	nice pasystray
-#	sleep 1
-#	done
-#)&
 
-(
 #overlay background
 if [ ! -f "$HOME/background.png" ];then
 	while :;do
@@ -51,6 +42,7 @@ if [ ! -f "$HOME/background.png" ];then
 		sleep 1
 	done
 fi
+#disable compositor
 if hash xfconf-query >/dev/null 2>&1;then
 	while :;do
 		if pgrep -f xfconfd$ > /dev/null 2>&1;then
@@ -61,13 +53,13 @@ if hash xfconf-query >/dev/null 2>&1;then
 		fi
 	done
 fi
-)&
 
-wait
+#make sure something is registered for qw links
+if ! xdg-mime query default x-scheme-handler/qw|grep desktop >/dev/null 2>&1; then
+	xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
+fi
 
-#make sure ezquake is registered
-xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
-
+#if not using a de that runs autostart applications for us
 #for app in $HOME/.config/autostart/*.desktop;do
 #	dex "$app"&
 #done
