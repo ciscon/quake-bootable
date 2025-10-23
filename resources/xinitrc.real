@@ -63,6 +63,8 @@ if hash xfconf-query >/dev/null 2>&1;then
 fi
 )&
 
+wait
+
 #make sure ezquake is registered
 xdg-mime default ezQuake.desktop x-scheme-handler/qw >/dev/null 2>&1
 
