@@ -63,7 +63,7 @@ modprobe="$currentdir/resources/modprobe.d"
 issueappend="$currentdir/resources/issue.append"
 xfce="$currentdir/resources/xfce"
 
-packages="nano procps os-prober util-linux iputils-ping openssh-client file git sudo cmake ninja-build build-essential libgl1-mesa-dri terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant zip grub2 libfuse2 rename libarchive-tools "
+packages="nano procps os-prober util-linux iputils-ping openssh-client file git sudo cmake ninja-build build-essential libgl1-mesa-dri terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant zip grub2 libfuse2 rename libarchive-tools log2ram "
 packages_nox11="ifupdown dhcpcd-base"
 packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-video-radeon xserver-xorg-input-all xinit connman-gtk feh menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus dbus-user-session dbus-x11 dbus-bin imagemagick gvfs-backends rtkit gnome-icon-theme xfce4-terminal xfce4 xfce-polkit mousepad greetd xkbset fonts-recommended thunar-archive-plugin file-roller zip "
 
@@ -268,13 +268,13 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	apt -qy install "*-microcode" || true
 	
 	##log2ram on debian, devuan does not have systemd so the installation will fail
-	if [ "$distro" = "debian" ];then
-		echo "configuring log2ram..."
-		echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
-		wget -qO - https://azlux.fr/repo.gpg.key | gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
-		apt-get -qy update
-		apt-get -qy install log2ram
-	fi
+	#if [ "$distro" = "debian" ];then
+	#	echo "configuring log2ram..."
+	#	echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
+	#	wget -qO - https://azlux.fr/repo.gpg.key | gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
+	#	apt-get -qy update
+	#	apt-get -qy install log2ram
+	#fi
 
 	#plymouth theme
 	plymouth-set-default-theme quake-theme
