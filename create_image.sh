@@ -368,7 +368,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
   	rm /tmp/aq.zip
   	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
   
-  	#install nvidia and openrazer drivers
+  	#install nvidia drivers
 		wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian12/x86_64/cuda-keyring_1.1-1_all.deb
 		dpkg -i /tmp/cuda.deb
 		apt-get update
@@ -431,7 +431,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask pipewire-pulse;systemctl --user mask wireplumber"||true)
 	
 	#tmpfs on /tmp
-	(cp -f /usr/share/systemd/tmp.mount /etc/systemd/system/.||true)
 	(systemctl enable tmp.mount || true)
 
 	#disable connman-wait-online in case user has no networking
@@ -452,11 +451,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		sed -i "s|.*RuntimeMaxUse=.*|RuntimeMaxUse=64M|g" /etc/systemd/journald.conf
 	fi
 
-	#let debootstick install this
-	#apt -y purge linux-image-generic || true
-
-
-	apt-get -qy purge g++*
+	#apt-get -qy purge g++*
 	apt-get -qy autopurge || true
 
 	rm -rf /tmp/*
