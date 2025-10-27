@@ -430,9 +430,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#disable user pipewire service, we do this manually in xinitrc
 	#(su - quakeuser bash -c "systemctl --user mask pipewire;systemctl --user mask pipewire-pulse;systemctl --user mask wireplumber"||true)
 	
-	rm -rf /tmp/*
-	rm -rf /var/log/*
-
 	#tmpfs on /tmp
 	(cp -f /usr/share/systemd/tmp.mount /etc/systemd/system/.||true)
 	(systemctl enable tmp.mount || true)
@@ -461,6 +458,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	apt-get -qy purge g++*
 	apt-get -qy autopurge || true
+
+	rm -rf /tmp/*
+	rm -rf /var/log/*
 	
 	#remove temporary resolv.conf
 	rm -f /etc/resolv.conf
