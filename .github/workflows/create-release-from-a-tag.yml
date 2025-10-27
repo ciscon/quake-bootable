@@ -61,7 +61,7 @@ jobs:
         cd ./output
         ls -altrh
         basename=$(basename -s .img *.img)
-        zip -9 -r ${basename}.zip ${basename}.*
+        zip -7 -r ${basename}.zip ${basename}.*
     - name: Bump version and push tag
       id: bump_version
       uses: anothrNick/github-tag-action@1.67.0
