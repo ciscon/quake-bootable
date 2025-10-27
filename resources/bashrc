@@ -48,8 +48,10 @@ alias update-system="sudo apt -qqy update && sudo apt -qqy upgrade"
 alias shutdown-system="sudo shutdown -h now"
 alias reboot-system="sudo shutdown -r now"
 alias leavemealone="touch $HOME/.leavemealone"
+alias messages='source $HOME/.profile_messages'
 
 
+#custom functions
 function quake-preset() {
 	currentdir=$PWD
 	cd "$HOME/quake"
@@ -73,3 +75,8 @@ function get-nquake() {
 	echo "switching to nquake preset"
 	quake-preset nquake
 }
+
+#display messages
+if [ ! -f $HOME/.leavemealone ];then
+	messages
+fi
