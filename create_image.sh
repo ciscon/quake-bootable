@@ -54,8 +54,7 @@ bashrc="$currentdir/resources/bashrc"
 profile="$currentdir/resources/profile"
 profilemessages="$currentdir/resources/profile_messages"
 hwclock="$currentdir/resources/hwclock"
-compositeconf="$currentdir/resources/01-composite.conf"
-viddriverprefconf="$currentdir/resources/02-video-driver-pref.conf"
+xorgconf="$currentdir/resources/xorg"
 sudoers="$currentdir/resources/sudoers"
 limitsconf="$currentdir/resources/limits.conf"
 background="$currentdir/resources/background.png"
@@ -504,12 +503,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	$SUDO mkdir -p "$workdir/home/quakeuser/bin"
 	$SUDO cp -f "$currentdir/resources/bin/"* "$workdir/home/quakeuser/bin/."
 
-	#$SUDO mkdir -p "$workdir/home/quakeuser/.config/tint2"
-	#$SUDO cp -f "$tintrc" "$workdir/home/quakeuser/.config/tint2/tint2rc"
-	
 	$SUDO mkdir -p "$workdir/etc/X11/xorg.conf.d"
-	$SUDO cp -f "$compositeconf" "$workdir/etc/X11/xorg.conf.d/01-composite.conf"
-	$SUDO cp -f "$viddriverprefconf" "$workdir/etc/X11/xorg.conf.d/02-video-driver-pref.conf"
+	$SUDO cp -f "$xorgconf/"* "$workdir/etc/X11/xorg.conf.d/"
 	
 	$SUDO cp -f "$sudoers" "$workdir/etc/sudoers"
 	
