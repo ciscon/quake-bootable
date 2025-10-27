@@ -33,3 +33,8 @@ fi
 echo "update system: update-system"
 echo "shutdown system: shutdown-system"
 echo "reboot system: reboot-system"
+echo ""
+echo "to disable these messages: leavemealone"
+echo "to see these messages again: messages"
+echo ""
+

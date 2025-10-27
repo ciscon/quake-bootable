@@ -19,11 +19,10 @@ if [ -n "$BASH_VERSION" ]; then
   	razer-mode $(cat ${HOME}/.razer_mode) >/dev/null 2>&1
   fi
   
+  alias messages='source $HOME/.profile_messages'
+
   if [ ! -f $HOME/.leavemealone ];then
-    source $HOME/.profile_messages
-    echo ""
-    echo "to disable these messages: leavemealone"
-    echo ""
+    messages
   fi
   
   #if we build again inside bootable environment, use current hardware for optimizations
