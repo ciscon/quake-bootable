@@ -78,7 +78,7 @@ if [ ! -e /firstboot ];then
 		if [ "$removable" == "0" ];then
 			#allow grub to probe for other operating systems if our root device isn't removable
 			sed -i "s/^GRUB_DISABLE_OS_PROBER.*/GRUB_DISABLE_OS_PROBER=false/g" /etc/default/grub
-			update-grub
+			update-grub >/dev/null 2>&1
 		fi
 	fi
 	touch /firstboot
