@@ -100,5 +100,10 @@ if (hash nvidia-xconfig >/dev/null 2>&1) && (lsmod|grep -cE 'nvidia_modeset' >/d
     nvidia-xconfig
     systemctl restart greetd
   )
+else
+	#remove nvidia generated xorg.conf if there's no nvidia hardware
+	if [ -e /etc/X11/xorg.conf ] && (grep -i nvidia /etc/X11/xorg.conf >/dev/null 2>&1);then
+		rm -f /etc/X11/xorg.conf
+	fi
 fi
 )&
