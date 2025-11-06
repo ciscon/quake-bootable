@@ -67,7 +67,7 @@ packages="nano procps os-prober util-linux iputils-ping openssh-client file git 
 #minimal build packages
 packages_nox11="libegl1 ifupdown dhcpcd-base"
 #full build packages
-packages_x11=" xserver-xorg-legacy xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-video-radeon xserver-xorg-input-all xinit connman-gtk feh menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus dbus-user-session dbus-x11 dbus-bin imagemagick rtkit greetd fonts-recommended zip greetd xkbset fonts-recommended zip gvfs-backends "
+packages_x11=" xserver-xorg-legacy xserver-xorg-video-intel xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-video-radeon xserver-xorg-input-all xinit connman-gtk feh menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus dbus-user-session dbus-x11 dbus-bin imagemagick rtkit greetd fonts-recommended zip greetd xkbset fonts-recommended zip gvfs-backends "
 #window manager/de packages
 packages_x11+=" gnome-icon-theme xfce4-terminal xfce4 xfce-polkit mousepad xkbset thunar-archive-plugin file-roller "
 
