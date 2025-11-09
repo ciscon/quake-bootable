@@ -88,7 +88,7 @@ fi
 	#fi
 
 	(
-		if (hash nvidia-xconfig >/dev/null 2>&1) && (lsmod | grep -cE 'nvidia' >/dev/null 2>&1); then
+		if (hash nvidia-xconfig >/dev/null 2>&1) && [ ! -e /etc/X11/xorg.conf ] && (lsmod | grep -cE 'nvidia' >/dev/null 2>&1); then
 			echo "nvidia gpu detected, generating xorg.conf"
 			nvidia-xconfig
 			systemctl status greetd >/dev/null 2>&1 || (
