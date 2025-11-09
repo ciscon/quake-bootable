@@ -89,19 +89,21 @@ echo "booting..."
 
 (
   if (hash nvidia-xconfig >/dev/null 2>&1) && (lsmod | grep -cE 'nvidia' >/dev/null 2>&1); then
-    echo "nvidia gpu detected, checking if x11 has started correctly.  please wait up to 30 seconds..."
-    sleep 30
+    echo "nvidia gpu detected, generating xorg.conf"
+    nvidia-xconfig
     systemctl status greetd >/dev/null 2>&1 || (
-      echo "x11 hasn't started properly, running nvidia-xconfig..."
-      nvidia-xconfig
-      systemctl restart greetd
+			systemctl reset-failed
+      systemctl start greetd
     )
   else
     #remove nvidia generated xorg.conf if there's no nvidia hardware
-    if [ -e /etc/X11/xorg.conf ] && (grep -i nvidia /etc/X11/xorg.conf >/dev/null 2>&1); then
-      echo "found old x11 config file for nvidia, removing it."
-      rm -f /etc/X11/xorg.conf
-      systemctl restart greetd
-    fi
+		if [ -e /etc/X11/xorg.conf ] && (grep -i nvidia /etc/X11/xorg.conf >/dev/null 2>&1); then
+			echo "found old x11 config file for nvidia, removing it."
+			rm -f /etc/X11/xorg.conf
+			systemctl status greetd >/dev/null 2>&1 || (
+				systemctl reset-failed
+				systemctl start greetd
+			)
+		fi
   fi
 ) &

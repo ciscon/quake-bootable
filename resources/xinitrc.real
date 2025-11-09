@@ -28,7 +28,7 @@ for device in $(xrandr |awk '{print $1}'|grep --color=never -v '^Screen'|grep --
 #connman
 (
 	pkill -f connman-gtk >/dev/null 2>&1
-	while :; do
+	while :;do
 	nice connman-gtk --tray
 	sleep 1
 	done
