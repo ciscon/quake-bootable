@@ -10,12 +10,12 @@
 
 #set local time for windows users
 if hash timedatectl >/dev/null 2>&1; then
-  timedatectl set-local-rtc 1 --adjust-system-clock &
+	timedatectl set-local-rtc 1 --adjust-system-clock &
 fi
 
 #disable wifi power management
 if hash iw >/dev/null 2>&1; then
-  iw dev | awk '$1=="Interface"{print $2}' | xargs -r -I% iw % set power_save off &
+	iw dev | awk '$1=="Interface"{print $2}' | xargs -r -I% iw % set power_save off &
 fi
 
 #fix resolv.conf to point to connman's
@@ -23,85 +23,87 @@ fi
 
 #configure gpus
 (
-  if [ -e /sys/class/drm/card*/device/power_dpm_force_performance_level ]; then
-    #amdgpu
-    echo "setting gpu performance options..."
-    if [ -e /sys/class/drm/card*/device/pp_power_profile_mode ]; then
-      echo "manual" >/sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
-      #set vr profile
-      amdprofile=$(grep --color=never "VR.*:$" /sys/class/drm/card*/device/pp_power_profile_mode | awk "{print \$1}" 2>/dev/null)
-      if [ ! -z "$amdprofile" ] && [ -e /sys/class/drm/card*/device/pp_power_profile_mode ]; then
-        echo "$amdprofile" >/sys/class/drm/card*/device/pp_power_profile_mode 2>/dev/null
-      else
-        echo "high" >/sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
-      fi
-    else
-      echo "high" >/sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
-    fi
-    if [ -e /sys/class/drm/card*/device/pp_dpm_mclk ]; then
-      #force memory clock to full
-      echo "3" >/sys/class/drm/card*/device/pp_dpm_mclk 2>/dev/null
-    fi
-  elif [ -e /sys/class/drm/card*/gt_max_freq_mhz ]; then
-    #intel
-    if [ -e /sys/class/drm/card*/gt_boost_freq_mhz ]; then
-      maxfreq=$(cat /sys/class/drm/card*/gt_boost_freq_mhz | head -n1)
-    else
-      maxfreq=$(cat /sys/class/drm/card*/gt_max_freq_mhz | head -n1)
-    fi
-    if [ ! -z "$maxfreq" ]; then
-      #force max frequency
-      echo "$maxfreq" >/sys/class/drm/card*/gt_min_freq_mhz
-    fi
-  fi
+	if [ -e /sys/class/drm/card*/device/power_dpm_force_performance_level ]; then
+		#amdgpu
+		echo "setting gpu performance options..."
+		if [ -e /sys/class/drm/card*/device/pp_power_profile_mode ]; then
+			echo "manual" >/sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
+			#set vr profile
+			amdprofile=$(grep --color=never "VR.*:$" /sys/class/drm/card*/device/pp_power_profile_mode | awk "{print \$1}" 2>/dev/null)
+			if [ ! -z "$amdprofile" ] && [ -e /sys/class/drm/card*/device/pp_power_profile_mode ]; then
+				echo "$amdprofile" >/sys/class/drm/card*/device/pp_power_profile_mode 2>/dev/null
+			else
+				echo "high" >/sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
+			fi
+		else
+			echo "high" >/sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
+		fi
+		if [ -e /sys/class/drm/card*/device/pp_dpm_mclk ]; then
+			#force memory clock to full
+			echo "3" >/sys/class/drm/card*/device/pp_dpm_mclk 2>/dev/null
+		fi
+	elif [ -e /sys/class/drm/card*/gt_max_freq_mhz ]; then
+		#intel
+		if [ -e /sys/class/drm/card*/gt_boost_freq_mhz ]; then
+			maxfreq=$(cat /sys/class/drm/card*/gt_boost_freq_mhz | head -n1)
+		else
+			maxfreq=$(cat /sys/class/drm/card*/gt_max_freq_mhz | head -n1)
+		fi
+		if [ ! -z "$maxfreq" ]; then
+			#force max frequency
+			echo "$maxfreq" >/sys/class/drm/card*/gt_min_freq_mhz
+		fi
+	fi
 ) &
 
 #items to run on first boot
 (
-  if [ ! -e /firstboot ]; then
-    echo "first boot"
-    sync
-    if ! grep noatime /etc/fstab >/dev/null 2>&1; then
-      echo "fixing fstab..."
-      sed -i 's/\(.*\)ext4[[:space:]]\+errors=remount-ro[[:space:]]\+\(.*\)/\1ext4 nobarrier,noatime,nodiratime,errors=remount-ro \2/g' /etc/fstab
-      sync
-      mount -o remount / &
-    fi
-    #check if root fs is removable
-    rootdev=$(lvs -o +devices --segments --noheadings | grep --color=never 'ROOT_FS' | awk -F'[( ]' '{print $(NF-1)}' | sed 's/[0-9]*$//' | awk -F'/' '{print $NF}')
-    if [ ! -z "$rootdev" ] && [ -e "/sys/block/$rootdev" ]; then
-      removable=$(cat "/sys/block/$rootdev/removable")
-      if [ "$removable" == "0" ]; then
-        #allow grub to probe for other operating systems if our root device isn't removable
-        sed -i "s/^GRUB_DISABLE_OS_PROBER.*/GRUB_DISABLE_OS_PROBER=false/g" /etc/default/grub
-        update-grub >/dev/null 2>&1
-      fi
-    fi
-    touch /firstboot
-  fi
-) &
+	if [ ! -e /firstboot ]; then
+		echo "first boot"
+		sync
+		if ! grep noatime /etc/fstab >/dev/null 2>&1; then
+			echo "fixing fstab..."
+			sed -i 's/\(.*\)ext4[[:space:]]\+errors=remount-ro[[:space:]]\+\(.*\)/\1ext4 nobarrier,noatime,nodiratime,errors=remount-ro \2/g' /etc/fstab
+			sync
+			mount -o remount / &
+		fi
+		#check if root fs is removable
+		rootdev=$(lvs -o +devices --segments --noheadings | grep --color=never 'ROOT_FS' | awk -F'[( ]' '{print $(NF-1)}' | sed 's/[0-9]*$//' | awk -F'/' '{print $NF}')
+			if [ ! -z "$rootdev" ] && [ -e "/sys/block/$rootdev" ]; then
+				removable=$(cat "/sys/block/$rootdev/removable")
+				if [ "$removable" == "0" ]; then
+					#allow grub to probe for other operating systems if our root device isn't removable
+					sed -i "s/^GRUB_DISABLE_OS_PROBER.*/GRUB_DISABLE_OS_PROBER=false/g" /etc/default/grub
+					update-grub >/dev/null 2>&1
+				fi
+			fi
+			touch /firstboot
+		fi
+	) &
 
-echo "booting..."
+	echo "booting..."
 
-#if hash X 2>/dev/null;then
-#	su - quakeuser -l -c /usr/bin/startx >/tmp/startx.log 2>&1&
-#fi
+	#if hash X 2>/dev/null;then
+	#	su - quakeuser -l -c /usr/bin/startx >/tmp/startx.log 2>&1&
+	#fi
 
-(
-  if (hash nvidia-xconfig >/dev/null 2>&1) && (lsmod | grep -cE 'nvidia' >/dev/null 2>&1); then
-    echo "nvidia gpu detected, checking if x11 has started correctly.  please wait up to 30 seconds..."
-    sleep 30
-    systemctl status greetd >/dev/null 2>&1 || (
-      echo "x11 hasn't started properly, running nvidia-xconfig..."
-      nvidia-xconfig
-      systemctl restart greetd
-    )
-  else
-    #remove nvidia generated xorg.conf if there's no nvidia hardware
-    if [ -e /etc/X11/xorg.conf ] && (grep -i nvidia /etc/X11/xorg.conf >/dev/null 2>&1); then
-      echo "found old x11 config file for nvidia, removing it."
-      rm -f /etc/X11/xorg.conf
-      systemctl restart greetd
-    fi
-  fi
-) &
+	(
+		if (hash nvidia-xconfig >/dev/null 2>&1) && (lsmod | grep -cE 'nvidia' >/dev/null 2>&1); then
+			echo "nvidia gpu detected, generating xorg.conf"
+			nvidia-xconfig
+			systemctl status greetd >/dev/null 2>&1 || (
+				systemctl reset-failed
+				systemctl start greetd
+			)
+		else
+			#remove nvidia generated xorg.conf if there's no nvidia hardware
+			if [ -e /etc/X11/xorg.conf ] && (grep -i nvidia /etc/X11/xorg.conf >/dev/null 2>&1); then
+				echo "found old x11 config file for nvidia, removing it."
+				rm -f /etc/X11/xorg.conf
+				systemctl status greetd >/dev/null 2>&1 || (
+					systemctl reset-failed
+					systemctl start greetd
+				)
+			fi
+		fi
+	) &
