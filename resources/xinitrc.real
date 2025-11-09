@@ -70,7 +70,7 @@ fi
 #done
 
 if [ ! -e $HOME/.firstboot ];then
-	xfce4-terminal --geometry=0x0+100+100 -e "bash -l"&
+	xfce4-terminal --geometry=0x0+100+100 &
 	touch $HOME/.firstboot
 fi
 
