@@ -81,29 +81,25 @@ fi
 		fi
 	) &
 
-	echo "booting..."
+#give quakeuser permissions to x11 config directories
+chown -fR quakeuser:quakeuser /etc/X11 >/dev/null 2>&1
+chmod g+rwXs -fR /etc/X11 >/dev/null 2>&1
 
-	#if hash X 2>/dev/null;then
-	#	su - quakeuser -l -c /usr/bin/startx >/tmp/startx.log 2>&1&
-	#fi
+echo "booting..."
 
-	(
-		if (hash nvidia-xconfig >/dev/null 2>&1) && [ ! -e /etc/X11/xorg.conf ] && (lsmod | grep -cE 'nvidia' >/dev/null 2>&1); then
-			echo "nvidia gpu detected, generating xorg.conf"
-			nvidia-xconfig
-			systemctl status greetd >/dev/null 2>&1 || (
-				systemctl reset-failed
-				systemctl start greetd
-			)
-		else
-			#remove nvidia generated xorg.conf if there's no nvidia hardware
-			if [ -e /etc/X11/xorg.conf ] && (grep -i nvidia /etc/X11/xorg.conf >/dev/null 2>&1); then
-				echo "found old x11 config file for nvidia, removing it."
-				rm -f /etc/X11/xorg.conf
-				systemctl status greetd >/dev/null 2>&1 || (
-					systemctl reset-failed
-					systemctl start greetd
-				)
-			fi
-		fi
-	) &
+
+if (hash nvidia-xconfig >/dev/null 2>&1) && [ ! -e /etc/X11/xorg.conf ] && (lsmod | grep -cE 'nvidia' >/dev/null 2>&1); then
+	echo "nvidia gpu detected, generating xorg.conf"
+	timeout 5s nvidia-xconfig
+	chown -f quakeuser /etc/X11/xorg.conf
+else
+	#remove nvidia generated xorg.conf if there's no nvidia hardware
+	if [ -e /etc/X11/xorg.conf ] && (grep -i nvidia /etc/X11/xorg.conf >/dev/null 2>&1); then
+		echo "found old x11 config file for nvidia, removing it."
+		rm -f /etc/X11/xorg.conf
+	fi
+fi
+
+if hash X 2>/dev/null;then
+       su - quakeuser -l -c /usr/bin/startx >/tmp/startx.log 2>&1&
+fi
