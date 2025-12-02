@@ -40,7 +40,7 @@ fi
 policykitrules="$currentdir/resources/polkit-rules"
 plymouththeme="$currentdir/resources/plymouth/quake-theme"
 lvmdir="$currentdir/lvm"
-greetd="$currentdir/resources/greetd"
+#greetd="$currentdir/resources/greetd"
 #nodm="$currentdir/resources/nodm"
 #slimconf="$currentdir/resources/slim.conf"
 xresources="$currentdir/resources/xresources"
@@ -436,7 +436,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	systemctl disable connman-wait-online
 
 	#enable greetd
-	(systemctl enable greetd || true)
+	#(systemctl enable greetd || true)
 
 	#disable silken mouse
 	if [ -f /etc/X11/xinit/xserverrc ];then
@@ -478,7 +478,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	$SUDO chmod -f +x "$workdir/home/quakeuser/.xinitrc.real"
 	$SUDO mkdir -p "$workdir/home/quakeuser/.config"
 	#$SUDO cp -af "$slimconf" "$workdir/etc/slim.conf"
-	$SUDO cp -af "$greetd/"* "$workdir/etc/greetd/."
+	#$SUDO cp -af "$greetd/"* "$workdir/etc/greetd/."
 	$SUDO rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
 	$SUDO cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
 	#if [ -d "$workdir/usr/share/pipewire" ];then
