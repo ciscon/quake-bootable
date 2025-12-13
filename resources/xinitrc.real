@@ -13,6 +13,9 @@ xkbset -a
 #sdl - default to pipewire
 export SDL_AUDIODRIVER=pipewire
 
+#load gpu settings
+. $HOME/bin/gpusettings
+
 #if not using dm that does this for us
 #if [ -z "$XDG_RUNTIME_DIR" ];then
 #  export XDG_RUNTIME_DIR="/tmp/$(id -u)"

@@ -5,7 +5,7 @@ currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 #set to 0 to disable opengl triple buffering
 TRIPLEBUFFER=1
 
-if lsmod|grep nvidia_modeset >/dev/null 2>&1;then
+if lsmod|grep nvidia >/dev/null 2>&1;then
 	echo "loading nvidia preferences"
 	export __GL_YIELD="NOTHING"
 	export __GL_MaxFramesAllowed=2
@@ -19,11 +19,6 @@ if lsmod|grep nvidia_modeset >/dev/null 2>&1;then
 			LD_PRELOAD+="libGL.so.1 "
 		fi
 	fi
-
-	nvidia-settings -a "[gpu:0]/GPUPowerMizerMode=1" >/dev/null 2>&1&
-	nvidia-settings -a OpenGLImageSettings=3 >/dev/null 2>&1&
-	nvidia-settings -a SyncToVBlank=0 >/dev/null 2>&1&
-	nvidia-settings -a AllowFlipping=1 >/dev/null 2>&1&
 else
 	#done in drirc
 	#export mesa_glthread=false

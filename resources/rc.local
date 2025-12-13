@@ -21,41 +21,6 @@ fi
 #fix resolv.conf to point to connman's
 /etc/init.d/connman >/dev/null 2>&1 &
 
-#configure gpus
-(
-	if [ -e /sys/class/drm/card*/device/power_dpm_force_performance_level ]; then
-		#amdgpu
-		echo "setting gpu performance options..."
-		if [ -e /sys/class/drm/card*/device/pp_power_profile_mode ]; then
-			echo "manual" >/sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
-			#set vr profile
-			amdprofile=$(grep --color=never "VR.*:" /sys/class/drm/card*/device/pp_power_profile_mode | awk "{print \$1}" 2>/dev/null)
-			if [ ! -z "$amdprofile" ] && [ -e /sys/class/drm/card*/device/pp_power_profile_mode ]; then
-				echo "$amdprofile" >/sys/class/drm/card*/device/pp_power_profile_mode 2>/dev/null
-			else
-				echo "high" >/sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
-			fi
-		else
-			echo "high" >/sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null
-		fi
-		if [ -e /sys/class/drm/card*/device/pp_dpm_mclk ]; then
-			#force memory clock to full
-			echo "3" >/sys/class/drm/card*/device/pp_dpm_mclk 2>/dev/null
-		fi
-	elif [ -e /sys/class/drm/card*/gt_max_freq_mhz ]; then
-		#intel
-		if [ -e /sys/class/drm/card*/gt_boost_freq_mhz ]; then
-			maxfreq=$(cat /sys/class/drm/card*/gt_boost_freq_mhz | head -n1)
-		else
-			maxfreq=$(cat /sys/class/drm/card*/gt_max_freq_mhz | head -n1)
-		fi
-		if [ ! -z "$maxfreq" ]; then
-			#force max frequency
-			echo "$maxfreq" >/sys/class/drm/card*/gt_min_freq_mhz
-		fi
-	fi
-) &
-
 #items to run on first boot
 (
 	if [ ! -e /firstboot ]; then
