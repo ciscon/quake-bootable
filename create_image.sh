@@ -368,11 +368,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
   	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
   
   	#install nvidia drivers
-		wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian12/x86_64/cuda-keyring_1.1-1_all.deb
+		wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
 		dpkg -i /tmp/cuda.deb
 		apt-get update
 		#apt-get -qy install cuda-drivers
-		apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
+		apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
 	fi
 
 	#qizmo deps
