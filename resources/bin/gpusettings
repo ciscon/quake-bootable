@@ -3,48 +3,55 @@
 #configure gpus
 sudo bash -c '
 
+  echo "setting gpu performance options..."
+
   #amdgpu
   if [ -e /sys/class/drm/card*/device/power_dpm_force_performance_level ]; then
-    echo "setting gpu performance options..."
-    if [ -e /sys/class/drm/card*/device/pp_power_profile_mode ]; then
-      echo "manual" >/sys/class/drm/card*/device/power_dpm_force_performance_level
-      #set vr profile
-      amdprofile=$(grep --color=never "VR.*:" /sys/class/drm/card*/device/pp_power_profile_mode | awk "{print \$1}" 2>/dev/null)
-      if [ ! -z "$amdprofile" ] && [ -e /sys/class/drm/card*/device/pp_power_profile_mode ]; then
-        echo "$amdprofile" >/sys/class/drm/card*/device/pp_power_profile_mode
+    (
+      if [ -e /sys/class/drm/card*/device/pp_power_profile_mode ]; then
+        echo "manual" >/sys/class/drm/card*/device/power_dpm_force_performance_level
+        #set vr profile
+        amdprofile=$(grep --color=never "VR.*:" /sys/class/drm/card*/device/pp_power_profile_mode | awk "{print \$1}" 2>/dev/null)
+        if [ ! -z "$amdprofile" ] && [ -e /sys/class/drm/card*/device/pp_power_profile_mode ]; then
+          echo "$amdprofile" >/sys/class/drm/card*/device/pp_power_profile_mode
+        else
+          echo "high" >/sys/class/drm/card*/device/power_dpm_force_performance_level
+        fi
       else
         echo "high" >/sys/class/drm/card*/device/power_dpm_force_performance_level
       fi
-    else
-      echo "high" >/sys/class/drm/card*/device/power_dpm_force_performance_level
-    fi
-    if [ -e /sys/class/drm/card*/device/pp_dpm_mclk ]; then
-      #force memory clock to full
-      echo "3" >/sys/class/drm/card*/device/pp_dpm_mclk
-    fi
+      if [ -e /sys/class/drm/card*/device/pp_dpm_mclk ]; then
+        #force memory clock to full
+        echo "3" >/sys/class/drm/card*/device/pp_dpm_mclk
+      fi
+    ) > /tmp/gpu-amdgpu.log 2>&1
   fi
 
   #intel
   if [ -e /sys/class/drm/card*/gt_max_freq_mhz ]; then
-    if [ -e /sys/class/drm/card*/gt_boost_freq_mhz ]; then
-      maxfreq=$(cat /sys/class/drm/card*/gt_boost_freq_mhz | head -n1)
-    else
-      maxfreq=$(cat /sys/class/drm/card*/gt_max_freq_mhz | head -n1)
-    fi
-    if [ ! -z "$maxfreq" ]; then
-      #force max frequency
-      echo "$maxfreq" >/sys/class/drm/card*/gt_min_freq_mhz
-    fi
+    (
+      if [ -e /sys/class/drm/card*/gt_boost_freq_mhz ]; then
+        maxfreq=$(cat /sys/class/drm/card*/gt_boost_freq_mhz | head -n1)
+      else
+        maxfreq=$(cat /sys/class/drm/card*/gt_max_freq_mhz | head -n1)
+      fi
+      if [ ! -z "$maxfreq" ]; then
+        #force max frequency
+        echo "$maxfreq" >/sys/class/drm/card*/gt_min_freq_mhz
+      fi
+    ) > /tmp/gpu-intel.log 2>&1
   fi
 
-' >/dev/null 2>&1 &
+  #nvidia
+  if lsmod|grep nvidia_modeset >/dev/null 2>&1;then
+    (
+      for i in $(seq 0 $(nvidia-smi --list-gpus | wc -l | tr -d ' ')-1); do nvidia-settings -a "[gpu:$i]/GpuPowerMizerMode=1"; done
+      nvidia-settings -a OpenGLImageSettings=3
+      nvidia-settings -a SyncToVBlank=0
+      nvidia-settings -a AllowFlipping=1
+    ) > /tmp/gpu-nvidia.log 2>&1
+  fi
 
-#nvidia
-if lsmod|grep nvidia_modeset >/dev/null 2>&1;then
-	(
-    nvidia-settings -a "[gpu:0]/GPUPowerMizerMode=1" >/dev/null 2>&1
-    nvidia-settings -a OpenGLImageSettings=3 >/dev/null 2>&1
-    nvidia-settings -a SyncToVBlank=0 >/dev/null 2>&1
-    nvidia-settings -a AllowFlipping=1 >/dev/null 2>&1
-  )&
-fi
+' > /tmp/gpu.log 2>&1 &
+
+
