@@ -82,16 +82,16 @@ fi
 	) &
 
 #generate default background
-if [ ! -f "/usr/share/backgrounds/default" ] && (hash convert >/dev/null 2>&1);then
+if [ ! -f "/background-default.png" ] && (hash convert >/dev/null 2>&1);then
 	let count=0
   while [ $count -lt 10 ];do
     convert /background.png -fill grey -pointsize 14 -gravity southwest -annotate +10+128 "$(. /home/quakeuser/.profile_messages)" \
-      -fill grey30 -pointsize 14 -gravity north -annotate +0+32 "build: $(cat /version)" "/usr/share/backgrounds/default" && break
+      -fill grey30 -pointsize 14 -gravity north -annotate +0+32 "build: $(cat /version)" "/background-default.png" && break
 		let count=count+1
     sleep 1
   done
+  sync
 fi
-sync
 
 #give quakeuser permissions to x11 config directories
 chown -fR quakeuser:quakeuser /etc/X11 >/dev/null 2>&1

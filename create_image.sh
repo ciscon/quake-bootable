@@ -481,6 +481,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#$SUDO cp -af "$greetd/"* "$workdir/etc/greetd/."
 	$SUDO rm -rf "$workdir/etc/xdg/xfce4/xfconf/xfce-perchannel-xml"
 	$SUDO cp -af "$xfce/xfce-perchannel-xml" "$workdir/etc/xdg/xfce4/xfconf/"
+	$SUDO ln -sf /background-default.png "$workdir/usr/share/backgrounds/xfce/xfce-x.svg"
 	#if [ -d "$workdir/usr/share/pipewire" ];then
 	#	$SUDO rm -rf "$workdir/home/quakeuser/.config/pipewire"
 	#	$SUDO cp -af "$workdir/usr/share/pipewire" "$workdir/home/quakeuser/.config"
