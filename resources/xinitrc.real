@@ -37,19 +37,21 @@ for device in $(xrandr |awk '{print $1}'|grep --color=never -v '^Screen'|grep --
 	done
 )&
 
-#disable compositor
-(
-if hash xfconf-query >/dev/null 2>&1;then
-	while :;do
-		if pgrep -f xfconfd$ > /dev/null 2>&1;then
-			xfconf-query -c xfwm4 -p /general/use_compositing -t bool -s false --create
-			break
-		else
-			sleep 1
-		fi
-	done
+#disable compositor if composite extension is enabled
+if (xdpyinfo | grep -i composite >/dev/null 2>&1);then
+  (
+  if hash xfconf-query >/dev/null 2>&1;then
+  	while :;do
+  		if pgrep -f xfconfd$ > /dev/null 2>&1;then
+  			xfconf-query -c xfwm4 -p /general/use_compositing -t bool -s false --create
+  			break
+  		else
+  			sleep 1
+  		fi
+  	done
+  fi
+  )&
 fi
-)&
 
 #make sure something is registered for qw links
 if ! grep 'qw=' "$HOME/.config/mimeapps.list" >/dev/null 2>&1; then
