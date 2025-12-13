@@ -27,7 +27,8 @@ export SDL_AUDIODRIVER=pipewire
 #export NO_AT_BRIDGE=1
 
 #disable tearfree
-for device in $(xrandr |awk '{print $1}'|grep --color=never -v '^Screen'|grep --color=never -v '^[0-9]');do xrandr --output "$device" --set TearFree off >/dev/null 2>&1;done&
+#taken care of in xorg config
+#for device in $(xrandr |awk '{print $1}'|grep --color=never -v '^Screen'|grep --color=never -v '^[0-9]');do xrandr --output "$device" --set TearFree off >/dev/null 2>&1;done&
 
 (pgrep -f pasystray >/dev/null 2>&1 || nice pasystray)&
 
