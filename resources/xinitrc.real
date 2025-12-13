@@ -10,6 +10,9 @@ xrdb -load $HOME/.Xresources
 #disable accessibility features (sticky keys)
 xkbset -a
 
+#sdl - default to pipewire
+export SDL_AUDIODRIVER=pipewire
+
 #if not using dm that does this for us
 #if [ -z "$XDG_RUNTIME_DIR" ];then
 #  export XDG_RUNTIME_DIR="/tmp/$(id -u)"
