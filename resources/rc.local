@@ -82,7 +82,7 @@ fi
 	) &
 
 #generate default background
-if [ ! -f "/usr/share/backgrounds/default" ];then
+if [ ! -f "/usr/share/backgrounds/default" ] && (hash convert >/dev/null 2>&1);then
 	let count=0
   while [ $count -lt 10 ];do
     convert /background.png -fill grey -pointsize 14 -gravity southwest -annotate +10+128 "$(. /home/quakeuser/.profile_messages)" \
