@@ -371,7 +371,6 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
 		dpkg -i /tmp/cuda.deb
 		apt-get update
-		#apt-get -qy install cuda-drivers
 		apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
 	fi
 

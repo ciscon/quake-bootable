@@ -10,6 +10,7 @@ if lsmod|grep nvidia >/dev/null 2>&1;then
 	export __GL_YIELD="NOTHING"
 	export __GL_MaxFramesAllowed=2
 	export __GL_THREADED_OPTIMIZATIONS=1
+	export __GL_VRR_ALLOWED=0
 
 	if [ $__GL_THREADED_OPTIMIZATIONS -ne 0 ];then
 		if [ $(/sbin/ldconfig -Np|grep libpthread.so.0$ -c) -gt 0 ];then
