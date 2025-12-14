@@ -9,7 +9,7 @@ demofps= #empty for default of 308
 extra="+cfg_reset +gl_no24bit 1 +gl_externaltextures_world 0 +gl_externaltextures_bmodels 0 +gl_multisamples 0 +gl_anisotropy 0 +gl_texturemode gl_nearest_mipmap_linear +r_smoothcrosshair 0 +r_smoothimages 0 +r_smoothtext 0 -nosound +sys_highpriority 1 -no-triple-gl-buffer"
 tmpoutput="/tmp/quakebenchoutput"
 
-echo "running $iterations timedemos of ${demo}..."
+echo -e "running $iterations timedemos of ${demo}...\n"
 
 echo > $tmpoutput
 
@@ -31,5 +31,14 @@ while [ $count -lt $iterations ]; do
 	$exe $extra +timedemo2 demos/$demo $demofps -condebug /dev/stdout >> $tmpoutput 2>&1 || break
 	let count=count+1
 done
+
+#get system info
+gpu=$(sed -n '/^OpenGL.\+/,/^\s*Version:/{/Version:/{q}};s/.*Renderer:\s*\(.*\)/\1/p' $tmpoutput | head -n1)
+cpu=$(sed -n 's/^model name\s*:\s*\(.*\)$/\1/p' /proc/cpuinfo | head -n1)
+
+echo ""
+
+echo "CPU: ${cpu:-NA}"
+echo "GPU: ${gpu:-NA}"
 
 exit 0
