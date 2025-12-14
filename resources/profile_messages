@@ -4,6 +4,7 @@ echo "quake :"
 echo "run quake (using ezquake, qw compatible): quake"
 echo "change quake (ezquake) assets preset: quake-preset"
 echo "update quake (ezquake) from git: update-quake"
+echo "run quake benchmark script: quake-benchmark"
 echo "fix quake (convert files to lowercase and update client): quake-fix"
 if [ ! -z "$DISPLAY" ];then
   echo "run afterquake (using fte, qw and netquake compatible): quake-afterquake"

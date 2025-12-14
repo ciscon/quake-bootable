@@ -1,0 +1,33 @@
+#!/bin/bash
+
+iterations=5
+exe="quake"
+demo=fps4
+demofps= #empty for default of 308
+extra="-nosound +sys_highpriority 1 -no-triple-gl-buffer"
+tmpoutput="/tmp/quakebenchoutput"
+
+echo "running $iterations timedemos..."
+
+echo > $tmpoutput
+
+jobs=()
+trap 'kill "${jobs[@]}"' EXIT
+
+
+tail -F $tmpoutput |\
+	while IFS= read -r line; do
+		echo "$line"|grep -i '.*frames.*seconds.*fps' >/dev/null 2>&1 && echo quit > /tmp/ezquake_fifo_$(id -u -n)
+	done&
+jobs+=($!)
+
+tail -F $tmpoutput|grep '.*frames.*seconds.*fps' &
+jobs+=($!)
+
+let count=0
+while [ $count -lt $iterations ]; do
+	$exe $extra +timedemo2 demos/$demo $demofps -condebug /dev/stdout >> $tmpoutput 2>&1 || break
+	let count=count+1
+done
+
+exit 0
