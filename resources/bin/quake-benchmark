@@ -4,7 +4,9 @@ iterations=5
 exe="quake"
 demo="fps4"
 demofps= #empty for default of 308
-extra="-nosound +sys_highpriority 1 -no-triple-gl-buffer"
+
+#reset all config options for run
+extra="+cfg_reset +gl_no24bit 1 +gl_externaltextures_world 0 +gl_externaltextures_bmodels 0 +gl_multisamples 0 +gl_anisotropy 0 +gl_texturemode gl_nearest_mipmap_linear +r_smoothcrosshair 0 +r_smoothimages 0 +r_smoothtext 0 -nosound +sys_highpriority 1 -no-triple-gl-buffer"
 tmpoutput="/tmp/quakebenchoutput"
 
 echo "running $iterations timedemos of ${demo}..."
