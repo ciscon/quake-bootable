@@ -35,10 +35,12 @@ done
 #get system info
 gpu=$(sed -n '/^OpenGL.\+/,/^\s*Version:/{/Version:/{q}};s/.*Renderer:\s*\(.*\)/\1/p' $tmpoutput | head -n1)
 cpu=$(sed -n 's/^model name\s*:\s*\(.*\)$/\1/p' /proc/cpuinfo | head -n1)
+res=$(sed -n '/^Video.\+/,/^\s*Resolution:/{/Format:/{q}};s/.*Resolution:\s*\(.*\)/\1/p' $tmpoutput | head -n1)
 
 echo ""
 
 echo "CPU: ${cpu:-NA}"
 echo "GPU: ${gpu:-NA}"
+echo "Resolution: ${res:-NA}"
 
 exit 0
