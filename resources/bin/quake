@@ -3,7 +3,7 @@
 currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 
 #set to 0 to disable opengl triple buffering, 1 to enable
-TRIPLEBUFFER=1
+TRIPLEBUFFER=0
 
 if lsmod|grep nvidia >/dev/null 2>&1;then
 	echo "loading nvidia preferences"

@@ -2,12 +2,12 @@
 
 iterations=5
 exe="quake"
-demo=fps4
+demo="fps4"
 demofps= #empty for default of 308
 extra="-nosound +sys_highpriority 1 -no-triple-gl-buffer"
 tmpoutput="/tmp/quakebenchoutput"
 
-echo "running $iterations timedemos..."
+echo "running $iterations timedemos of ${demo}..."
 
 echo > $tmpoutput
 
