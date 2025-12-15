@@ -19,7 +19,7 @@ trap 'kill "${jobs[@]}"' EXIT
 
 tail -F $tmpoutput |\
 	while IFS= read -r line; do
-		echo "$line"|grep -i '.*frames.*seconds.*fps' >/dev/null 2>&1 && echo quit | tee /tmp/ezquake_fifo_*
+		echo "$line"|grep -i '.*frames.*seconds.*fps' >/dev/null 2>&1 && echo quit | tee /tmp/ezquake_fifo_* >/dev/null
 	done&
 jobs+=($!)
 
