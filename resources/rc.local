@@ -48,6 +48,9 @@ fi
 
 #generate default background
 if [ ! -f "/background-default.png" ] && (hash convert >/dev/null 2>&1);then
+	#set DISPLAY so we get the full list of commands from profile_messages for the image
+	DISPLAY=1
+
 	let count=0
   while [ $count -lt 10 ];do
     convert /background.png -fill grey -pointsize 14 -gravity southwest -annotate +10+128 "$(. /home/quakeuser/.profile_messages)" \
@@ -55,6 +58,9 @@ if [ ! -f "/background-default.png" ] && (hash convert >/dev/null 2>&1);then
 		let count=count+1
     sleep 1
   done
+
+	unset DISPLAY
+
   sync
 fi
 
