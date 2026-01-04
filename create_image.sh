@@ -374,8 +374,10 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 			wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
 			dpkg -i /tmp/cuda.deb
 			apt-get update
+			apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
+		else
+			apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
 		fi
-		apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
 	fi
 
 	#qizmo deps
@@ -544,7 +546,11 @@ fi
 versions=$(cat workdir/versions.txt ; rm -f workdir/versions.txt)
 mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|tail -1|awk '{print $2}')
 kernel_version=$(echo "$versions"|grep linux-image-${arch}|tail -1|awk '{print $2}')
-nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
+if [ "$build_type" = "full" ];then
+	nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
+elif [ "$build_type" = "oldnvidia" ];then
+	nvidia_old_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
+fi
 ezquake_version=$(cat "$workdir/ezquake_ver")
 
 echo -e "\n\nversions:" > versions.txt
@@ -555,7 +561,10 @@ if [ ! -z "$kernel_version" ];then
 	echo "- kernel: $kernel_version" >> versions.txt
 fi
 if [ ! -z "$nvidia_version" ];then
-	echo "- nvidia: $nvidia_version" >> versions.txt
+	echo "- nvidia (full build): $nvidia_version" >> versions.txt
+fi
+if [ ! -z "$nvidia_old_version" ];then
+	echo "- nvidia old (full-oldnvidia): $nvidia_version" >> versions.txt
 fi
 if [ ! -z "$ezquake_version" ];then
 	echo "- ezquake: $ezquake_version" >> versions.txt
