@@ -542,6 +542,7 @@ if [ ! -z "$SUDO" ];then
 	SUDO+=" -E "
 fi
 
+
 #package versions
 versions=$(cat workdir/versions.txt ; rm -f workdir/versions.txt)
 mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|tail -1|awk '{print $2}')
@@ -553,22 +554,30 @@ elif [ "$build_type" == "full-oldnvidia" ];then
 fi
 ezquake_version=$(cat "$workdir/ezquake_ver")
 
-echo -e "\n\nversions:" > versions.txt
 if [ ! -z "$mesa_version" ];then
-	echo "- mesa: $mesa_version" >> versions.txt
+	echo "version_mesa=\"$mesa_version\"" >> versions.sh
 fi
 if [ ! -z "$kernel_version" ];then
-	echo "- kernel: $kernel_version" >> versions.txt
+	echo "version_kernel=\"$kernel_version\"" >> versions.sh
 fi
 if [ ! -z "$nvidia_version" ];then
-	echo "- nvidia (full build): $nvidia_version" >> versions.txt
+	echo "version_nvidia=\"$nvidia_version\"" >> versions.sh
 fi
 if [ ! -z "$nvidia_old_version" ];then
-	echo "- nvidia old (full-oldnvidia): $nvidia_old_version" >> versions.txt
+	echo "version_nvidiaold=\"$nvidia_old_version\"" >> versions.sh
 fi
 if [ ! -z "$ezquake_version" ];then
-	echo "- ezquake: $ezquake_version" >> versions.txt
+	echo "version_ezquake=\"$ezquake_version\"" >> versions.sh
 fi
+
+. versions.sh
+
+echo -e "\n\nversions:" > versions.txt
+echo "- mesa: $version_mesa" >> versions.txt
+echo "- kernel: $version_kernel" >> versions.txt
+echo "- nvidia (full build): $version_nvidia" >> versions.txt
+echo "- nvidia old (full-oldnvidia): $version_nvidia_old" >> versions.txt
+echo "- ezquake: $version_ezquake" >> versions.txt
 
 
 #clean up old lvs/pvs
