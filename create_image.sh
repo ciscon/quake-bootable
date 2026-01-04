@@ -552,6 +552,9 @@ kernel_version=$(echo "$versions"|grep linux-image-${arch}|tail -1|awk '{print $
 nvidia_old_version=$(echo "$versions_before_nvidia"|grep nvidia-driver|tail -1|awk '{print $2}')
 nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
 ezquake_version=$(cat "$workdir/ezquake_ver")
+if [ -z "$ezquake_version" ];then
+	ezquake_version="latest"
+fi
 
 #only create versions.txt if we have all package versions, so a normal full build
 if [ ! -z "$nvidia_old_version" ];then
