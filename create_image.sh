@@ -21,8 +21,10 @@ quakedir="quake-base"
 clean=1 #clean up previous environment
 
 imagebase="quake_bootable"
-if [ "$build_type" = "min" ];then
+if [ "$build_type" == "min" ];then
 	imagesuffix="-min_kmsdrm"
+elif [ "$build_type" == "full-oldnvidia" ];then
+	imagesuffix="-full-old_nvidia"
 else
 	imagesuffix="-full"
 fi
@@ -133,9 +135,9 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	fi
 	mkdir -p "$workdir"
 
-	if [ "$arch" = "686" ];then
+	if [ "$arch" == "686" ];then
 		cpuarch="i386"
-	elif [ "$arch" = "aarch64" ];then
+	elif [ "$arch" == "aarch64" ];then
 		cpuarch="arm64"
 	else
 		cpuarch=$arch
@@ -143,7 +145,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	echo "building chroot for arch $cpuarch, passed $arch"
 
-	if [ "$distro" = "devuan" ];then
+	if [ "$distro" == "devuan" ];then
 		$SUDO debootstrap --arch=${cpuarch} --include="devuan-keyring gnupg wget ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
 	else
 		$SUDO debootstrap --arch=${cpuarch} --include="debian-keyring gnupg wget ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
@@ -251,7 +253,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	echo -n "'${release_ver}'" > /version
 
 	#replace systemd with openrc, multiple steps required
-	#if [ "$distro" = "debian" ];then
+	#if [ "$distro" == "debian" ];then
 	#	apt-get -qy install openrc sysvinit-core
 	#	apt-get -qy install orphan-sysvinit-scripts systemctl systemd-standalone-sysusers
 	#	apt-mark hold systemd
@@ -272,7 +274,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	apt -qy install "*-microcode" || true
 	
 	##log2ram on debian, devuan does not have systemd so the installation will fail
-	#if [ "$distro" = "debian" ];then
+	#if [ "$distro" == "debian" ];then
 	#	echo "configuring log2ram..."
 	#	echo "deb http://packages.azlux.fr/debian/ stable main" > /etc/apt/sources.list.d/azlux.list
 	#	wget -qO - https://azlux.fr/repo.gpg.key | gpg --dearmour -o /etc/apt/trusted.gpg.d/azlux.gpg
@@ -368,10 +370,14 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
   	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
   
   	#install nvidia drivers
-		wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
-		dpkg -i /tmp/cuda.deb
-		apt-get update
-		apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
+		if [ "$build_type" != "full-oldnvidia" ];then
+			wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
+			dpkg -i /tmp/cuda.deb
+			apt-get update
+			apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
+		else
+			apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
+		fi
 	fi
 
 	#qizmo deps
@@ -402,7 +408,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	echo -e "allowed_users=anybody\nneeds_root_rights=yes" > /etc/X11/Xwrapper.config
 
 	#configure networking for minimal build
-	if [ "$build_type" = "min" ];then
+	if [ "$build_type" == "min" ];then
 		echo -e "auto /e*=eth\n  iface eth inet dhcp" > /etc/network/interfaces.d/99-dhcp
 	fi
 	
@@ -540,7 +546,11 @@ fi
 versions=$(cat workdir/versions.txt ; rm -f workdir/versions.txt)
 mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|tail -1|awk '{print $2}')
 kernel_version=$(echo "$versions"|grep linux-image-${arch}|tail -1|awk '{print $2}')
-nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
+if [ "$build_type" == "full" ];then
+	nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
+elif [ "$build_type" == "full-oldnvidia" ];then
+	nvidia_old_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
+fi
 ezquake_version=$(cat "$workdir/ezquake_ver")
 
 echo -e "\n\nversions:" > versions.txt
@@ -551,7 +561,10 @@ if [ ! -z "$kernel_version" ];then
 	echo "- kernel: $kernel_version" >> versions.txt
 fi
 if [ ! -z "$nvidia_version" ];then
-	echo "- nvidia: $nvidia_version" >> versions.txt
+	echo "- nvidia (full build): $nvidia_version" >> versions.txt
+fi
+if [ ! -z "$nvidia_old_version" ];then
+	echo "- nvidia old (full-oldnvidia): $nvidia_old_version" >> versions.txt
 fi
 if [ ! -z "$ezquake_version" ];then
 	echo "- ezquake: $ezquake_version" >> versions.txt
