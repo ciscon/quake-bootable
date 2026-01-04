@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        BUILDTYPE: ["full","min"]
+        BUILDTYPE: ["full","full-oldnvidia","min"]
         BUILDARCH: ["amd64"]
     container:
       image: debian:stable
