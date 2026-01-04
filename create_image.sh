@@ -23,6 +23,8 @@ clean=1 #clean up previous environment
 imagebase="quake_bootable"
 if [ "$build_type" = "min" ];then
 	imagesuffix="-min_kmsdrm"
+elif [ "$build_type" = "oldnvidia" ];then
+	imagesuffix="-full-old_nvidia"
 else
 	imagesuffix="-full"
 fi
@@ -368,9 +370,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
   	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
   
   	#install nvidia drivers
-		wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
-		dpkg -i /tmp/cuda.deb
-		apt-get update
+		if [ "$build_type" != "oldnvidia" ];then
+			wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
+			dpkg -i /tmp/cuda.deb
+			apt-get update
+		fi
 		apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
 	fi
 
