@@ -49,11 +49,13 @@ jobs:
       run: |
         rm -f ./*.zip
         bash ./create_image.sh
-        v=$(cat ./versions.txt)
-        v="${v//'%'/'%25'}"
-        v="${v//$'\n'/'%0A'}"
-        v="${v//$'\r'/'%0D'}"
-        echo "VERSIONS=$v" >> $GITHUB_OUTPUT
+        if [ -f ./versions.txt ];then
+          v=$(cat ./versions.txt)
+          v="${v//'%'/'%25'}"
+          v="${v//$'\n'/'%0A'}"
+          v="${v//$'\r'/'%0D'}"
+          echo "VERSIONS=$v" >> $GITHUB_OUTPUT
+        fi
     - name: Compress
       id: compress
       shell: bash
