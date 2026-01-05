@@ -360,14 +360,16 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	  apt-get -qy install openrazer-driver-dkms linux-headers-generic pahole
   fi
 
-  if [ "$arch" == "amd64" ] && [ "$build_type" != "min" ];then
-	  #install afterquake
-  	echo "install afterquake..."
-  	mkdir -p /home/quakeuser/quake-afterquake
-  	wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip
-  	unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
-  	rm /tmp/aq.zip
-  	chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
+	if [ "$arch" == "amd64" ];then
+		if [ "$build_type" != "min" ];then
+			#install afterquake
+			echo "install afterquake..."
+			mkdir -p /home/quakeuser/quake-afterquake
+			wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip
+			unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
+			rm /tmp/aq.zip
+			chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
+		fi
   
   	#install nvidia drivers
 		if [ "$build_type" != "full-oldnvidia" ];then
@@ -562,7 +564,7 @@ if [ ! -z "$nvidia_old_version" ];then
 	echo "- mesa: $mesa_version" >> versions.txt
 	echo "- kernel: $kernel_version" >> versions.txt
 	echo "- nvidia (full build): $nvidia_version" >> versions.txt
-	echo "- nvidia old (full-oldnvidia): $nvidia_old_version" >> versions.txt
+	echo "- nvidia old (full-old_nvidia build): $nvidia_old_version" >> versions.txt
 	echo "- ezquake: $ezquake_version" >> versions.txt
 fi
 
