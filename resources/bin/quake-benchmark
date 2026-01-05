@@ -9,7 +9,7 @@ demofps=77 #default 308
 extra="-nosound -no-triple-gl-buffer +cfg_reset +sys_highpriority 1 +gl_no24bit 1 +gl_externaltextures_world 0 +gl_externaltextures_bmodels 0 +gl_multisamples 0 +gl_anisotropy 0 +gl_texturemode gl_nearest_mipmap_linear +r_smoothcrosshair 0 +r_smoothimages 0 +r_smoothtext 0 +vid_framebuffer 0 +vid_software_palette 0 +scr_autoid 0 +hud_gameclock_show 0 +scr_newhud 1 +gl_polyblend 0 +vid_restart"
 tmpoutput="/tmp/quakebenchoutput"
 
-echo -e "running $iterations timedemos of ${demo}...\n"
+echo -e "running $iterations timedemos of ${demo} at ${demofps}fps...\n"
 
 echo > $tmpoutput
 
