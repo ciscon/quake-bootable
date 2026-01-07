@@ -70,6 +70,15 @@ chmod g+rwXs -fR /etc/X11 >/dev/null 2>&1
 
 echo "booting..."
 
+if [ -f /sys/class/dmi/id/product_uuid ];then
+	current_machine_id=$(cat /sys/class/dmi/id/product_uuid 2>/dev/null)
+	old_machine_id=$(cat /machine_id 2>/dev/null)
+	if [ "$current_machine_id" != "$old_machine_id" ];then
+		rm -f /etc/X11/xorg.conf
+		echo "writing machine id to /machine_id"
+		echo -n "$current_machine_id" > /machine_id
+	fi
+fi
 
 if (hash nvidia-xconfig >/dev/null 2>&1) && [ ! -e /etc/X11/xorg.conf ] && (lsmod | grep -cE 'nvidia' >/dev/null 2>&1); then
 	echo "nvidia gpu detected, generating xorg.conf"
