@@ -46,8 +46,9 @@ sudo bash -c '
   if lsmod|grep nvidia_modeset >/dev/null 2>&1;then
     (
       for i in $(seq 0 $(nvidia-settings -q gpus 2>/dev/null|grep -c GPU|tr -d " ")-1); do
-			  nvidia-settings -a "[gpu:$i]/GpuPowerMizerMode=1"
-			done
+        nvidia-settings -a "[gpu:$i]/GpuPowerMizerMode=1"
+      done
+      nvidia-settings -a AllowVRR=0
       nvidia-settings -a OpenGLImageSettings=3
       nvidia-settings -a SyncToVBlank=0
       nvidia-settings -a AllowFlipping=1
