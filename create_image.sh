@@ -369,18 +369,18 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 			unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
 			rm /tmp/aq.zip
 			chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
-		fi
   
-  	#install nvidia drivers
-		if [ "$build_type" != "full-oldnvidia" ];then
-			#list all available packages and versions into file before adding nvidia repo
-			apt list > /versions_before_nvidia.txt 2>/dev/null
-			wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
-			dpkg -i /tmp/cuda.deb
-			apt-get update
-			apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
-		else
-			apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
+  		#install nvidia drivers
+			if [ "$build_type" != "full-oldnvidia" ];then
+				#list all available packages and versions into file before adding nvidia repo
+				apt list > /versions_before_nvidia.txt 2>/dev/null
+				wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
+				dpkg -i /tmp/cuda.deb
+				apt-get update
+				apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
+			else
+				apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
+			fi
 		fi
 	fi
 
