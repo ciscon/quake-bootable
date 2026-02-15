@@ -22,6 +22,7 @@ jobs:
       options: --privileged
       volumes:
         - /dev:/dev
+        - /sys:/sys
     steps:
     - name: Install Packages
       shell: bash
