@@ -18,11 +18,12 @@ jobs:
         BUILDTYPE: ["full","full-oldnvidia","min"]
         BUILDARCH: ["amd64"]
     container:
-      image: debian:bookworm
+      image: debian:bullseye
       options: --privileged
       volumes:
         - /dev:/dev
         - /sys:/sys
+        - /proc:/proc
     steps:
     - name: Install Packages
       shell: bash
