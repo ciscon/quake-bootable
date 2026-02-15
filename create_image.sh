@@ -547,8 +547,8 @@ if [ ! -z "$SUDO" ];then
 fi
 
 #package versions
-versions=$(cat workdir/versions.txt ; rm -f workdir/versions.txt)
-versions_before_nvidia=$(cat workdir/versions_before_nvidia.txt ; rm -f workdir/versions_before_nvidia.txt)
+versions=$(cat workdir/versions.txt ; $SUDO rm -f workdir/versions.txt)
+versions_before_nvidia=$(cat workdir/versions_before_nvidia.txt ; $SUDO rm -f workdir/versions_before_nvidia.txt)
 mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|tail -1|awk '{print $2}')
 kernel_version=$(echo "$versions"|grep linux-image-${arch}|tail -1|awk '{print $2}')
 nvidia_old_version=$(echo "$versions_before_nvidia"|grep nvidia-driver|tail -1|awk '{print $2}')
