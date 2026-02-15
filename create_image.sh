@@ -202,6 +202,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	mv -f /root/.profile_messages /home/quakeuser/.
 	cp -f /root/.bashrc /home/quakeuser/.
 	echo -e "quakeuser\nquakeuser" | passwd quakeuser
+
+	#use stable version of grub
+	echo "Package: grub*
+Pin: release a=stable
+Pin-Priority: 1000" > /etc/apt/preferences.d/grub-stable
 	
 	#configure package manager and install packages
 	export DEBIAN_FRONTEND=noninteractive
