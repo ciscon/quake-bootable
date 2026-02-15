@@ -17,17 +17,17 @@ jobs:
       matrix:
         BUILDTYPE: ["full","full-oldnvidia","min"]
         BUILDARCH: ["amd64"]
-    #container:
-    #  image: debian:stable
-    #  options: --privileged
-    #  volumes:
-    #    - /dev:/dev
-    #    - /sys:/sys
+    container:
+      image: debian:bookworm
+      options: --privileged
+      volumes:
+        - /dev:/dev
+        - /sys:/sys
     steps:
     - name: Install Packages
       shell: bash
       run: |
-        sudo apt-get -qqy update && sudo apt-get -qqy install grub2 grub-efi-amd64 e2fsprogs debootstick debootstrap coreutils dosfstools zip pigz fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*'
+        apt-get -qqy update && apt-get -qqy install grub2 grub-efi-amd64 e2fsprogs debootstick debootstrap coreutils dosfstools zip pigz fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*'
     - name: Checkout
       uses: actions/checkout@v4
       with:
