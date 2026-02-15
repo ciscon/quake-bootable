@@ -65,13 +65,16 @@ issueappend="$currentdir/resources/issue.append"
 xfce="$currentdir/resources/xfce"
 
 #base packages
-packages="nano procps os-prober util-linux iputils-ping openssh-client file git sudo cmake ninja-build libgl1 libgl1-mesa-dri terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-intel-graphics firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant zip grub2 libfuse2 rename libarchive-tools log2ram "
+packages="grub-pc shim-signed grub-efi-amd64-signed linux-image-amd64 dosfstools init nano procps os-prober util-linux iputils-ping openssh-client file git sudo cmake ninja-build libgl1 libgl1-mesa-dri terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-intel-misc firmware-nvidia-graphics firmware-intel-graphics firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant zip libfuse2 rename libarchive-tools log2ram "
 #minimal build packages
 packages_nox11="libegl1 ifupdown dhcpcd-base"
 #full build packages
 packages_x11=" xserver-xorg-legacy xserver-xorg-video-intel xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-video-radeon xserver-xorg-input-all xinit connman-gtk feh menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus dbus-user-session dbus-x11 dbus-bin imagemagick rtkit fonts-recommended zip xkbset fonts-recommended zip gvfs-backends "
 #window manager/de packages
-packages_x11+=" gnome-icon-theme xfce4-terminal xfce4 xfce-polkit mousepad xkbset thunar-archive-plugin file-roller "
+packages_x11+=" gnome-icon-theme xfce4-terminal xfce4 mousepad xkbset thunar-archive-plugin file-roller "
+if [ "$release" != "stable" ];then
+	packages_x11+=" xfce-polkit "
+fi
 
 if [ "$build_type" != "min" ];then
 	packages+=$packages_x11
@@ -369,18 +372,18 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 			unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
 			rm /tmp/aq.zip
 			chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
-		fi
   
-  	#install nvidia drivers
-		if [ "$build_type" != "full-oldnvidia" ];then
-			#list all available packages and versions into file before adding nvidia repo
-			apt list > /versions_before_nvidia.txt 2>/dev/null
-			wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
-			dpkg -i /tmp/cuda.deb
-			apt-get update
-			apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
-		else
-			apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
+  		#install nvidia drivers
+			if [ "$build_type" != "full-oldnvidia" ];then
+				#list all available packages and versions into file before adding nvidia repo
+				apt list > /versions_before_nvidia.txt 2>/dev/null
+				wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
+				dpkg -i /tmp/cuda.deb
+				apt-get update
+				apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
+			else
+				apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
+			fi
 		fi
 	fi
 
@@ -546,9 +549,12 @@ if [ ! -z "$SUDO" ];then
 	SUDO+=" -E "
 fi
 
+#ignore errors from now on
+set +e
+
 #package versions
-versions=$(cat workdir/versions.txt ; rm -f workdir/versions.txt)
-versions_before_nvidia=$(cat workdir/versions_before_nvidia.txt ; rm -f workdir/versions_before_nvidia.txt)
+versions=$(cat workdir/versions.txt ; $SUDO rm -f workdir/versions.txt)
+versions_before_nvidia=$(cat workdir/versions_before_nvidia.txt ; $SUDO rm -f workdir/versions_before_nvidia.txt)
 mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|tail -1|awk '{print $2}')
 kernel_version=$(echo "$versions"|grep linux-image-${arch}|tail -1|awk '{print $2}')
 nvidia_old_version=$(echo "$versions_before_nvidia"|grep nvidia-driver|tail -1|awk '{print $2}')
@@ -576,9 +582,15 @@ fi
 #$SUDO pvs 2>/dev/null|grep --color=never 'mapper/loop'|awk '{print $1}'|xargs -r $SUDO pvremove -f
 #$SUDO losetup|grep --color=never 'tmp.dbstck'|awk '{print $1}'|xargs -r $SUDO kpartx -d 
 
+ls -altr "$workdir/etc/ld.so.conf.d"
+
 $SUDO ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +usbcore.autosuspend=-1 +cpufreq.default_governor=performance +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +ibt=off +rootwait +tsc=reliable +quiet +splash +loglevel=1 +i915.enable_guc=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename"
 
 if [ $? -eq 0 ];then
+
+	#make sure the file is setup for bios boot
+	file "$imagename" | grep start-CHS && exit 99
+
 	mkdir -p ./output
 	if [ -d "$targetdir" ];then
 		echo -e "\ncopying to $targetdir"
@@ -599,7 +611,5 @@ else
 	echo "errors in process"
 	exit 1
 fi
-
-
 
 echo -e "\ncomplete."

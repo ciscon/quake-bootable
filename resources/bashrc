@@ -41,7 +41,7 @@ alias quake-fix="cd $HOME/quake && echo 'lowercasing files and directories...' &
 alias browser="chromium"
 alias filebrowser="thunar"
 alias update-quake="wget -qO /tmp/ezquake-linux https://builds.quakeworld.nu/ezquake/snapshots/latest/linux/x86_64/ezQuake-x86_64.AppImage && mv /tmp/ezquake-linux ${HOME}/quake/ezquake-linux && chmod +x /home/quakeuser/quake/ezquake-linux"
-alias nvidia-disable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy purge '*nvidia*';sudo apt -qqy autopurge"
+alias nvidia-disable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy purge 'nvidia*';sudo apt -qqy autopurge"
 alias nvidia-enable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy install nvidia-driver nvidia-settings nvidia-xconfig;sudo apt -qqy -f install"
 alias logitech-enable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy install piper && piper"
 alias update-system="sudo apt -qqy update && sudo apt -qqy upgrade"
