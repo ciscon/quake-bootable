@@ -546,6 +546,9 @@ if [ ! -z "$SUDO" ];then
 	SUDO+=" -E "
 fi
 
+#ignore errors from now on
+set +e
+
 #package versions
 versions=$(cat workdir/versions.txt ; $SUDO rm -f workdir/versions.txt)
 versions_before_nvidia=$(cat workdir/versions_before_nvidia.txt ; $SUDO rm -f workdir/versions_before_nvidia.txt)
