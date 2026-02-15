@@ -17,18 +17,18 @@ jobs:
       matrix:
         BUILDTYPE: ["full","full-oldnvidia","min"]
         BUILDARCH: ["amd64"]
-    container:
-      image: debian:bullseye
-      options: --privileged
-      volumes:
-        - /dev:/dev
-        - /sys:/sys
-        - /proc:/proc
+    #container:
+    #  image: debian:bullseye
+    #  options: --privileged
+    #  volumes:
+    #    - /dev:/dev
+    #    - /sys:/sys
+    #    - /proc:/proc
     steps:
     - name: Install Packages
       shell: bash
       run: |
-        apt-get -qqy update && apt-get -qqy install kmod grub2 grub-pc e2fsprogs debootstrap coreutils dosfstools zip pigz fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*' && modprobe efivars
+        sudo apt-get -qqy update && sudo apt-get -qqy install kmod grub2 grub-pc e2fsprogs debootstrap coreutils dosfstools zip pigz fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*' && sudo modprobe efivars
     - name: Checkout
       uses: actions/checkout@v4
       with:
