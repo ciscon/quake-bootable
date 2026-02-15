@@ -28,8 +28,7 @@ jobs:
     - name: Install Packages
       shell: bash
       run: |
-        apt-get -qqy update && apt-get -qqy install grub2 grub-pc e2fsprogs debootstrap coreutils dosfstools zip pigz fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*'
-      run: modprobe efivars
+        apt-get -qqy update && apt-get -qqy install grub2 grub-pc e2fsprogs debootstrap coreutils dosfstools zip pigz fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*' && modprobe efivars
     - name: Checkout
       uses: actions/checkout@v4
       with:
