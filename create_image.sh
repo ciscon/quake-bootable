@@ -583,6 +583,8 @@ ls -altr "$workdir/etc/ld.so.conf.d"
 
 $SUDO ./debootstick/debootstick --kernel-package linux-image-generic --config-kernel-bootargs "+selinux=0 +amdgpu.ppfeaturemask=0xffffffff +pcie_aspm=off +usbcore.autosuspend=-1 +cpufreq.default_governor=performance +ipv6.disable=1 +audit=0 +apparmor=0 +preempt=full +mitigations=off +ibt=off +rootwait +tsc=reliable +quiet +splash +loglevel=1 +i915.enable_guc=3 -rootdelay" --config-root-password-none --config-hostname $mediahostname "$workdir" "$imagename"
 
+file "$imagename" | grep start-CHS && exit 99
+
 if [ $? -eq 0 ];then
 	mkdir -p ./output
 	if [ -d "$targetdir" ];then
