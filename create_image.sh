@@ -65,7 +65,7 @@ issueappend="$currentdir/resources/issue.append"
 xfce="$currentdir/resources/xfce"
 
 #base packages
-packages="grub-pc shim-signed grub-efi-amd64-signed linux-image-amd64 dosfstools init nano procps os-prober util-linux iputils-ping openssh-client file git sudo cmake ninja-build libgl1 libgl1-mesa-dri terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-intel-misc firmware-nvidia-graphics firmware-intel-graphics firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant zip libfuse2 rename libarchive-tools log2ram "
+packages="grub-pc shim-signed grub-efi-amd64-signed linux-image-amd64 dosfstools init nano procps os-prober util-linux iputils-ping openssh-client file git sudo cmake ninja-build libgl1 libgl1-mesa-dri mesa-utils terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-intel-misc firmware-nvidia-graphics firmware-intel-graphics firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant zip libfuse2 rename libarchive-tools log2ram "
 #minimal build packages
 packages_nox11="libegl1 ifupdown dhcpcd-base"
 #full build packages
@@ -380,10 +380,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 				wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
 				dpkg -i /tmp/cuda.deb
 				apt-get update
-				apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig
+				apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig primus-nvidia bumblebee
 			else
-				apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig
+				apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig primus-nvidia bumblebee
 			fi
+			systemctl enable --now bumblebee
 		fi
 	fi
 

@@ -5,12 +5,19 @@ currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 #set to 0 to disable opengl triple buffering, 1 to enable
 TRIPLEBUFFER=0
 
+prepend=
+
 if lsmod|grep nvidia >/dev/null 2>&1;then
 	echo "loading nvidia preferences"
+
+	#check for primus
+	primusrun glxinfo >/dev/null 2>&1 && prepend="primusrun "
+
 	export __GL_YIELD="NOTHING"
 	export __GL_MaxFramesAllowed=2
 	export __GL_THREADED_OPTIMIZATIONS=1
 	export __GL_VRR_ALLOWED=0
+	export __GL_SYNC_TO_VBLANK=0
 
 	if [ $__GL_THREADED_OPTIMIZATIONS -ne 0 ];then
 		if [ $(/sbin/ldconfig -Np|grep libpthread.so.0$ -c) -gt 0 ];then
@@ -47,9 +54,9 @@ olddir=$(pwd)
 cd "$HOME/quake"
 
 #example: set affinity to vcpus 1 and 2
-#nice -n -11 taskset 1,2 ./ezquake-linux-x86_64 -no-triple-gl-buffer $extra $*
+#$prepend nice -n -11 taskset 1,2 ./ezquake-linux-x86_64 -no-triple-gl-buffer $extra $*
 
 #let the scheduler handle it
-nice -n -11 ./ezquake-linux $append -democache 32000 $extra $*
+$prepend nice -n -11 ./ezquake-linux $append -democache 32000 $extra $*
 
 cd "$olddir"
