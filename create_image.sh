@@ -221,7 +221,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		echo "
 		deb http://security.debian.org/debian-security ${release}-security main contrib non-free non-free-firmware
 		deb http://deb.debian.org/debian ${release}-updates main contrib non-free non-free-firmware
-		" >> /etc/apt/sources.list
+		" | awk "{\$1=\$1};1" >> /etc/apt/sources.list
 	fi
 
 	#enable contrib/non-free
@@ -233,7 +233,16 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		deb http://deb.debian.org/debian stable main contrib non-free non-free-firmware
 		deb http://security.debian.org/debian-security stable-security main contrib non-free non-free-firmware
 		deb http://deb.debian.org/debian stable-updates main contrib non-free non-free-firmware
-		" > /etc/apt/sources.list.d/stable.list
+		" | awk "{\$1=\$1};1" > /etc/apt/sources.list.d/stable.list
+	else #when using stable, enable backports
+		echo "
+		deb http://deb.debian.org/debian stable-backports main contrib non-free non-free-firmware
+		" > /etc/apt/sources.list.d/stable-backports.list
+		echo "
+		Package: *
+		Pin: release a=stable-backports
+		Pin-Priority: 500
+		" | awk "{\$1=\$1};1" > /etc/apt/preferences.d/backports
 	fi
 
 	##xanmod
@@ -384,7 +393,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 			else
 				apt-get -qy install nvidia-driver nvidia-open-kernel-dkms nvidia-settings nvidia-xconfig primus-nvidia bumblebee
 			fi
-			systemctl enable --now bumblebee
+			systemctl enable bumblebeed
 		fi
 	fi
 
