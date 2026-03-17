@@ -391,7 +391,8 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 				apt-get update
 				apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig primus-nvidia bumblebee
 			else
-				apt-get -qy install nvidia-driver nvidia-open-kernel-dkms nvidia-settings nvidia-xconfig primus-nvidia bumblebee
+				apt-get -qy install nvidia-driver nvidia-settings nvidia-xconfig primus-nvidia bumblebee
+				#apt-get -qy install nvidia-driver nvidia-open-kernel-dkms nvidia-settings nvidia-xconfig primus-nvidia bumblebee
 			fi
 			systemctl enable bumblebeed
 		fi
