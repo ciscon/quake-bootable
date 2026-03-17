@@ -30,7 +30,7 @@ jobs:
       run: |
         sudo apt-get -qqy update && sudo apt-get -qqy install file e2fsprogs debootstrap coreutils dosfstools zip pigz fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*'
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         submodules: true
     - name: Read release.md and use it as a body of new release
