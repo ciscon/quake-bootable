@@ -234,15 +234,15 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		deb http://security.debian.org/debian-security stable-security main contrib non-free non-free-firmware
 		deb http://deb.debian.org/debian stable-updates main contrib non-free non-free-firmware
 		" | awk "{\$1=\$1};1" > /etc/apt/sources.list.d/stable.list
-	else #when using stable, enable backports
-		echo "
-		deb http://deb.debian.org/debian stable-backports main contrib non-free non-free-firmware
-		" > /etc/apt/sources.list.d/stable-backports.list
-		echo "
-		Package: *
-		Pin: release a=stable-backports
-		Pin-Priority: 500
-		" | awk "{\$1=\$1};1" > /etc/apt/preferences.d/backports
+	#else #when using stable, enable backports
+	#	echo "
+	#	deb http://deb.debian.org/debian stable-backports main contrib non-free non-free-firmware
+	#	" > /etc/apt/sources.list.d/stable-backports.list
+	#	echo "
+	#	Package: *
+	#	Pin: release a=stable-backports
+	#	Pin-Priority: 500
+	#	" | awk "{\$1=\$1};1" > /etc/apt/preferences.d/backports
 	fi
 
 	##xanmod
