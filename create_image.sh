@@ -5,7 +5,7 @@ arch=${BUILDARCH:-amd64}
 onlybuild=0 #use existing workdir and only build image
 
 distro="debian" #devuan or debian
-release="testing"
+release="stable"
 mediahostname="quakeboot"
 
 ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git" #repository to use for ezquake build
