@@ -47,7 +47,7 @@ if [ -z "$DISPLAY" ];then
 fi
 
 if [ $TRIPLEBUFFER -eq 0 ];then
-	extra+="-no-triple-gl-buffer"
+	extra+=" -no-triple-gl-buffer"
 fi
 
 olddir=$(pwd)
@@ -57,6 +57,6 @@ cd "$HOME/quake"
 #$prepend nice -n -11 taskset 1,2 ./ezquake-linux-x86_64 -no-triple-gl-buffer $extra $*
 
 #let the scheduler handle it
-$prepend nice -n -11 ./ezquake-linux $append -democache 32000 $extra $*
+$prepend nice -n -11 ./ezquake-linux -democache 32000 $extra $*
 
 cd "$olddir"
