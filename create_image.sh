@@ -210,6 +210,7 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	export DEBIAN_FRONTEND=noninteractive
 	mkdir -p /etc/apt/apt.conf.d
 	echo "APT::Install-Suggests \"0\";APT::Install-Recommends \"false\";APT::AutoRemove::RecommendsImportant \"false\";" > /etc/apt/apt.conf.d/01lean
+	echo "Acquire::Retries \"3\";" > /etc/apt/apt.conf.d/02retries
 	echo "path-exclude=/usr/share/doc/*" > /etc/dpkg/dpkg.cfg.d/01_nodoc
 	rm -rf /usr/share/doc
 	echo "path-exclude=/usr/share/man/*" > /etc/dpkg/dpkg.cfg.d/01_noman
