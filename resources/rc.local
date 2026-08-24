@@ -41,6 +41,8 @@ fi
 					sed -i "s/^GRUB_DISABLE_OS_PROBER.*/GRUB_DISABLE_OS_PROBER=false/g" /etc/default/grub
 					update-grub >/dev/null 2>&1
 				fi
+			else
+				echo "warning: could not determine root device from lvs output, skipping os-prober configuration"
 			fi
 			touch /firstboot
 		fi

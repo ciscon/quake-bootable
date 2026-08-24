@@ -148,13 +148,16 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	echo "building chroot for arch $cpuarch, passed $arch"
 
+	set +e
 	if [ "$distro" == "devuan" ];then
 		$SUDO debootstrap --arch=${cpuarch} --include="devuan-keyring gnupg wget ca-certificates" --exclude="debian-keyring" --no-check-gpg --variant=minbase $release "$workdir" http://dev.beard.ly/devuan/merged/
 	else
 		$SUDO debootstrap --arch=${cpuarch} --include="debian-keyring gnupg wget ca-certificates" --exclude="devuan-keyring" --no-check-gpg --variant=minbase $release "$workdir" https://deb.debian.org/debian/
 	fi
+	debootstrap_status=$?
+	set -e
 
-	if [ $? -ne 0 ];then
+	if [ $debootstrap_status -ne 0 ];then
 		echo "chroot files:"
 		$SUDO find "$workdir" -type f
 		if [ -f "$workdir/debootstrap/debootstrap.log" ];then
@@ -318,8 +321,14 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 
 	#pull in appimage
-	wget -qO /tmp/ezquake-linux https://builds.quakeworld.nu/ezquake/snapshots/latest/linux/x86_64/ezQuake-x86_64.AppImage
+	#note: this is a rolling "latest" build so a pinned checksum is not viable here,
+	#we can only check that the download succeeded and produced a non-empty file
+	if ! wget -qO /tmp/ezquake-linux https://builds.quakeworld.nu/ezquake/snapshots/latest/linux/x86_64/ezQuake-x86_64.AppImage;then
+		echo "failed to download ezquake appimage, bailing out"
+		exit 12
+	fi
 	[ ! -s /tmp/ezquake-linux ] && exit 12
+	file /tmp/ezquake-linux | grep -qi "ELF\|executable" || { echo "downloaded ezquake appimage does not look like a valid executable, bailing out"; exit 12; }
 	mv /tmp/ezquake-linux /home/quakeuser/quake/ezquake-linux
 	chmod +x /home/quakeuser/quake/ezquake-linux
   chown quakeuser:quakeuser -Rf /home/quakeuser/quake
@@ -377,7 +386,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 			#install afterquake
 			echo "install afterquake..."
 			mkdir -p /home/quakeuser/quake-afterquake
-			wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip
+			if ! wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip;then
+				echo "failed to download afterquake, bailing out"
+				exit 13
+			fi
+			[ ! -s /tmp/aq.zip ] && { echo "downloaded afterquake archive is empty, bailing out"; exit 13; }
 			unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
 			rm /tmp/aq.zip
 			chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
@@ -386,7 +399,11 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 			if [ "$build_type" != "full-oldnvidia" ];then
 				#list all available packages and versions into file before adding nvidia repo
 				apt list > /versions_before_nvidia.txt 2>/dev/null
-				wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
+				if ! wget -qO /tmp/cuda.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb;then
+					echo "failed to download cuda-keyring, bailing out"
+					exit 14
+				fi
+				[ ! -s /tmp/cuda.deb ] && { echo "downloaded cuda-keyring package is empty, bailing out"; exit 14; }
 				dpkg -i /tmp/cuda.deb
 				apt-get update
 				apt-get -qy install nvidia-driver nvidia-kernel-open-dkms nvidia-settings nvidia-xconfig primus-nvidia bumblebee
