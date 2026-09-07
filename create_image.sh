@@ -628,7 +628,7 @@ if [ $? -eq 0 ];then
 		rsync -av ./output/* "$targetdir/."
 		echo "compressing..." && \
 			mkdir -p ./output
-			pigz --zip "$imagename" -c > "./output/${imagename}.zip" && \
+			pigz --zip -11 "$imagename" -c > "./output/${imagename}.zip" && \
 			md5sum "./output/${imagename}.zip" > "./output/${imagename}.zip.md5sum"
 		if [ ! -z "$imagelatestname" ];then
 			ln -sf "${imagename}.zip" "./output/${imagelatestname}.zip" && \
