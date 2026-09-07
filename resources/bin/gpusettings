@@ -8,9 +8,8 @@ sudo bash -c '
   for card in /sys/class/drm/card*/device; do
     [ -d "$card" ] || continue
 
-    #amdgpu
     if [ -e "$card/power_dpm_force_performance_level" ]; then
-      (
+        echo "amdgpu"
         if [ -e "$card/pp_power_profile_mode" ]; then
           echo "manual" >"$card/power_dpm_force_performance_level"
           #set vr profile
@@ -27,15 +26,13 @@ sudo bash -c '
           #force memory clock to full
           echo "3" >"$card/pp_dpm_mclk"
         fi
-      ) >> /tmp/gpu-amdgpu.log 2>&1
     fi
   done
 
   for card in /sys/class/drm/card*; do
     [ -d "$card" ] || continue
-    (
-    #intel legacy
     if [ -e "$card/gt_max_freq_mhz" ]; then
+        echo "intel legacy"
         if [ -e "$card/gt_boost_freq_mhz" ]; then
           maxfreq=$(cat "$card/gt_boost_freq_mhz" | head -n1)
         else
@@ -46,9 +43,9 @@ sudo bash -c '
           echo "$maxfreq" >"$card/gt_min_freq_mhz"
         fi
     else
-      #intel arc
       for gt in $card/gt/gt*; do
       [ -d "$gt" ] || continue
+        echo "intel arc"
         if [ -e "$gt/rps_max_freq_mhz" ]; then
           maxfreq=$(cat "$gt/rps_boost_freq_mhz" | head -n1)
         else
@@ -60,12 +57,10 @@ sudo bash -c '
         fi  
       done
     fi
-    ) >> /tmp/gpu-intel.log 2>&1
   done
 
-  #nvidia
   if lsmod|grep nvidia_modeset >/dev/null 2>&1;then
-    (
+      echo "nvidia"
       for i in $(seq 0 2); do
         nvidia-settings -a "[gpu:$i]/GpuPowerMizerMode=1"
       done
@@ -73,7 +68,6 @@ sudo bash -c '
       nvidia-settings -a OpenGLImageSettings=3
       nvidia-settings -a SyncToVBlank=0
       nvidia-settings -a AllowFlipping=1
-    ) > /tmp/gpu-nvidia.log 2>&1
   fi
 
 ' > /tmp/gpu.log 2>&1 &
