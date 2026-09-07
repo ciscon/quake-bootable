@@ -28,7 +28,7 @@ jobs:
     - name: Install Packages
       shell: bash
       run: |
-        sudo apt-get -qqy update && sudo apt-get -qqy install file e2fsprogs debootstrap coreutils dosfstools zip pigz fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*'
+        sudo apt-get -qqy update && sudo apt-get -qqy install file e2fsprogs debootstrap coreutils dosfstools zip fdisk kpartx mount uuid-runtime lvm2 git && git config --global --add safe.directory '*'
     - name: Checkout
       uses: actions/checkout@v6
       with:
@@ -65,7 +65,7 @@ jobs:
         cd ./output
         ls -altrh
         basename=$(basename -s .img *.img)
-        zip -7 -r ${basename}.zip ${basename}.*
+        zip -9 -s 1950m -r ${basename}.zip ${basename}.*
     - name: Bump version and push tag
       id: bump_version
       uses: anothrNick/github-tag-action@1.67.0
@@ -85,7 +85,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file_glob: true
-        file: ./output/*.zip
+        file: ./output/*.z*
         tag: ${{ steps.bump_version.outputs.new_tag }}
         overwrite: true
         body: |
