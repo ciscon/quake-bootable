@@ -416,12 +416,12 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 		fi
 	fi
 
-	#qizmo deps
-	if [ "$arch" == "amd64" ];then
-		dpkg --add-architecture i386
-		apt-get -qy update
-		apt-get -qy install libc6:i386
-	fi
+	##qizmo deps
+	#if [ "$arch" == "amd64" ];then
+	#	dpkg --add-architecture i386
+	#	apt-get -qy update
+	#	apt-get -qy install libc6:i386
+	#fi
 
 	#list all available packages and versions into file
 	apt list > /versions.txt 2>/dev/null
