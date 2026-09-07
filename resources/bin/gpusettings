@@ -45,10 +45,11 @@ sudo bash -c '
           #force max frequency
           echo "$maxfreq" >"$card/gt_min_freq_mhz"
         fi
-		else
-			#intel arc
-			for gt in $card/gt/gt*; do
-			  if [ -e "$gt/rps_max_freq_mhz" ]; then
+    else
+      #intel arc
+      for gt in $card/gt/gt*; do
+      [ -d "$gt" ] || continue
+        if [ -e "$gt/rps_max_freq_mhz" ]; then
           maxfreq=$(cat "$gt/rps_boost_freq_mhz" | head -n1)
         else
           maxfreq=$(cat "$gt/rps_max_freq_mhz" | head -n1)
@@ -56,8 +57,8 @@ sudo bash -c '
         if [ ! -z "$maxfreq" ]; then
           #force max frequency
           echo "$maxfreq" >"$gt/rps_min_freq_mhz"
-        fi	
-			done
+        fi  
+      done
     fi
     ) >> /tmp/gpu-intel.log 2>&1
   done
