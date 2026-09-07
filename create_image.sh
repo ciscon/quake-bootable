@@ -8,12 +8,12 @@ distro="debian" #devuan or debian
 release="testing"
 mediahostname="quakeboot"
 
-ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git" #repository to use for ezquake build
+#ezquakegitrepo="https://github.com/ezQuake/ezquake-source.git" #repository to use for ezquake build
 
 builddate=$(date +%s)
-gitcommit=$(git log -n 1|head -1|awk '{print $2}'|cut -c1-6)
-githubref=${GITHUB_REF_NAME:-v0}
-release_ver="${githubref}-${builddate}~${gitcommit}"
+#gitcommit=$(git log -n 1|head -1|awk '{print $2}'|cut -c1-6)
+#githubref=${GITHUB_REF_NAME:-v0}
+#release_ver="${githubref}-${builddate}~${gitcommit}"
 
 currentdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/" >/dev/null 2>&1 && pwd)"
 workdir="$currentdir/workdir"
@@ -65,11 +65,11 @@ issueappend="$currentdir/resources/issue.append"
 xfce="$currentdir/resources/xfce"
 
 #base packages
-packages="cpio grub-pc shim-signed grub-efi-amd64-signed linux-image-amd64 dosfstools init nano procps os-prober util-linux iputils-ping openssh-client file git sudo cmake ninja-build libgl1 libgl1-mesa-dri mesa-utils terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-intel-misc firmware-nvidia-graphics firmware-nvidia-gsp firmware-intel-graphics firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant zip libfuse2 rename libarchive-tools log2ram "
+packages="cpio grub-pc shim-signed grub-efi-amd64-signed linux-image-amd64 dosfstools init nano procps os-prober util-linux iputils-ping openssh-client file sudo `#git cmake ninja-build` libgl1 libgl1-mesa-dri mesa-utils terminfo vim-tiny unzip zstd alsa-utils fbset systemd-timesyncd cloud-utils parted lvm2 gdisk initramfs-tools fdisk firmware-intel-misc firmware-nvidia-graphics firmware-nvidia-gsp firmware-intel-graphics firmware-linux firmware-linux-nonfree firmware-linux-free firmware-realtek firmware-iwlwifi firmware-intel-sound firmware-sof-signed libarchive-tools linux-image-generic ntfs-3g nfs-common exfat-fuse plymouth plymouth-label iw connman wpasupplicant zip libfuse2 rename libarchive-tools log2ram "
 #minimal build packages
 packages_nox11="libegl1 ifupdown dhcpcd-base"
 #full build packages
-packages_x11=" desktop-base xserver-xorg-legacy xserver-xorg-video-intel xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-video-radeon xserver-xorg-input-all xinit connman-gtk feh menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus dbus-user-session dbus-x11 dbus-bin imagemagick rtkit fonts-recommended zip xkbset fonts-recommended zip gvfs-backends "
+packages_x11=" desktop-base xserver-xorg-legacy xserver-xorg-video-intel xserver-xorg-core xserver-xorg-video-amdgpu xserver-xorg-video-radeon xserver-xorg-input-all xinit connman-gtk feh menu python3-xdg xdg-utils chromium pasystray pavucontrol pipewire pipewire-pulse wireplumber x11-xserver-utils dbus dbus-user-session dbus-x11 dbus-bin imagemagick rtkit zip xkbset fonts-recommended zip gvfs-backends "
 #window manager/de packages
 packages_x11+=" gnome-icon-theme xfce4-terminal xfce4 mousepad xkbset thunar-archive-plugin file-roller "
 if [ "$release" != "stable" ];then
