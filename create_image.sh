@@ -384,17 +384,17 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 
 	if [ "$arch" == "amd64" ];then
 		if [ "$build_type" != "min" ];then
-			#install afterquake
-			echo "install afterquake..."
-			mkdir -p /home/quakeuser/quake-afterquake
-			if ! wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip;then
-				echo "failed to download afterquake, bailing out"
-				exit 13
-			fi
-			[ ! -s /tmp/aq.zip ] && { echo "downloaded afterquake archive is empty, bailing out"; exit 13; }
-			unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
-			rm /tmp/aq.zip
-			chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
+			##install afterquake
+			#echo "install afterquake..."
+			#mkdir -p /home/quakeuser/quake-afterquake
+			#if ! wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip;then
+			#	echo "failed to download afterquake, bailing out"
+			#	exit 13
+			#fi
+			#[ ! -s /tmp/aq.zip ] && { echo "downloaded afterquake archive is empty, bailing out"; exit 13; }
+			#unzip /tmp/aq.zip -d /home/quakeuser/quake-afterquake
+			#rm /tmp/aq.zip
+			#chown quakeuser:quakeuser -Rf /home/quakeuser/quake-afterquake
   
   		#install nvidia drivers
 			if [ "$build_type" != "full-oldnvidia" ];then
