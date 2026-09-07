@@ -624,15 +624,15 @@ if [ $? -eq 0 ];then
 
 	mkdir -p ./output
 	if [ -d "$targetdir" ];then
-		echo -e "\ncopying to $targetdir"
-		rsync -av ./output/* "$targetdir/."
+		echo -e "\ncopying to $targetdir" && \
+		rsync -av ./output/* "$targetdir/." && \
 		echo "compressing..." && \
-			mkdir -p ./output
-			md5sum "${imagename}" > "${imagename}.md5sum"
-			zip -9 -s 2g -r "${imagename}.zip" "$imagename" "${imagename}.md5sum" && \
+		mkdir -p ./output && \
+		md5sum "${imagename}" > "${imagename}.md5sum" && \
+		zip -9 -s 2g -r "${imagename}.zip" "$imagename" "${imagename}.md5sum" || exit 66
 		if [ ! -z "$imagelatestname" ];then
 			for zip in ${imagename}.z*;do
-				ln -sf "$zip" "./output/${zip}" && \
+				ln -sf "$zip" "./output/${zip}"
 			done
 		fi
 	else #this is an automated build we do compression later
