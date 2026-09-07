@@ -107,7 +107,7 @@ create:
  ./create_image.sh
 
 create in docker:
- docker run --rm --privileged -v $(pwd):/build debian bash -c "apt update;apt -qqy install git e2fsprogs dosfstools lvm2 uuid-runtime kpartx fdisk debootstrap pigz && cd /build && git config --global --add safe.directory /build && BUILDTYPE=full-oldnvidia ./create_image.sh || (echo 'something broke, reattach to container and investigate, docker rm -f containerid when complete';sleep inf)"
+ docker run --rm --privileged -v $(pwd):/build debian bash -c "apt update;apt -qqy install git e2fsprogs dosfstools lvm2 uuid-runtime kpartx fdisk debootstrap zip && cd /build && git config --global --add safe.directory /build && BUILDTYPE=full-oldnvidia ./create_image.sh || (echo 'something broke, reattach to container and investigate, docker rm -f containerid when complete';sleep inf)"
 
 test:
  quake_bootable=$(ls -t quake_bootable-*.img| head -1)

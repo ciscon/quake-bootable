@@ -104,7 +104,7 @@ if [ $(id -u) -eq 0 ];then
 fi
 
 PATH=$PATH:/sbin:/usr/sbin
-required+="debootstrap chroot truncate pigz fdisk git kpartx losetup uuidgen pvscan mkfs.vfat mkfs.ext4"
+required+="debootstrap chroot truncate zip fdisk git kpartx losetup uuidgen pvscan mkfs.vfat mkfs.ext4"
 for require in $required;do
 	if ! hash $require >/dev/null 2>&1;then
 		echo "required program $require not found, bailing out."
@@ -628,11 +628,12 @@ if [ $? -eq 0 ];then
 		rsync -av ./output/* "$targetdir/."
 		echo "compressing..." && \
 			mkdir -p ./output
-			pigz --zip -11 "$imagename" -c > "./output/${imagename}.zip" && \
-			md5sum "./output/${imagename}.zip" > "./output/${imagename}.zip.md5sum"
+			md5sum "${imagename}" > "${imagename}.md5sum"
+			zip -9 -s 2g -r "${imagename}.zip" "$imagename" "${imagename}.md5sum" && \
 		if [ ! -z "$imagelatestname" ];then
-			ln -sf "${imagename}.zip" "./output/${imagelatestname}.zip" && \
-				ln -sf "${imagename}.zip.md5sum" "./output/${imagelatestname}.zip.md5sum"
+			for zip in ${imagename}.z*;do
+				ln -sf "$zip" "./output/${zip}" && \
+			done
 		fi
 	else #this is an automated build we do compression later
 		mv -f "$imagename" ./output/.
