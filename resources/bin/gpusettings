@@ -33,10 +33,9 @@ sudo bash -c '
 
   for card in /sys/class/drm/card*; do
     [ -d "$card" ] || continue
-
-    #intel
+    (
+    #intel legacy
     if [ -e "$card/gt_max_freq_mhz" ]; then
-      (
         if [ -e "$card/gt_boost_freq_mhz" ]; then
           maxfreq=$(cat "$card/gt_boost_freq_mhz" | head -n1)
         else
@@ -46,8 +45,21 @@ sudo bash -c '
           #force max frequency
           echo "$maxfreq" >"$card/gt_min_freq_mhz"
         fi
-      ) >> /tmp/gpu-intel.log 2>&1
+		else
+			#intel arc
+			for gt in $card/gt/gt*; do
+			  if [ -e "$gt/rps_max_freq_mhz" ]; then
+          maxfreq=$(cat "$gt/rps_boost_freq_mhz" | head -n1)
+        else
+          maxfreq=$(cat "$gt/rps_max_freq_mhz" | head -n1)
+        fi
+        if [ ! -z "$maxfreq" ]; then
+          #force max frequency
+          echo "$maxfreq" >"$gt/rps_min_freq_mhz"
+        fi	
+			done
     fi
+    ) >> /tmp/gpu-intel.log 2>&1
   done
 
   #nvidia
