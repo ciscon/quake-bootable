@@ -590,7 +590,7 @@ mesa_version=$(echo "$versions"|grep libgl1-mesa-dri|tail -1|awk '{print $2}')
 kernel_version=$(echo "$versions"|grep linux-image-${arch}|tail -1|awk '{print $2}')
 nvidia_old_version=$(echo "$versions_before_nvidia"|grep nvidia-driver|tail -1|awk '{print $2}')
 nvidia_version=$(echo "$versions"|grep nvidia-driver|tail -1|awk '{print $2}')
-ezquake_version=$(cat "$workdir/ezquake_ver")
+ezquake_version=$(cat "$workdir/ezquake_ver" 2>/dev/null)
 if [ -z "$ezquake_version" ];then
 	ezquake_version="latest"
 fi
