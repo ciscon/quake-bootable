@@ -34,13 +34,26 @@ if ls /sys/module/razermouse/drivers/hid:razermouse/*/device_mode > /dev/null 2>
 fi
 
 #custom aliases
-if [ -e "$HOME/quake-afterquake" ];then
-	alias quake-afterquake='currentdir=$PWD;cd $HOME/quake-afterquake;nice -n -5 ./fteqw64;cd "$currentdir"'
+alias quake-afterquake='
+if [ -e "$HOME/quake-afterquake/fteqw64" ];then
+	currentdir=$PWD;cd $HOME/quake-afterquake;nice -n -5 ./fteqw64;cd "$currentdir"
+else
+	echo "install afterquake..."
+	mkdir -p $HOME/quake-afterquake
+	if ! wget -qO /tmp/aq.zip https://fte.triptohell.info/moodles/linux_amd64/afterquake.zip;then
+	  echo "failed to download afterquake, bailing out"
+	  exit 13
+	fi
+	[ ! -s /tmp/aq.zip ] && { echo "downloaded afterquake archive is empty, bailing out"; exit 13; }
+	unzip /tmp/aq.zip -d $HOME/quake-afterquake
+	rm /tmp/aq.zip
+	currentdir=$PWD;cd $HOME/quake-afterquake;nice -n -5 ./fteqw64;cd "$currentdir"
 fi
+'
 alias quake-fix="cd $HOME/quake && echo 'lowercasing files and directories...' && find . -depth -exec rename 's/(.*)\/([^\/]*)/$1\/\L$2/' {} \; 2>/dev/null && cd - >/dev/null && echo 'updating quake...' && update-quake && echo 'all done'"
 alias browser="chromium"
 alias filebrowser="thunar"
-alias update-quake="wget -qO /tmp/ezquake-linux https://builds.quakeworld.nu/ezquake/snapshots/latest/linux/x86_64/ezQuake-x86_64.AppImage && mv /tmp/ezquake-linux ${HOME}/quake/ezquake-linux && chmod +x /home/quakeuser/quake/ezquake-linux"
+alias update-quake="wget -qO /tmp/ezquake-linux https://builds.quakeworld.nu/ezquake/snapshots/latest/linux/x86_64/ezQuake-x86_64.AppImage && mv /tmp/ezquake-linux ${HOME}/quake/ezquake-linux && chmod +x ${HOME}/quake/ezquake-linux"
 alias nvidia-disable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy purge 'nvidia*';sudo apt -qqy autopurge"
 alias nvidia-enable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy install nvidia-driver nvidia-settings nvidia-xconfig;sudo apt -qqy -f install"
 alias logitech-enable="export DEBIAN_FRONTEND=noninteractive;sudo apt -qqy update;sudo apt -qqy install piper && piper"
