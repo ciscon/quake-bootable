@@ -323,13 +323,14 @@ if [ $onlybuild -eq 0 ] || [ ! -d "$workdir/usr" ];then
 	#pull in appimage
 	#note: this is a rolling "latest" build so a pinned checksum is not viable here,
 	#we can only check that the download succeeded and produced a non-empty file
-	if ! wget -qO /tmp/ezquake-linux https://builds.quakeworld.nu/ezquake/snapshots/latest/linux/x86_64/ezQuake-x86_64.AppImage;then
+	if ! wget -qO /tmp/ezquake-linux.zip https://github.com/QW-Group/ezquake-source/releases/latest/download/ezQuake-linux-x86_64.zip;then
 		echo "failed to download ezquake appimage, bailing out"
 		exit 12
 	fi
-	[ ! -s /tmp/ezquake-linux ] && exit 12
-	file /tmp/ezquake-linux | grep -qi "ELF\|executable" || { echo "downloaded ezquake appimage does not look like a valid executable, bailing out"; exit 12; }
-	mv /tmp/ezquake-linux /home/quakeuser/quake/ezquake-linux
+	unzip -o -d /tmp /tmp/ezquake-linux.zip
+	[ ! -s /tmp/ezQuake-x86_64.AppImage ] && exit 12
+	file /tmp/ezQuake-x86_64.AppImage | grep -qi "ELF\|executable" || { echo "downloaded ezquake appimage does not look like a valid executable, bailing out"; exit 12; }
+	mv /tmp/ezQuake-x86_64.AppImage /home/quakeuser/quake/ezquake-linux
 	chmod +x /home/quakeuser/quake/ezquake-linux
   chown quakeuser:quakeuser -Rf /home/quakeuser/quake
 
