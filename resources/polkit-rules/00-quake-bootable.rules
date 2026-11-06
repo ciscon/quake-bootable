@@ -5,3 +5,14 @@ polkit.addRule(function(action, subject) {
         return polkit.Result.YES;
     }
 });
+
+/* Allow users in sudo group to shutdown/reboot/etc without authentication */
+polkit.addRule(function(action, subject) {
+    if ((action.id == "org.freedesktop.login1.power-off" ||
+         action.id == "org.freedesktop.login1.reboot" ||
+         action.id == "org.freedesktop.login1.suspend" ||
+         action.id == "org.freedesktop.login1.hibernate") &&
+        subject.isInGroup("sudo")) {
+        return polkit.Result.YES;
+    }
+});
