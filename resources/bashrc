@@ -50,7 +50,7 @@ else
 	currentdir=$PWD;cd $HOME/quake-afterquake;nice -n -5 ./fteqw64;cd "$currentdir"
 fi
 '
-alias quake-fix="cd $HOME/quake && echo 'lowercasing files and directories...' && find . -depth -exec rename 's/(.*)\/([^\/]*)/$1\/\L$2/' {} \; 2>/dev/null && cd - >/dev/null && echo 'updating quake...' && update-quake && echo 'all done'"
+alias quake-fix="cd $HOME/quake && echo 'lowercasing files and directories...' && find . -depth -print0|xargs -P0 -0 -I% rename 's/(.*)\/([^\/]*)/\$1\/\L\$2/' '%' 2>/dev/null && cd - >/dev/null && echo 'updating quake...' && update-quake && echo 'all done'"
 alias browser="chromium"
 alias filebrowser="thunar"
 alias update-quake="wget -qO /tmp/ezquake-linux.zip https://github.com/QW-Group/ezquake-source/releases/latest/download/ezQuake-linux-x86_64.zip && unzip -o -d /tmp /tmp/ezquake-linux.zip && mv /tmp/ezQuake-x86_64.AppImage ${HOME}/quake/ezquake-linux && chmod +x ${HOME}/quake/ezquake-linux"
